@@ -3,300 +3,112 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KI – Künstliche Intelligenz</title>
+  <title>KI – Start & Grundlagen</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #0d0d0d;
-      --card: #161616;
-      --accent: #c8f542;
-      --muted: #555;
-      --text: #e8e8e8;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Syne', sans-serif;
-      line-height: 1.6;
-    }
-
-    /* HERO */
-    header {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 4rem 2rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    header::before {
-      content: 'KI';
-      position: absolute;
-      right: -0.1em;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: clamp(12rem, 30vw, 22rem);
-      font-weight: 800;
-      color: #fff;
-      opacity: 0.03;
-      line-height: 1;
-      pointer-events: none;
-      letter-spacing: -0.05em;
-    }
-
-    .tag {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.75rem;
-      color: var(--accent);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-bottom: 1.5rem;
-    }
-
-    h1 {
-      font-size: clamp(3rem, 8vw, 6rem);
-      font-weight: 800;
-      line-height: 1;
-      letter-spacing: -0.03em;
-      max-width: 14ch;
-      margin-bottom: 1.5rem;
-    }
-
-    h1 span { color: var(--accent); }
-
-    .intro {
-      max-width: 45ch;
-      color: #aaa;
-      font-size: 1.1rem;
-    }
-
-    /* SECTIONS */
-    section {
-      padding: 5rem 2rem;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .section-label {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.25em;
-      color: var(--accent);
-      text-transform: uppercase;
-      margin-bottom: 2.5rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .section-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #222;
-    }
-
-    h2 {
-      font-size: 2.2rem;
-      font-weight: 700;
-      margin-bottom: 1.2rem;
-      letter-spacing: -0.02em;
-    }
-
-    p { color: #aaa; margin-bottom: 1rem; max-width: 65ch; }
-
-    /* TIMELINE */
-    .timeline {
-      border-left: 2px solid #222;
-      padding-left: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-
-    .tl-item { position: relative; }
-
-    .tl-item::before {
-      content: '';
-      position: absolute;
-      left: -2.55rem;
-      top: 0.35rem;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--accent);
-    }
-
-    .tl-year {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.8rem;
-      color: var(--accent);
-      margin-bottom: 0.3rem;
-    }
-
-    .tl-text { color: #aaa; font-size: 0.95rem; }
-
-    /* CARDS */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1px;
-      background: #1e1e1e;
-      border: 1px solid #1e1e1e;
-      margin-top: 2rem;
-    }
-
-    .card {
-      background: var(--card);
-      padding: 2rem;
-    }
-
-    .card-icon {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-    }
-
-    .card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
-    .card p { font-size: 0.9rem; margin: 0; }
-
-    /* DIVIDER */
-    .divider {
-      border: none;
-      height: 1px;
-      background: #1e1e1e;
-      margin: 0 2rem;
-    }
-
-    /* FOOTER */
-    footer {
-      text-align: center;
-      padding: 3rem 2rem;
-      font-family: 'Space Mono', monospace;
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-
-    footer span { color: var(--accent); }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- HERO -->
   <header>
-    <p class="tag">// Schülerprojekt 2026</p>
-    <h1>Künstliche <span>Intelligenz</span></h1>
-    <p class="intro">Von Alan Turing bis ChatGPT – wie Maschinen das Denken lernen und was das für uns bedeutet.</p>
+    <nav class="top-nav">
+      <div class="top-nav-title">Schülerprojekt · KI</div>
+      <div class="top-nav-links">
+        <a href="1.html" class="active">Start</a>
+        <a href="2.html">Einsatzgebiete</a>
+        <a href="3.html">Zukunft</a>
+      </div>
+    </nav>
+
+    <div class="hero">
+      <p class="hero-tag">// Schülerprojekt 2026</p>
+      <h1 class="hero-title">Künstliche <span>Intelligenz</span> einfach erklärt.</h1>
+      <p class="hero-text">
+        Von den ersten Ideen von Alan Turing bis zu heutigen KI-Agenten – eine einfache Übersicht, wie Maschinen lernen und
+        warum das unseren Alltag verändert.
+      </p>
+    </div>
   </header>
 
-  <hr class="divider">
+  <main>
+    <section>
+      <p class="section-label">01 · Was ist KI?</p>
+      <h2>Grundidee in einem Satz</h2>
+      <p>
+        Künstliche Intelligenz beschreibt Computerprogramme, die Aufgaben lösen, für die man eigentlich menschliche Intelligenz
+        braucht – zum Beispiel Sprache verstehen, Bilder erkennen oder Entscheidungen treffen.
+      </p>
+      <p>
+        Der wichtigste Unterschied zu normaler Software: Wir programmieren nicht mehr jede einzelne Regel, sondern die KI lernt
+        aus vielen Beispielen selbst Muster zu erkennen.
+      </p>
 
-  <!-- WAS IST KI? -->
-  <section>
-    <p class="section-label">01 – Grundlagen</p>
-    <h2>Was ist KI überhaupt?</h2>
-    <p>Künstliche Intelligenz bezeichnet Systeme, die Aufgaben ausführen, die normalerweise menschliche Intelligenz erfordern – wie Sprache verstehen, Bilder erkennen oder Entscheidungen treffen.</p>
-    <p>Der größte Wandel: Früher programmierten wir jede Regel selbst. Heute lernen Systeme aus Daten und erkennen Muster eigenständig.</p>
+      <div class="cards">
+        <div class="card">
+          <div class="card-icon">🎯</div>
+          <h3>Schwache KI (ANI)</h3>
+          <p>Kann nur eine Aufgabe sehr gut, z. B. Schach spielen, Sprachassistenten wie Siri oder Alexa.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🧠</div>
+          <h3>Starke KI (AGI)</h3>
+          <p>Soll einmal wie ein Mensch flexibel denken können – ist noch Zukunft, Experten schätzen etwa um 2030.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🚀</div>
+          <h3>Super-KI (ASI)</h3>
+          <p>Noch weiter gedacht: eine KI, die allen Menschen deutlich überlegen wäre. Bisher nur eine Vision.</p>
+        </div>
+      </div>
+    </section>
 
-    <div class="cards">
-      <div class="card">
-        <div class="card-icon">🎯</div>
-        <h3>Schwache KI (ANI)</h3>
-        <p>Spezialisiert auf eine Aufgabe. Beispiele: Siri, Alexa, Schachprogramme.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">🧠</div>
-        <h3>Starke KI (AGI)</h3>
-        <p>Lernt wie ein Mensch, passt sich an neue Aufgaben an. Noch nicht erreicht.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">🚀</div>
-        <h3>Super-KI (ASI)</h3>
-        <p>Übertrifft menschliche Intelligenz in allem. Reine Zukunftsvision.</p>
-      </div>
-    </div>
-  </section>
+    <section>
+      <p class="section-label">02 · Kurze Geschichte</p>
+      <h2>Von Turing bis ChatGPT</h2>
+      <p>
+        Die Geschichte der KI besteht aus vielen Hoffnungen, Rückschlägen und Durchbrüchen. Hier sind die wichtigsten Punkte,
+        die du dir merken kannst:
+      </p>
 
-  <hr class="divider">
+      <div class="timeline">
+        <div class="tl-item">
+          <p class="tl-year">1950</p>
+          <p class="tl-text"><strong>Alan Turing</strong> stellt die Frage „Können Maschinen denken?“ und schlägt den Turing‑Test vor.</p>
+        </div>
+        <div class="tl-item">
+          <p class="tl-year">1956</p>
+          <p class="tl-text">Auf einer Konferenz in Dartmouth taucht zum ersten Mal der Begriff <strong>„Künstliche Intelligenz“</strong> auf.</p>
+        </div>
+        <div class="tl-item">
+          <p class="tl-year">1997</p>
+          <p class="tl-text"><strong>Deep Blue</strong> von IBM schlägt Schachweltmeister Kasparov – ein Meilenstein für KI.</p>
+        </div>
+        <div class="tl-item">
+          <p class="tl-year">2011–2016</p>
+          <p class="tl-text">IBM Watson gewinnt „Jeopardy“, neuronale Netze werden stark, Übersetzungen und Bild­erkennung werden viel besser.</p>
+        </div>
+        <div class="tl-item">
+          <p class="tl-year">2022</p>
+          <p class="tl-text"><strong>ChatGPT</strong> macht generative KI für alle sichtbar – Texte, Code und Erklärungen per Chat.</p>
+        </div>
+      </div>
+    </section>
 
-  <!-- GESCHICHTE -->
-  <section>
-    <p class="section-label">02 – Geschichte</p>
-    <h2>Von Turing bis heute</h2>
-    <p>Die Geschichte der KI ist eine Geschichte von großen Ideen, langen Winterpausen und plötzlichen Durchbrüchen.</p>
-
-    <div class="timeline">
-      <div class="tl-item">
-        <p class="tl-year">1950</p>
-        <p class="tl-text"><strong>Alan Turing</strong> stellt die Frage: „Können Maschinen denken?" – der Turing-Test entsteht.</p>
-      </div>
-      <div class="tl-item">
-        <p class="tl-year">1956</p>
-        <p class="tl-text">Der Begriff <strong>„Künstliche Intelligenz"</strong> wird offiziell geprägt.</p>
-      </div>
-      <div class="tl-item">
-        <p class="tl-year">1997</p>
-        <p class="tl-text"><strong>Deep Blue</strong> schlägt Schachweltmeister Kasparov – KI beweist sich.</p>
-      </div>
-      <div class="tl-item">
-        <p class="tl-year">2022</p>
-        <p class="tl-text"><strong>ChatGPT</strong> erscheint – Durchbruch der generativen KI für die breite Öffentlichkeit.</p>
-      </div>
-      <div class="tl-item">
-        <p class="tl-year">2026</p>
-        <p class="tl-text">Ära der <strong>KI-Agenten</strong> beginnt – Systeme handeln eigenständig und übernehmen komplexe Aufgaben.</p>
-      </div>
-    </div>
-  </section>
-
-  <hr class="divider">
-
-  <!-- CHANCEN & RISIKEN -->
-  <section>
-    <p class="section-label">03 – Chancen & Risiken</p>
-    <h2>Zwei Seiten einer Medaille</h2>
-
-    <div class="cards">
-      <div class="card">
-        <div class="card-icon">💊</div>
-        <h3>Medizin</h3>
-        <p>Schnellere Medikamentenentwicklung, personalisierte Krebstherapien, KI-Diagnostik in Echtzeit.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">🌍</div>
-        <h3>Klimaschutz</h3>
-        <p>Optimierung von Energienetzen, präzisere Klimamodelle, effizientere Ressourcennutzung.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">⚠️</div>
-        <h3>Deepfakes</h3>
-        <p>Täuschend echte Fälschungen für politische Manipulation und Desinformation.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">📊</div>
-        <h3>Bias</h3>
-        <p>KI lernt Vorurteile aus Daten – kann Minderheiten systematisch benachteiligen.</p>
-      </div>
-    </div>
-  </section>
-
-  <hr class="divider">
-
-  <!-- ZUKUNFT -->
-  <section>
-    <p class="section-label">04 – Ausblick</p>
-    <h2>Was kommt bis 2030?</h2>
-    <p>Führende Experten wie Sam Altman (OpenAI) und Demis Hassabis (DeepMind) rechnen um 2029–2030 mit dem Erreichen von AGI – einer KI, die sich wie ein Mensch an neue Aufgaben anpassen kann.</p>
-    <p>Die entscheidende Frage ist nicht mehr <em>ob</em> KI leistungsfähig genug wird – sondern <strong>wie wir mit den Folgen umgehen.</strong></p>
-  </section>
+    <section>
+      <p class="section-label">03 · Wie lernen KIs?</p>
+      <h2>Neuronale Netze in einfach</h2>
+      <p>
+        Moderne KI basiert oft auf <strong>neuronalen Netzen</strong>. Das sind viele kleine Recheneinheiten („Neuronen“), die
+        miteinander verbunden sind. Sie bekommen Eingabedaten, rechnen etwas aus und geben ein Ergebnis weiter.
+      </p>
+      <p>
+        Beim <strong>Training</strong> zeigt man der KI sehr viele Beispiele. Immer wenn sie sich irrt, wird sie ein kleines
+        bisschen korrigiert. Nach vielen Runden erkennt sie dann Muster, die wir vorher nicht direkt programmiert haben.
+      </p>
+    </section>
+  </main>
 
   <footer>
-    <p>Schülerprojekt &nbsp;·&nbsp; <span>Künstliche Intelligenz</span> &nbsp;·&nbsp; 2026</p>
+    <p>Schülerprojekt · <span>Künstliche Intelligenz</span> · 2026</p>
   </footer>
 
 </body>
