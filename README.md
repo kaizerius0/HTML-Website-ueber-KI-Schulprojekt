@@ -6,7 +6,7 @@
 
 ---
 
-## � Die Seiten im Überblick
+## Die Seiten im Überblick
 
 | Seite | Was steht drauf? |
 |---|---|
@@ -21,7 +21,7 @@
 
 ---
 
-## �️ Wie wir das gebaut haben
+## Wie wir das gebaut haben
 
 - **HTML & CSS** – Die gesamte Website ist in purem HTML und CSS geschrieben, ohne Frameworks und ohne JavaScript.
 - **Matrix-Design** – Schwarzer Hintergrund mit grünen Akzenten (`#39ff14`), inspiriert vom Hacker/Matrix-Look.

@@ -224,16 +224,3 @@ Da alle Dateien im gleichen Ordner liegen, reicht der einfache Dateiname als Lin
 5. **Sticky Footer:** Mit Flexbox dafür gesorgt, dass der Footer immer am Seitenende klebt
 6. **Quellenseite:** Alle verwendeten Quellen auf einer separaten Seite dokumentiert
 
----
-
-## Wie man die Website lokal startet
-
-Im Terminal (Kommandozeile), im `code/`-Ordner:
-
-```
-python -m http.server 8080
-```
-
-Dann im Browser öffnen: **http://localhost:8080**
-
-Das startet einen einfachen lokalen Webserver, der die HTML-Dateien ausliefert.
