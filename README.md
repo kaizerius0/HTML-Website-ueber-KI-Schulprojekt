@@ -23,7 +23,7 @@
 
 ## �️ Wie wir das gebaut haben
 
-- **HTML & CSS** – Die gesamte Website ist in purem HTML5 und CSS geschrieben, ohne Frameworks und ohne JavaScript.
+- **HTML & CSS** – Die gesamte Website ist in purem HTML und CSS geschrieben, ohne Frameworks und ohne JavaScript.
 - **Matrix-Design** – Schwarzer Hintergrund mit grünen Akzenten (`#39ff14`), inspiriert vom Hacker/Matrix-Look.
 - **GitHub** – Der gesamte Code liegt in diesem Repository. Wir haben mit Git Änderungen versioniert und zusammengearbeitet.
 - **Vercel** – Die Website wird automatisch über Vercel gehostet. Jeder Push auf den `main`-Branch wird direkt live deployed.
