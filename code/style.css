@@ -1,74 +1,79 @@
-/* ===== Globales Reset & Basis ===== */
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  box-sizing: border-box
+}
+
+html {
+  height: 100%
 }
 
 body {
-  background-color: #000000;
+  background: #000;
   color: #39ff14;
   font-family: Arial, sans-serif;
-  margin: 40px auto;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
   max-width: 900px;
-  padding: 0 20px;
+  margin: 0 auto;
+  padding: 40px 20px 0
 }
 
-/* ===== Überschriften ===== */
+main {
+  flex: 1
+}
+
 h1 {
   font-size: 40px;
   border-bottom: 2px solid #39ff14;
   padding-bottom: 10px;
   margin-bottom: 20px;
-  text-align: center;
+  text-align: center
 }
 
 h2 {
-  font-size: 28px;
-  margin-top: 40px;
-  margin-bottom: 15px;
+  font-size: 26px;
+  margin: 35px 0 12px;
   color: #39ff14;
+  border-bottom: 1px solid #1a7a0a;
+  padding-bottom: 6px
 }
 
 h3 {
-  font-size: 20px;
-  margin-top: 30px;
-  margin-bottom: 10px;
-  color: #39ff14;
+  font-size: 18px;
+  margin: 22px 0 8px;
+  color: #39ff14
 }
 
-/* ===== Text ===== */
 p,
 li {
   font-size: 16px;
   line-height: 1.8;
-  max-width: 800px;
+  max-width: 800px
 }
 
 p {
-  margin-bottom: 10px;
+  margin-bottom: 10px
 }
 
-/* ===== Links ===== */
 a {
-  color: #39ff14;
+  color: #39ff14
 }
 
-/* ===== Trennlinien ===== */
 hr {
   border: none;
   border-top: 1px solid #39ff14;
-  margin: 40px 0;
+  margin: 30px 0
 }
 
 hr.dashed {
-  border-top-style: dashed;
+  border-top-style: dashed
 }
 
-/* ===== Navigation ===== */
 nav {
-  margin-bottom: 40px;
-  text-align: center;
+  margin-bottom: 30px;
+  text-align: center
 }
 
 nav a {
@@ -79,85 +84,89 @@ nav a {
   border-bottom: 1px solid transparent;
   display: inline-block;
   padding-bottom: 2px;
-  white-space: nowrap;
+  white-space: nowrap
 }
 
 nav a:hover {
-  border-bottom: 1px solid #39ff14;
+  border-bottom-color: #39ff14
 }
 
-/* ===== Listen ===== */
 ul,
 ol {
   max-width: 800px;
   line-height: 2;
-  margin-top: 10px;
-  margin-bottom: 15px;
-  padding-left: 25px;
+  margin: 8px 0 15px;
+  padding-left: 25px
 }
 
 li {
-  margin-bottom: 4px;
+  margin-bottom: 4px
 }
 
-/* ===== Zitate ===== */
 blockquote {
   border-left: 4px solid #39ff14;
   padding-left: 20px;
   font-style: italic;
-  margin-left: 0;
-  margin-top: 15px;
-  margin-bottom: 20px;
+  margin: 15px 0 20px 0;
   font-size: 17px;
-  line-height: 1.6;
+  line-height: 1.6
 }
 
-/* ===== Tabellen ===== */
 table {
   border-collapse: collapse;
   width: 100%;
   max-width: 900px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin: 15px 0
 }
 
 th {
-  background-color: #39ff14;
-  color: #000000;
+  background: #39ff14;
+  color: #000;
   padding: 10px 12px;
   text-align: center;
-  font-size: 15px;
+  font-size: 15px
 }
 
 td {
   border: 1px solid #39ff14;
   padding: 10px 12px;
-  font-size: 15px;
+  font-size: 15px
 }
 
 tr:hover {
-  background-color: #111111;
+  background: #111
 }
 
-/* ===== Bilder ===== */
 img {
   width: 100%;
   max-width: 800px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin: 20px 0;
   border: 1px solid #39ff14;
-  display: block;
+  display: block
 }
 
-/* ===== Footer ===== */
-.footer {
+.intro {
+  font-size: 17px;
+  line-height: 1.9;
+  margin-bottom: 15px;
+  color: #30dd12
+}
+
+.section-intro {
+  color: #28cc10;
+  font-size: 15px;
+  margin-bottom: 12px
+}
+
+footer {
+  margin-top: auto;
+  padding: 30px 0 20px;
+  border-top: 1px solid #1a7a0a;
   font-size: 13px;
-  color: #226600;
-  margin-top: 10px;
-  padding-bottom: 20px;
+  color: #226600
 }
 
-.footer i {
+footer i {
   display: block;
-  margin-top: 4px;
+  margin-top: 4px
 }
