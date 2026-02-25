@@ -1,8 +1,6 @@
-# 🤖 Künstliche Intelligenz – Die Website
+# 🤖 Künstliche Intelligenz – Unsere Website
 
 **Von Chris Kaiser & Louis Förster** | GK Informatik, Klasse 11 (2026)
-
-> Statt einer klassischen PowerPoint haben wir eine eigene Website programmiert, um unser Thema – **Künstliche Intelligenz** – interaktiv zu präsentieren.
 
 🔗 **Live ansehen:** [projektkischule.vercel.app](https://projektkischule.vercel.app)
 
