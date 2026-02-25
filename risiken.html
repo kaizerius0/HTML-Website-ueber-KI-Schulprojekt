@@ -19,12 +19,19 @@
         }
 
         h2 {
-            font-size: 24px;
+            font-size: 28px;
             margin-top: 40px;
             color: #39ff14;
         }
 
-        p {
+        h3 {
+            font-size: 20px;
+            margin-top: 30px;
+            color: #39ff14;
+        }
+
+        p,
+        li {
             font-size: 16px;
             line-height: 1.8;
             max-width: 800px;
@@ -46,29 +53,27 @@
         nav a {
             margin-right: 20px;
             font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
         }
 
-        table {
-            border-collapse: collapse;
-            width: 100%;
+        nav a:hover {
+            border-bottom: 1px solid #39ff14;
+        }
+
+        ul {
             max-width: 800px;
-            margin-top: 20px;
+            line-height: 2;
+            margin-top: 10px;
         }
 
-        th {
-            background-color: #39ff14;
-            color: #000000;
-            padding: 10px;
-            text-align: left;
-        }
-
-        td {
-            border: 1px solid #39ff14;
-            padding: 10px;
-        }
-
-        tr:hover {
-            background-color: #111111;
+        blockquote {
+            border-left: 4px solid #39ff14;
+            padding-left: 20px;
+            font-style: italic;
+            margin-left: 0;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -82,38 +87,80 @@
         <a href="geschichte.html">Geschichte</a>
         <a href="grundlagen.html">Grundlagen</a>
         <a href="schule.html">KI in der Schule</a>
+        <a href="anwendungen.html">Weitere Anwendungen</a>
         <a href="risiken.html">Chancen & Risiken</a>
         <a href="zukunft.html">Zukunft</a>
     </nav>
 
     <hr>
 
-    <h2 id="risiken">Chancen & Risiken der KI</h2>
+    <h2 id="risiken">KI: Die dunkle, aber auch helle Seite</h2>
 
-    <p>KI bietet große Chancen, birgt aber auch Risiken:</p>
+    <h3>Risiken und Gefahren der KI</h3>
 
-    <table>
-        <tr>
-            <th>Chancen</th>
-            <th>Risiken</th>
-        </tr>
-        <tr>
-            <td>Schnellere Medikamentenentwicklung</td>
-            <td>Bias: KI übernimmt Vorurteile aus Daten</td>
-        </tr>
-        <tr>
-            <td>Bessere Klimamodelle</td>
-            <td>Deepfakes und Desinformation</td>
-        </tr>
-        <tr>
-            <td>Automatisierung gefährlicher Arbeit</td>
-            <td>Massenüberwachung</td>
-        </tr>
-        <tr>
-            <td>Personalisiertes Lernen</td>
-            <td>Jobverlust durch Automatisierung</td>
-        </tr>
-    </table>
+    <p><b>1. Bias – Verzerrte KI lernt Vorurteile:</b></p>
+    <blockquote>"Eine KI ist immer nur so gut und objektiv wie die Daten, mit denen sie trainiert wurde."</blockquote>
+    <ul>
+        <li><b>Recruiting:</b> KI-Systeme benachteiligen unbewusst Frauen oder Minderheiten bei der Jobauswahl.</li>
+        <li><b>Kreditvergabe:</b> Unfaire Scores entstehen teilweise nur aufgrund von Wohnort oder Herkunft.</li>
+        <li><b>Gesichtserkennung:</b> Funktioniert statistisch betrachtet schlechter bei nicht-weißen Personen.</li>
+    </ul>
+
+    <p><b>2. Deepfakes – Desinformation in neuer Qualität:</b></p>
+    <p>Mit KI können inzwischen täuschend echte, gefälschte Videos und Stimmen erstellt werden:</p>
+    <ul>
+        <li>Politische Manipulation (gefälschte Reden/Skandale)</li>
+        <li>Identitätsdiebstahl (Telefon-Scams mit Stimmen von Verwandten)</li>
+        <li>Rufschädigung von Personen oder großen Unternehmen</li>
+        <li>Langfristige Zerstörung des grundsätzlichen Vertrauens in Medien</li>
+    </ul>
+
+    <p><b>3. Überwachung und Kontrollverlust:</b></p>
+    <ul>
+        <li><b>Predictive Policing:</b> Vorhersage von Verbrechen – das größte Risiko ist, dass Polizeiressourcen falsch
+            verteilt werden und Bias verstärkt wird.</li>
+        <li>Gefahr massiver privater und staatlicher Massenüberwachung durch hochskalierte Gesichtserkennung.</li>
+        <li><b>Black-Box-Problem:</b> Warum die KI bestimmte Entscheidungen genau trifft, ist für den Menschen oft nicht
+            mehr nachvollziehbar.</li>
+    </ul>
+
+    <p><b>4. Datenschutz & Arbeitsplatzverluste:</b></p>
+    <ul>
+        <li>KI benötigt gigantische Datenmengen – oft bei völlig intransparenter Datennutzung, was zu Datenlecks führen
+            kann.</li>
+        <li><b>Arbeitsmarkt:</b> Millionen monotoner, aber auch kreativer Jobs könnten stark automatisiert werden.
+            Gleichzeitig ist unklar, wie schnell neue Jobs entstehen.</li>
+    </ul>
+
+    <hr style="border-top: 1px dashed #39ff14; margin: 40px 0;">
+
+    <h3>Chancen und Potenziale der KI</h3>
+
+    <p><b>Medizin & Gesundheitswesen:</b></p>
+    <ul>
+        <li>Deutlich schnellere und präzisere Entwicklung neuer Medikamente und Impfstoffe.</li>
+        <li>Individualisierte und personalisierte Krebstherapien passend zur Genetik.</li>
+        <li>KI könnte bis 2030 funktionale biologische Mechanismen sogar komplett neu am Rechner entwerfen.</li>
+    </ul>
+
+    <p><b>Klimaschutz & Nachhaltigkeit:</b></p>
+    <ul>
+        <li>Intelligente, ressourcenschonende Optimierung von Strom- und Energienetzen (Smart Grids).</li>
+        <li>Präzisere, langfristige Klimamodelle und Vorhersagen.</li>
+    </ul>
+
+    <p><b>Effizienzsteigerung für die Gesellschaft:</b></p>
+    <ul>
+        <li>Weitreichende Automatisierung von für Menschen extrem gefährlichen oder stumpf monotonen Arbeiten.</li>
+        <li>Tiefgreifende wissenschaftliche Entdeckungen in Wochen anstatt Jahren.</li>
+        <li>Enorme volkswirtschaftliche Produktivitätsgewinne.</li>
+    </ul>
+
+    <p><b>Bildung für Alle:</b></p>
+    <ul>
+        <li>Personalisiertes Lernen für jeden Schüler individuell.</li>
+        <li>Skalierbarer, günstiger und hochwertiger Zugang zu Bildung und Tutoring weltweit.</li>
+    </ul>
 
     <hr>
 

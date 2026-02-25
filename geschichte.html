@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Geschichte der KI</title>
+    <title>KI-Geschichte</title>
     <style>
         body {
             background-color: #000000;
@@ -19,12 +19,19 @@
         }
 
         h2 {
-            font-size: 24px;
+            font-size: 28px;
             margin-top: 40px;
             color: #39ff14;
         }
 
-        p {
+        h3 {
+            font-size: 20px;
+            margin-top: 30px;
+            color: #39ff14;
+        }
+
+        p,
+        li {
             font-size: 16px;
             line-height: 1.8;
             max-width: 800px;
@@ -46,13 +53,21 @@
         nav a {
             margin-right: 20px;
             font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+        }
+
+        nav a:hover {
+            border-bottom: 1px solid #39ff14;
         }
 
         table {
             border-collapse: collapse;
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             margin-top: 20px;
+            margin-bottom: 20px;
         }
 
         th {
@@ -70,6 +85,22 @@
         tr:hover {
             background-color: #111111;
         }
+
+        ul {
+            max-width: 800px;
+            line-height: 2;
+            margin-top: 10px;
+        }
+
+        blockquote {
+            border-left: 4px solid #39ff14;
+            padding-left: 20px;
+            font-style: italic;
+            margin-left: 0;
+            margin-bottom: 20px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
     </style>
 </head>
 
@@ -82,54 +113,175 @@
         <a href="geschichte.html">Geschichte</a>
         <a href="grundlagen.html">Grundlagen</a>
         <a href="schule.html">KI in der Schule</a>
+        <a href="anwendungen.html">Weitere Anwendungen</a>
         <a href="risiken.html">Chancen & Risiken</a>
         <a href="zukunft.html">Zukunft</a>
     </nav>
 
     <hr>
 
-    <h2 id="geschichte">Geschichte der KI</h2>
+    <h2 id="geschichte">Die aufregende Geschichte der Künstlichen Intelligenz</h2>
+    <p>Die Geschichte der KI umfasst über 70 Jahre. Es ist ein dramatisches Auf und Ab aus Euphorie und Enttäuschung,
+        getrieben von technischen Grenzen, überzogenen Erwartungen und massiven Rechenpower-Durchbrüchen.</p>
 
-    <p>
-        Die Geschichte der Künstlichen Intelligenz beginnt in den 1950er Jahren.
-        Alan Turing stellte 1950 die Frage: "Können Maschinen denken?" und entwickelte den bekannten Turing-Test.
-        Seitdem hat sich KI enorm weiterentwickelt.
-    </p>
-
+    <h3>Detaillierte KI-Zeitleiste</h3>
     <table>
         <tr>
             <th>Jahr</th>
-            <th>Ereignis</th>
+            <th>Meilenstein</th>
+            <th>Bedeutung</th>
         </tr>
         <tr>
             <td>1936</td>
-            <td>Alan Turing entwickelt die Turingmaschine</td>
+            <td>Alan Turing: Turingmaschine</td>
+            <td>Theoretischer Grundstein für Algorithmen und universelle Rechenmaschinen</td>
+        </tr>
+        <tr>
+            <td>1943</td>
+            <td>McCulloch-Pitts-Neuron</td>
+            <td>Erstes mathematisches Modell eines künstlichen Neurons</td>
         </tr>
         <tr>
             <td>1950</td>
-            <td>Turing-Test: "Können Maschinen denken?"</td>
+            <td><a href="https://drkpi.com/de/ki-geschichte-2026-ai-agents-realitaet/">Turing-Test</a></td>
+            <td>Kriterium: Kann Mensch einen Computer nicht von einem Menschen unterscheiden?</td>
         </tr>
         <tr>
             <td>1956</td>
-            <td>Der Begriff "Künstliche Intelligenz" entsteht</td>
+            <td>Dartmouth-Konferenz</td>
+            <td>Geburtsstunde der KI; Begriff "Artificial Intelligence" wird geprägt</td>
+        </tr>
+        <tr>
+            <td>1957</td>
+            <td>General Problem Solver (GPS)</td>
+            <td>Erste Software für allgemeine Problemlösung von Simon/Newell</td>
+        </tr>
+        <tr>
+            <td>1958</td>
+            <td>Perceptron (Rosenblatt)</td>
+            <td>Erstes lernfähiges neuronales Netz; Lernalgorithmus für Mustererkennung</td>
         </tr>
         <tr>
             <td>1966</td>
-            <td>ELIZA – der erste Chatbot wird entwickelt</td>
+            <td>ELIZA (Weizenbaum)</td>
+            <td>Erster Chatbot; simuliert grob einen Psychotherapeuten</td>
+        </tr>
+        <tr>
+            <td>1969</td>
+            <td>SHRDLU (Winograd)</td>
+            <td>Versteht natürliche Sprache in einer virtuellen Blockwelt</td>
+        </tr>
+        <tr>
+            <td>1974-1980</td>
+            <td><b>Erster AI Winter</b></td>
+            <td>Kritik (Lighthill-Report) stoppt in Großbritannien und USA die Förderung; kombinatorische Explosion
+                unlösbar durch mangelnde Rechenleistung</td>
+        </tr>
+        <tr>
+            <td>1980er</td>
+            <td>Expertensysteme (z.B. MYCIN)</td>
+            <td>Regelbasierte KI boomt kommerziell in spezifischen Domänen (z.B. Medizin)</td>
+        </tr>
+        <tr>
+            <td>1987</td>
+            <td><b>Zweiter AI Winter</b></td>
+            <td>Überbewertung führt zum Crash; Systeme brechen bei Edge-Cases zusammen</td>
         </tr>
         <tr>
             <td>1997</td>
-            <td>Deep Blue schlägt Schachweltmeister Kasparov</td>
+            <td>Deep Blue schlägt Kasparov</td>
+            <td>IBMs GOFAI-Schach-KI demonstriert immense Brute-Force-Suche (200 Mio Positionen/Sek.)</td>
+        </tr>
+        <tr>
+            <td>2011</td>
+            <td>IBM Watson gewinnt Jeopardy</td>
+            <td>Sieg durch komplexe natürliche Sprachverarbeitung</td>
+        </tr>
+        <tr>
+            <td>2012</td>
+            <td>AlexNet (ImageNet)</td>
+            <td>Deep Learning Revolution beginnt, angetrieben durch schnelle GPUs</td>
+        </tr>
+        <tr>
+            <td>2016</td>
+            <td>AlphaGo schlägt Lee Sedol</td>
+            <td>DeepMinds Netz meistert Go, wo 10^170 Züge reine Brute-Force unmöglich machen</td>
+        </tr>
+        <tr>
+            <td>2017</td>
+            <td>Transformer-Architektur</td>
+            <td>Google erfindet Attention-Mechanismus (Basis für alle modernen GPT-Modelle)</td>
         </tr>
         <tr>
             <td>2022</td>
-            <td>ChatGPT – Durchbruch der generativen KI</td>
+            <td><b>ChatGPT-Launch</b></td>
+            <td>Generative AI wird in Monaten zum Mainstream (100 Mio. Nutzer)</td>
         </tr>
         <tr>
-            <td>2025–2026</td>
-            <td>Ära der KI-Agenten beginnt</td>
+            <td>2024</td>
+            <td>Multimodale Modelle</td>
+            <td>KI integriert nahtlos Text, Bild und Video (GPT-4o)</td>
+        </tr>
+        <tr>
+            <td>2025-2026</td>
+            <td>Ära der KI-Agenten</td>
+            <td>Autonome Agenten übernehmen langkettige Workflows; Quanten-KI-Hybride entstehen</td>
         </tr>
     </table>
+
+    <hr style="border-top: 1px dashed #39ff14; margin: 40px 0;">
+
+    <h3>🌡️ AI Winters vs. Booms</h3>
+    <p>Die KI-Forschung war zyklisch: Phasen der Euphorie endeten oft im "Winter".</p>
+
+    <p><b>Der Hype-Zyklus:</b></p>
+    <ol>
+        <li><b>Hype:</b> Medienberichte und Investitionen steigen rapide.</li>
+        <li><b>Übertreibung:</b> Die Versprechen und Ankündigungen der Forscher werden zu ambitioniert.</li>
+        <li><b>Enttäuschung:</b> Die Systeme scheitern an der Realität und bei echten Problemen.</li>
+        <li><b>Winter (1974-80, 1987-93):</b> Die finanzielle Förderung bricht fast völlig ein.</li>
+    </ol>
+
+    <p><b>Aktueller Boom (seit 2012):</b> Warum droht heute kein neuer Winter mehr? Wir haben gigantische Mengen von
+        Daten (Big Data), massive Compute-Power (GPUs) und hochentwickeltes Deep Learning. Der größte Unterschied zu
+        früher: Heutige KI-Systeme sind <b>reale, gewinnbringende Produkte</b> auf dem Markt.</p>
+
+    <hr style="border-top: 1px dashed #39ff14; margin: 40px 0;">
+
+    <h3>🔬 Paradigmenwechsel: Wie KI lernt</h3>
+    <p>Die Art, wie wir KI erschaffen, hat sich in drei großen Phasen dramatisch gewandelt:</p>
+
+    <table>
+        <tr>
+            <th>Phase</th>
+            <th>Ansatz</th>
+            <th>Schlüsseltechnik</th>
+            <th>Limitation / Probleme</th>
+        </tr>
+        <tr>
+            <td>1950 - 1980</td>
+            <td>Symbolische KI</td>
+            <td>Regeln, Handprogrammiert, LISP</td>
+            <td>Keine kognitive Generalisierung bei neuen Problemen</td>
+        </tr>
+        <tr>
+            <td>1980 - 2010</td>
+            <td>Statistisches ML</td>
+            <td>Support Vector Machines</td>
+            <td>Stark von handverlesenen Daten abhängig</td>
+        </tr>
+        <tr>
+            <td>2012 - heute</td>
+            <td>Deep Learning</td>
+            <td>Neuronale Netze, Transformer</td>
+            <td>"Black-Box"-Problem; extrem strom- und rechenintensiv</td>
+        </tr>
+    </table>
+
+    <blockquote>Warum betrachten wir 2022 als den großen "ChatGPT-Moment"? Es war der Übergang von wissenschaftlicher
+        Nischenforschung zu einem echten Mainstream-Massenprodukt. Plötzlich ließen Skalierungsgesetze (mehr Daten +
+        mehr Compute = massiv bessere Leistung) sogenannte Foundation Models entstehen, bei denen ein einziges Modell
+        zahllose verschiedene Aufgaben meistert.</blockquote>
 
     <hr>
 
