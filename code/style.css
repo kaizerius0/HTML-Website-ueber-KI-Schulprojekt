@@ -145,6 +145,29 @@ img {
   display: block
 }
 
+.ascii-art {
+  color: #39ff14;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
+  margin: 20px 0 30px;
+  padding: 20px 10px;
+  overflow-x: auto;
+  animation: glow 3s ease-in-out infinite alternate;
+  white-space: pre
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 5px #39ff14, 0 0 10px #39ff1466
+  }
+
+  to {
+    text-shadow: 0 0 10px #39ff14, 0 0 20px #39ff1488, 0 0 30px #39ff1444
+  }
+}
+
 .intro {
   font-size: 17px;
   line-height: 1.9;
@@ -169,4 +192,15 @@ footer {
 footer i {
   display: block;
   margin-top: 4px
+}
+
+.secret-link {
+  color: #226600;
+  text-decoration: none;
+  cursor: default
+}
+
+.secret-link:hover {
+  color: #226600;
+  text-decoration: none
 }
