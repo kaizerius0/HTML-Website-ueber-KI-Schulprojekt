@@ -72,13 +72,14 @@ nav {
 }
 
 nav a {
-  margin: 0 10px;
-  font-size: 16px;
+  margin: 0 8px;
+  font-size: 14px;
   font-weight: bold;
   text-decoration: none;
   border-bottom: 1px solid transparent;
   display: inline-block;
   padding-bottom: 2px;
+  white-space: nowrap;
 }
 
 nav a:hover {
