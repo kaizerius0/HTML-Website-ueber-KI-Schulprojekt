@@ -1,57 +1,59 @@
-# Projektüberblick: KI-Informationswebsite
-**Ein Schulprojekt im Rahmen des Informatikunterrichts (Klasse 11, GK Informatik, 2026)**
+# 🤖 Künstliche Intelligenz – Die Website
 
-Hauptthema: Künstliche Intelligenz – Geschichte, Technologie, Anwendungen und Zukunft  
-Zielgruppe: Schulpräsentation (Mitschüler & Lehrer)  
-Format: HTML-Website als interaktiver Vortrag  
+**Von Chris Kaiser & Louis Förster** | GK Informatik, Klasse 11 (2026)
 
-## 🚀 Über dieses Projekt
-Diese Website wurde als Alternative zu einer klassischen PowerPoint-Präsentation programmiert. Sie dient als interaktiver Begleiter für unseren Vortrag über Künstliche Intelligenz. Die Webseite ist in purem HTML und CSS (Matrix-Design) geschrieben und in verschiedene, themenbezogene Unterseiten gegliedert, durch die wir während der Präsentation navigieren.
+> Statt einer klassischen PowerPoint haben wir eine eigene Website programmiert, um unser Thema – **Künstliche Intelligenz** – interaktiv zu präsentieren.
 
-## 📁 Seitenstruktur & Inhalte
-Die Website besteht aus 6 miteinander verlinkten Hauptseiten:
+🔗 **Live ansehen:** [projektkischule.vercel.app](https://projektkischule.vercel.app)
 
-1. **`index.html` (Startseite):** 
-   - Begrüßung und Überblick
-   - Interaktive Ideen & Tipps für die Präsentation (Live-Demos, Quiz)
-   - Spannende Diskussionsanregungen für die Klasse
+---
 
-2. **`geschichte.html`:** 
-   - Meilensteine der KI-Entwicklung (ab 1936 bis heute)
-   - Erklärung der "AI Winters" und Booms
-   - Der Paradigmenwechsel vom "Handprogrammieren" (Symbolisch) zum "Selbstlernen" (Deep Learning)
+## � Die Seiten im Überblick
 
-3. **`grundlagen.html`:** 
-   - Wie funktioniert KI? (Machine Learning & Neuronale Netze)
-   - Die drei Stufen der KI: ANI (Schwache KI), AGI (Starke KI) und ASI (Superintelligenz)
+| Seite | Was steht drauf? |
+|---|---|
+| **Startseite** | Einführung ins Thema & Übersicht über alle Unterseiten |
+| **Geschichte** | KI-Meilensteine von 1936 bis heute, AI Winters, der Wandel von Symbolischer KI zu Deep Learning |
+| **Grundlagen** | Wie Machine Learning & Neuronale Netze funktionieren, die drei KI-Stufen (ANI, AGI, ASI) |
+| **KI in der Schule** | ChatGPT im Unterricht, Lern-Apps, Chancen und Risiken im Bildungswesen |
+| **Weitere Anwendungen** | KI in der Raumfahrt, Quantencomputer + KI |
+| **Chancen & Risiken** | Bias, Deepfakes, Überwachung, Datenschutz |
+| **Zukunft** | Prognosen für AGI bis 2030+, humanoide Roboter, Ausblick |
+| **Quellen** | Alle verwendeten Quellen auf einen Blick |
 
-4. **`schule.html`:** 
-   - KI-Nutzung im Unterricht (ChatGPT, Lern-Apps, personalisiertes Lernen)
-   - Chancen und Risiken von KI für das Bildungswesen
+---
 
-5. **`anwendungen.html`:** 
-   - KI in der Raumfahrt (Autonome Mars-Rover)
-   - Die Revolution durch Quantencomputer-gestützte KI
+## �️ Wie wir das gebaut haben
 
-6. **`risiken.html` & `zukunft.html`:** 
-   - Bias, Deepfakes, Überwachung und Datenschutz
-   - Prognosen für AGI (Artificial General Intelligence) bis 2030 und darüber hinaus
+- **HTML & CSS** – Die gesamte Website ist in purem HTML5 und CSS geschrieben, ohne Frameworks und ohne JavaScript.
+- **Matrix-Design** – Schwarzer Hintergrund mit grünen Akzenten (`#39ff14`), inspiriert vom Hacker/Matrix-Look.
+- **GitHub** – Der gesamte Code liegt in diesem Repository. Wir haben mit Git Änderungen versioniert und zusammengearbeitet.
+- **Vercel** – Die Website wird automatisch über Vercel gehostet. Jeder Push auf den `main`-Branch wird direkt live deployed.
 
-## 💻 Technischer Stack
-- **HTML5:** Strukturierung der Seiten und Inhalte
-- **Vanilla CSS:** Einfaches, einheitliches Styling im "Matrix"-Design (Schwarzer Hintergrund, grüne `#39ff14` Akzente)
-- Komplett ohne externe Frameworks oder JavaScript, um den Code übersichtlich und verständlich zu halten.
+---
 
-## 🛠️ Lokale Ausführung (Zum Testen)
-Das Projekt kann ganz einfach lokal auf jedem Rechner ohne Internetverbindung ausgeführt werden:
-1. Das Projektverzeichnis öffnen.
-2. Einen lokalen Webserver starten, z.B. über Python:
-   ```bash
-   python -m http.server 8080
-   ```
-3. Im Browser `http://localhost:8080` aufrufen. Alternativ reicht auch ein Doppelklick auf die `index.html`-Datei.
+## 📂 Projektstruktur
 
-## 📌 Präsentationsstrategie
-- Das Team moderiert gemeinsam und navigiert live durch die Webseite.
-- Die Schüler werden aktiv durch Quizze und Demos (z.B. ChatGPT Live-Nutzung, Deepfake-Erkennung) eingebunden. 
-- Das Design wurde bewusst im Hacker/Matrix-Stil gehalten, um das Thema Informatik und Zukunft visuell zu unterstreichen.
+```
+📁 code/
+  ├── index.html          ← Startseite
+  ├── geschichte.html     ← Geschichte der KI
+  ├── grundlagen.html     ← Grundlagen & Funktionsweise
+  ├── schule.html         ← KI in der Schule
+  ├── anwendungen.html    ← Weitere Anwendungen
+  ├── risiken.html        ← Chancen & Risiken
+  ├── zukunft.html        ← Zukunft der KI
+  ├── quellen.html        ← Quellenverzeichnis
+  └── style.css           ← Das komplette Styling (Matrix-Design)
+
+📁 md files/
+  ├── Research.md          ← Unsere gesammelten Recherchen
+  ├── Geschichte_Research.md
+  └── Code-Erklaerung.md  ← Technische Erklärung des Codes
+```
+
+Alle HTML-Seiten teilen sich eine gemeinsame `style.css` und sind untereinander über eine Navigationsleiste verlinkt.
+
+---
+
+*GK Informatik 2026 – Thema: Künstliche Intelligenz*
