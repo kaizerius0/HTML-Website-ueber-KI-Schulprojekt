@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <title>KI-Grundlagen</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>Künstliche Intelligenz</h1>
+    <nav>
+        <a href="index.html">Startseite</a>
+        <a href="grundlagen.html">Grundlagen</a>
+        <a href="geschichte.html">Geschichte</a>
+        <a href="anwendungen.html">Anwendungen</a>
+        <a href="schule.html">KI in der Schule</a>
+        <a href="risiken.html">Chancen &amp; Risiken</a>
+        <a href="zukunft.html">Zukunft</a>
+        <a href="quellen.html">Quellen</a>
+    </nav>
+    <hr>
+    <main>
+        <h2>Grundlagen der Künstlichen Intelligenz</h2>
+        <p class="intro">KI ist kein einzelner Algorithmus, sondern ein ganzes Feld von Methoden.
+            Hier lernst du die wichtigsten Konzepte kennen – von Machine Learning über neuronale Netze
+            bis zu den drei Stufen der KI.</p>
+
+        <h2>Was ist KI?</h2>
+        <p>Künstliche Intelligenz umfasst Computersysteme, die ihre Umgebung analysieren,
+            Informationen verarbeiten und daraus Entscheidungen ableiten, um definierte Ziele zu
+            erreichen. Im Unterschied zu klassisch programmierten Systemen können KI-Systeme
+            aus Daten lernen und sich an neue Situationen anpassen.</p>
+        <p>In der Praxis unterscheidet man zwei grundlegende Ansätze:</p>
+        <ul>
+            <li><b>Symbolische KI (top-down):</b> Wissen wird als Regeln und Logik manuell einprogrammiert.
+                Klassisches Beispiel: Expertensysteme der 1980er Jahre.</li>
+            <li><b>Neuronale KI (bottom-up):</b> Das System lernt Muster aus großen Datenmengen selbst.
+                Heute der dominante Ansatz – Grundlage aller modernen Sprachmodelle.</li>
+        </ul>
+
+        <h2>Machine Learning – Lernen aus Daten</h2>
+        <p>Machine Learning (ML) ist der Kern moderner KI. Statt einem Computer Regeln vorzuschreiben,
+            zeigt man ihm Tausende Beispiele – und er findet die Muster selbst. ML lässt sich in drei
+            Lernarten unterteilen:</p>
+        <ul>
+            <li><b>Supervised Learning:</b> Das Modell lernt aus gelabelten Daten – z.B. Bilder, die
+                als „Katze" oder „Hund" markiert sind</li>
+            <li><b>Unsupervised Learning:</b> Das Modell findet Strukturen in ungelabelten Daten –
+                z.B. Kundengruppen in Kaufverhalten</li>
+            <li><b>Reinforcement Learning:</b> Ein Agent lernt durch Ausprobieren und Belohnung –
+                z.B. ein Programm, das Schach spielt</li>
+        </ul>
+
+        <h2>Deep Learning – Tiefe neuronale Netze</h2>
+        <p>Deep Learning ist eine Unterklasse von ML, bei der tiefe neuronale Netze mit vielen Schichten
+            zum Einsatz kommen. Sie sind besonders gut bei Bild-, Sprach- und Textverarbeitung.</p>
+
+        <h3>Aufbau eines neuronalen Netzes</h3>
+        <p>Ein neuronales Netz besteht aus drei Arten von Schichten:</p>
+        <ul>
+            <li><b>Eingabeschicht:</b> Empfängt die Rohdaten (z.B. Pixel eines Bildes)</li>
+            <li><b>Verborgene Schichten:</b> Extrahieren schrittweise abstraktere Merkmale</li>
+            <li><b>Ausgabeschicht:</b> Liefert das Ergebnis (z.B. „Das ist eine Katze")</li>
+        </ul>
+        <p>Jedes Neuron empfängt Eingaben, verarbeitet sie gewichtet mit einer Aktivierungsfunktion
+            und gibt das Ergebnis weiter. Durch Training mit Millionen von Beispielen passen sich die
+            Gewichte an – das Netz „lernt", Muster zu erkennen.</p>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Colored_neural_network.svg/800px-Colored_neural_network.svg.png"
+            alt="Schema eines neuronalen Netzes">
+
+        <h3>Wie läuft das Training ab?</h3>
+        <ul>
+            <li><b>Feedforward:</b> Daten fließen von der Eingabe durch alle Schichten zur Ausgabe</li>
+            <li><b>Backpropagation:</b> Der Fehler wird rückwärts durch das Netz geschickt und die
+                Gewichte angepasst – so lernt das System aus seinen Fehlern</li>
+        </ul>
+        <p>Dieser Prozess wird mit Millionen von Beispielen wiederholt, bis das Modell zuverlässig
+            generalisiert – also auch bei neuen, unbekannten Daten korrekte Ergebnisse liefert.</p>
+
+        <hr class="dashed">
+
+        <h2>Transformer – Die Architektur hinter ChatGPT</h2>
+        <p>Seit 2017 hat eine Architektur die KI-Entwicklung grundlegend verändert: der <b>Transformer</b>.
+            Er bildet die Basis aller großen Sprachmodelle (LLMs) wie GPT, Claude oder Gemini.</p>
+        <p>Das Kernprinzip ist <b>Self-Attention</b>: Jedes Wort in einem Satz kann alle anderen Wörter
+            „beachten" und gewichten, wie relevant sie füreinander sind. So versteht das Modell Kontext
+            über den gesamten Text hinweg – und das parallel statt Wort für Wort.</p>
+        <p>Transformer werden meist durch <b>Selbstüberwachung</b> trainiert: Das Modell lernt, das
+            nächste Wort in einem Text vorherzusagen. Durch Training auf riesigen Textmengen (Bücher,
+            Wikipedia, Webseiten) entstehen <b>Foundation Models</b> – Basismodelle, die viele
+            verschiedene Aufgaben lösen können.</p>
+
+        <hr class="dashed">
+
+        <h2>Die drei Stufen der KI</h2>
+        <ul>
+            <li><b>ANI – Schwache KI:</b> Spezialisiert auf eine Aufgabe (z.B. Siri, ChatGPT, Schach-KI).
+                Kann nicht eigenständig auf neue Probleme reagieren. <i>Das ist der heutige Stand.</i></li>
+            <li><b>AGI – Starke KI:</b> Lernt bereichsübergreifend wie ein Mensch und findet kreative
+                Lösungen. <i>Noch nicht erreicht</i> – Prognose: frühestens 2029–2035.</li>
+            <li><b>ASI – Superintelligenz:</b> Übertrifft menschliche Intelligenz in allen Bereichen.
+                <i>Reine Zukunftsvision – kein absehbarer Zeitpunkt.</i>
+            </li>
+        </ul>
+
+        <blockquote>Alle heutigen KI-Systeme sind ANI: Sie lösen spezifische Aufgaben oft besser als
+            Menschen, haben aber kein allgemeines Verständnis der Welt.</blockquote>
+
+        <hr class="dashed">
+
+        <h2>Wichtige Begriffe im Überblick</h2>
+        <table>
+            <tr>
+                <th>Begriff</th>
+                <th>Bedeutung</th>
+            </tr>
+            <tr>
+                <td>Machine Learning (ML)</td>
+                <td>Algorithmen, die aus Daten lernen, statt explizit programmiert zu werden</td>
+            </tr>
+            <tr>
+                <td>Deep Learning</td>
+                <td>ML mit tiefen neuronalen Netzen (viele Schichten)</td>
+            </tr>
+            <tr>
+                <td>Transformer</td>
+                <td>Architektur mit Self-Attention – Basis aller modernen Sprachmodelle</td>
+            </tr>
+            <tr>
+                <td>LLM</td>
+                <td>Large Language Model – großes Sprachmodell wie GPT oder Claude</td>
+            </tr>
+            <tr>
+                <td>Foundation Model</td>
+                <td>Basismodell, das viele Aufgaben lösen kann und in diverse Systeme integriert wird</td>
+            </tr>
+            <tr>
+                <td>Halluzination</td>
+                <td>Wenn ein KI-Modell plausibel klingende, aber falsche Aussagen erzeugt</td>
+            </tr>
+            <tr>
+                <td>Bias</td>
+                <td>Systematische Verzerrung durch einseitige Trainingsdaten</td>
+            </tr>
+            <tr>
+                <td>RLHF</td>
+                <td>Reinforcement Learning from Human Feedback – Feinabstimmung von Modellen durch menschliches Feedback
+                </td>
+            </tr>
+        </table>
+    </main>
+    <footer>
+        <a href="geheim.html" class="secret-link">Erstellt von Chris Kaiser &amp; Louis Förster</a><br>
+        Informatikunterricht – Klasse 11, GK Informatik, 2026
+    </footer>
+</body>
+
+</html>
