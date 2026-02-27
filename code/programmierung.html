@@ -55,35 +55,40 @@
 
         <h2>Wie Spotify KI heute einsetzt</h2>
 
-        <h3>Personalisierung als Kern-Use-Case</h3>
-        <p>Spotify beschreibt offen, dass praktisch die gesamte Personalisierung (Home-Feed, Discover Weekly, Release
-            Radar usw.) durch Machine-Learning-Modelle getrieben ist, die gewaltige Mengen an Nutzungsdaten (Playlists,
-            Listening History, Interaktionen, Kontextsignale wie Tageszeit oder Gerät) verarbeiten.
-            Jede Nutzerin erhält so eine eigene Version von Spotify; täglich werden hunderte Milliarden Events
-            verarbeitet, um Assoziationen zwischen Songs, Playlists, Podcasts und Nutzern zu lernen.</p>
-        <p>Diese Modelle nutzen u.a. Recommender-Systeme, Reinforcement Learning (für langfristige Zufriedenheit statt
-            nur kurzfristige Klicks) und standardisierte ML-Infrastruktur auf Basis von TensorFlow Extended, Kubeflow
-            und Cloud-Plattformen.
-            Spotify hat seine ML-Plattform industrialisiert ("Paved Road"), um Experimente schnell zu testen und
-            produktionsreife Modelle reproduzierbar auszurollen.</p>
+        <h3>Autonome Programmierung und das "Honk"-System</h3>
+        <p>Ein bemerkenswerter Meilenstein in der Softwareentwicklung wurde bei Spotify erreicht: Laut Co-CEO Gustav
+            Söderström haben die besten Entwickler des Unternehmens "seit Dezember keine einzige Zeile Code mehr
+            geschrieben". Möglich macht dies ein internes System namens "Honk", das generative KI – insbesondere
+            <i>Claude Code</i> – nutzt, um Remote- und Echtzeit-Code-Deployments radikal zu beschleunigen.</p>
+        <p>Ein konkretes Use-Case-Szenario zeigt das Potenzial: Ein Entwickler kann auf dem morgendlichen Arbeitsweg
+            über Slack auf dem Smartphone anordnen, einen Bug zu beheben oder ein neues Feature zur iOS-App
+            hinzuzufügen. Sobald die KI die Arbeit abgeschlossen hat, erhält der Entwickler die neue Version direkt auf
+            sein Gerät gepusht und kann sie noch vor Ankunft im Büro in die Produktion übernehmen. Dieses System hat
+            Spotify dabei geholfen, 2025 über 50 neue Features und Updates – wie KI-gestützte <i>Prompted Playlists</i>,
+            <i>Page Match</i> für Hörbücher oder <i>About This Song</i> – auszuliefern.</p>
 
-        <h3>Generative KI: AI DJ und AI Playlists</h3>
-        <p>Der AI DJ von Spotify kombiniert Personalisierungsmodelle mit generativer KI und einer synthetischen Stimme,
-            die auf der Stimme eines Spotify-Hosts basiert.
-            Für die Sprachausgabe nutzt Spotify u.a. Technologie von Sonantic und OpenAI, um kommentierte,
-            personalisierte Musik-Streams zu erzeugen.</p>
-        <p>Das Feature "AI Playlists" erlaubt Nutzerinnen, Playlists über natürliche Sprachprompts zu generieren;
-            Spotify nutzt dafür Large Language Models, um die Text-Prompts semantisch zu verstehen und dann mit den
-            Personalisierungsmodellen zu kombinieren.
-            Die Kombination aus LLM (Prompt-Verstehen) und Recommender-Engine (viele Jahre Nutzerdaten, Audio-Features)
-            ist ein Blaupause-Pattern für viele Consumer-Apps.</p>
+        <h3>Einzigartige Datensätze statt bloßer Fakten</h3>
+        <p>Neben der autonomen KI-Programmierung sieht Spotify seinen größten Wettbewerbsvorteil im Aufbau von
+            Datensätzen, die andere große Sprachmodelle (LLMs) nicht einfach reproduzieren können (im Gegensatz zu z.B.
+            Wikipedia). Da es auf musikbezogene Fragen (wie "Was ist gute Workout-Musik?") keine universelle faktische
+            Antwort gibt, sondern die Vorlieben stark nach Kultur und Geografie variieren (z.B. Hip-Hop vs. Heavy
+            Metal), baut Spotify auf massenhaft kontextbezogene Hörerdaten. Dieser stetig wachsende, einzigartige
+            Datenschatz verbessert die internen ML-Modelle kontinuierlich.
+            Auch beim Thema KI-generierter Musik bleibt Spotify innovativ: Künstler und Labels können in den Metadaten
+            angeben, wie ein Song erstellt wurde, während Spam strikt durch die Plattform reguliert wird.</p>
+
+        <h3>Personalisierung als Kern-Use-Case</h3>
+        <p>Spotify beschreibt weiterhin, dass praktisch die gesamte Personalisierung (Home-Feed, Discover Weekly,
+            Release Radar usw.) durch Machine-Learning-Modelle getrieben ist, die gewaltige Mengen an Nutzungsdaten
+            verarbeiten. Der <i>AI DJ</i> von Spotify kombiniert diese Personalisierungsmodelle zusätzlich mit
+            generativer KI und einer synthetischen Stimme.</p>
 
         <h3>Strategische Implikation</h3>
-        <p>Spotify zeigt, wie sich klassische ML (Recommender, Ranking, Reinforcement Learning) und LLMs ergänzen: LLMs
-            verstehen Intention, formulieren Texte und Interfaces, während spezialisierte Modelle
-            Ranking/Personalisierung optimieren.
-            Für Entwicklerinnen bedeutet das: Wert entsteht oft aus der Integration von LLMs in bestehende Daten- und
-            Recommender-Systeme, nicht aus "reiner" Textgenerierung.</p>
+        <p>Spotify zeigt, wie stark sich aktuelle Technologie weiterentwickelt: KI wird nicht nur für das Endprodukt,
+            sondern extrem effektiv für die eigene Softwareentwicklung eingesetzt. "Wir sehen dies nicht als das Ende
+            der Entwicklung im Bereich KI, sondern erst als den Anfang", betonte Söderström. Durch Tools wie "Honk"
+            wandelt sich die Rolle der Entwickler zunehmend vom reinen Coder zum Orchestrator, der hochspezialisierte
+            KI-Prozesse per Prompt und Review steuert.</p>
 
         <hr class="dashed">
 
@@ -107,7 +112,8 @@
             <b>KI-Orchestrierung</b> (welche
             Tools/Modelle für welchen Job), <b>Daten- und Sicherheitsverständnis</b>, plus die Fähigkeit, KI-Ausgaben
             kritisch
-            zu bewerten.</p>
+            zu bewerten.
+        </p>
         <p>Konzepte wie "Vibe Coding" beschreiben, dass Devs eher per natürlicher Sprache beschreiben, wie sich ein
             System anfühlen oder verhalten soll, während die KI den konkreten Code in der gewählten Tech-Stack-Realität
             konstruiert.
