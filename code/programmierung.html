@@ -23,7 +23,8 @@
     <hr>
     <main>
         <h2>KI, Programmierung und die Zukunft</h2>
-        <img src="images/AI-Dev.jpg" alt="KI in der Programmierung" class="content-image">
+        <img src="images/AI-Dev.jpg" alt="KI in der Programmierung" class="content-image" style="margin-bottom: 10px;">
+        <button class="fullscreen-btn" onclick="openModal('images/AI-Dev.jpg')">Bild im Vollbild öffnen</button>
         <p class="intro">Dieser Report skizziert den Stand der KI-gestützten Programmierung, wie große Tech-Firmen (mit
             Fokus auf Spotify) aktuelle Modelle einsetzen und wie sich die Rolle von Entwicklerinnen und Entwicklern in
             den nächsten Jahren verändern dürfte.
@@ -54,7 +55,8 @@
         <hr class="dashed">
 
         <h2>Wie Spotify KI heute einsetzt</h2>
-        <img src="images/spotify.jpg" alt="Spotify Logo" class="content-image">
+        <img src="images/spotify.jpg" alt="Spotify Logo" class="content-image" style="margin-bottom: 10px;">
+        <button class="fullscreen-btn" onclick="openModal('images/spotify.jpg')">Bild im Vollbild öffnen</button>
         <h3>Autonome Programmierung und das "Honk"-System</h3>
         <p>Ein bemerkenswerter Meilenstein in der Softwareentwicklung wurde bei Spotify erreicht: Laut Co-CEO Gustav
             Söderström haben die besten Entwickler des Unternehmens "seit Dezember keine einzige Zeile Code mehr
@@ -232,6 +234,23 @@
         <a href="geheim.html" class="secret-link">Erstellt von Chris Kaiser &amp; Louis Förster</a><br>
         Informatikunterricht – Klasse 11, GK Informatik, 2026
     </footer>
+
+    <!-- Globales Vollbild Modal -->
+    <div id="global-modal" class="fullscreen-modal" onclick="closeModal()">
+        <button class="close-btn" onclick="closeModal()">✖</button>
+        <img id="modal-img" src="" alt="Vollbild">
+    </div>
+
+    <script>
+        function openModal(src) {
+            document.getElementById('modal-img').src = src;
+            document.getElementById('global-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('global-modal').style.display = 'none';
+        }
+    </script>
 </body>
 
 </html>

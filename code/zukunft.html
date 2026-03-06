@@ -17,7 +17,7 @@
     <a href="schule.html">KI in der Schule</a>
     <a href="risiken.html">Chancen &amp; Risiken</a>
     <a href="programmierung.html">Programmierung</a>
-        <a href="zukunft.html">Zukunft</a>
+    <a href="zukunft.html">Zukunft</a>
     <a href="quellen.html">Quellen</a>
   </nav>
   <hr>
@@ -117,6 +117,19 @@
 
     <hr class="dashed">
 
+    <h2>KI und die Zukunft der Raumfahrt</h2>
+    <img src="images/raumfahrt.webp" alt="Raketenstart in der Zukunft" class="content-image"
+      style="margin-bottom: 10px;">
+    <button class="fullscreen-btn" onclick="openModal('images/raumfahrt.webp')">Bild im Vollbild öffnen</button>
+    <p>Ein weiteres faszinierendes Zukunftsfeld ist die bemannte Raumfahrt. Visionäre wie <b>Elon Musk</b> treiben mit
+      SpaceX die mögliche Besiedlung des Mars aktiv voran. KI wird dabei zunehmend eine Schlüsselrolle übernehmen: Sie
+      steuert nicht nur vollkommen autonome Raketenstarts und Punktlandungen, sondern überwacht auch komplexe
+      Lebenserhaltungssysteme in Echtzeit. Hochintelligente Systeme helfen dabei, riesige Datenmengen auf unbekannten
+      Planeten auszuwerten und Routen für Mars-Rover vorzugeben – ein unverzichtbarer Schritt für das Ziel, eine
+      multiplanetare Spezies zu werden.</p>
+
+    <hr class="dashed">
+
     <h2>Die zentrale Frage</h2>
     <p>Die Frage ist nicht mehr <i>„Wird KI leistungsfähig genug?"</i> – sondern:</p>
     <blockquote>„Wie gehen wir als Gesellschaft mit diesen Umbrüchen verantwortungsvoll um?"</blockquote>
@@ -128,6 +141,23 @@
     <a href="geheim.html" class="secret-link">Erstellt von Chris Kaiser &amp; Louis Förster</a><br>
     Informatikunterricht – Klasse 11, GK Informatik, 2026
   </footer>
+
+  <!-- Globales Vollbild Modal -->
+  <div id="global-modal" class="fullscreen-modal" onclick="closeModal()">
+    <button class="close-btn" onclick="closeModal()">✖</button>
+    <img id="modal-img" src="" alt="Vollbild">
+  </div>
+
+  <script>
+    function openModal(src) {
+      document.getElementById('modal-img').src = src;
+      document.getElementById('global-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('global-modal').style.display = 'none';
+    }
+  </script>
 </body>
 
 </html>

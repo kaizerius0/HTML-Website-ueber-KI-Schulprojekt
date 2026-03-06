@@ -93,6 +93,9 @@
         <hr class="dashed">
 
         <h2>KI und Quantencomputer</h2>
+        <img src="images/quantencomputer.jpg" alt="Quantencomputer" class="content-image" style="margin-bottom: 10px;">
+        <button class="fullscreen-btn" onclick="openModal('images/quantencomputer.jpg')">Bild im Vollbild
+            öffnen</button>
         <p>Quantencomputer nutzen <b>Qubits</b> statt klassischer Bits – sie können mehrere Zustände
             gleichzeitig annehmen. Kombiniert mit KI entsteht eine neue Leistungsklasse:</p>
         <ul>
@@ -108,6 +111,23 @@
         <a href="geheim.html" class="secret-link">Erstellt von Chris Kaiser &amp; Louis Förster</a><br>
         Informatikunterricht – Klasse 11, GK Informatik, 2026
     </footer>
+
+    <!-- Globales Vollbild Modal -->
+    <div id="global-modal" class="fullscreen-modal" onclick="closeModal()">
+        <button class="close-btn" onclick="closeModal()">✖</button>
+        <img id="modal-img" src="" alt="Vollbild">
+    </div>
+
+    <script>
+        function openModal(src) {
+            document.getElementById('modal-img').src = src;
+            document.getElementById('global-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('global-modal').style.display = 'none';
+        }
+    </script>
 </body>
 
 </html>

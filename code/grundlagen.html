@@ -68,7 +68,15 @@
             und gibt das Ergebnis weiter. Durch Training mit Millionen von Beispielen passen sich die
             Gewichte an – das Netz „lernt", Muster zu erkennen.</p>
         <img src="images/neural-network-diagram.png" alt="Schema eines neuronalen Netzes" class="content-image"
-            style="background-color: #e0e0e0; padding: 15px;">
+            style="background-color: #e0e0e0; padding: 15px; height: auto; margin-bottom: 10px;">
+        <button class="fullscreen-btn" onclick="document.getElementById('nn-modal').style.display='flex'">🔍 Schema im
+            Vollbild öffnen</button>
+
+        <div id="nn-modal" class="fullscreen-modal" onclick="this.style.display='none'">
+            <button class="close-btn">✖</button>
+            <img src="images/neural-network-diagram.png" alt="Schema eines neuronalen Netzes"
+                style="background-color: #e0e0e0; padding: 20px; border-radius: 12px;">
+        </div>
 
         <h3>Wie läuft das Training ab?</h3>
         <ul>
@@ -82,7 +90,9 @@
         <hr class="dashed">
 
         <h2>Transformer – Die Architektur hinter ChatGPT</h2>
-        <img src="images/transformers.jpg" alt="Transformer Technologie" class="content-image">
+        <img src="images/transformers.jpg" alt="Transformer Technologie" class="content-image"
+            style="margin-bottom: 10px;">
+        <button class="fullscreen-btn" onclick="openModal('images/transformers.jpg')">Bild im Vollbild öffnen</button>
         <p>Seit 2017 hat eine Architektur die KI-Entwicklung grundlegend verändert: der <b>Transformer</b>.
             Er bildet die Basis aller großen Sprachmodelle (LLMs) wie GPT, Claude oder Gemini.</p>
         <p>Das Kernprinzip ist <b>Self-Attention</b>: Jedes Wort in einem Satz kann alle anderen Wörter
@@ -97,7 +107,10 @@
 
         <h2>Die drei Stufen der KI</h2>
         <img src="images/ANI-vs-AGI-vs-ASI-Clear-Differences-Explained.jpg" alt="Die drei Stufen der KI im Vergleich"
-            class="content-image">
+            class="content-image" style="margin-bottom: 10px;">
+        <button class="fullscreen-btn"
+            onclick="openModal('images/ANI-vs-AGI-vs-ASI-Clear-Differences-Explained.jpg')">Bild im Vollbild
+            öffnen</button>
         <ul>
             <li><b>ANI – Schwache KI:</b> Spezialisiert auf eine Aufgabe (z.B. Siri, ChatGPT, Schach-KI).
                 Kann nicht eigenständig auf neue Probleme reagieren. <i>Das ist der heutige Stand.</i></li>
@@ -158,6 +171,23 @@
         <a href="geheim.html" class="secret-link">Erstellt von Chris Kaiser &amp; Louis Förster</a><br>
         Informatikunterricht – Klasse 11, GK Informatik, 2026
     </footer>
+
+    <!-- Globales Vollbild Modal -->
+    <div id="global-modal" class="fullscreen-modal" onclick="closeModal()">
+        <button class="close-btn" onclick="closeModal()">✖</button>
+        <img id="modal-img" src="" alt="Vollbild">
+    </div>
+
+    <script>
+        function openModal(src) {
+            document.getElementById('modal-img').src = src;
+            document.getElementById('global-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('global-modal').style.display = 'none';
+        }
+    </script>
 </body>
 
 </html>
