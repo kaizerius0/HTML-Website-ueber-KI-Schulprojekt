@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mars Open World Survival</title>
+    <style>
+        body {
+            margin: 0; padding: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Courier New', Courier, monospace;
+            user-select: none;
+        }
+
+        #canvas-container {
+            width: 100vw; height: 100vh; display: block;
+        }
+
+        #crosshair {
+            position: absolute; top: 50%; left: 50%;
+            width: 20px; height: 20px;
+            transform: translate(-50%, -50%);
+            pointer-events: none; z-index: 10;
+        }
+
+        #crosshair::before, #crosshair::after {
+            content: ''; position: absolute;
+            background: rgba(0, 255, 255, 0.8);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 1);
+        }
+
+        #crosshair::before { top: 9px; left: 0; width: 20px; height: 2px; }
+        #crosshair::after { top: 0; left: 9px; width: 2px; height: 20px; }
+
+        .ui-panel {
+            position: absolute;
+            background: rgba(10, 0, 0, 0.6);
+            border: 1px solid #ff5555;
+            border-radius: 8px;
+            color: #ff5555;
+            text-shadow: 2px 2px 4px #000;
+            font-size: 20px; font-weight: bold;
+            z-index: 10; pointer-events: none;
+            padding: 15px;
+        }
+
+        #hud { bottom: 30px; left: 30px; font-size: 24px; }
+        #hud span { color: #fff; }
+
+        #quests { top: 30px; left: 30px; border-color: #55ff55; color: #55ff55; width: 300px; }
+        .quest-item { margin-bottom: 10px; border-bottom: 1px dashed #55ff55; padding-bottom: 5px; }
+        .quest-item span { color: #fff; }
+
+        #inventory { top: 30px; right: 260px; border-color: #00ffff; color: #00ffff; width: 200px; }
+        #inventory h3 { margin: 0 0 10px 0; font-size: 24px; text-decoration: underline; }
+        .inv-item { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .inv-item span { color: #fff; }
+
+        #minimap {
+            position: absolute; top: 30px; right: 30px;
+            width: 200px; height: 200px;
+            background: rgba(10, 0, 0, 0.8);
+            border: 2px solid #ff5555; border-radius: 50%;
+            overflow: hidden; z-index: 10; pointer-events: none;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+        }
+
+        #minimap-center {
+            position: absolute; top: 50%; left: 50%;
+            width: 0; height: 0;
+            border-left: 6px solid transparent; border-right: 6px solid transparent;
+            border-bottom: 12px solid #00ffff;
+            transform: translate(-50%, -50%);
+        }
+
+        .map-alien {
+            position: absolute; width: 8px; height: 8px;
+            background: #ffaa00; border-radius: 50%;
+            transform: translate(-50%, -50%); box-shadow: 0 0 5px #ff0000;
+        }
+
+        #interaction-prompt {
+            position: absolute; top: 60%; left: 50%;
+            transform: translateX(-50%);
+            color: #fff; background: rgba(0,0,0,0.8);
+            border: 1px solid #00ffff; padding: 10px 20px;
+            border-radius: 5px; font-size: 24px;
+            z-index: 15;
+            box-shadow: 0 0 15px rgba(0,255,255,0.5);
+            transition: opacity 0.2s;
+        }
+
+        #hit-flash {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 255, 255, 0.4); opacity: 0; pointer-events: none; z-index: 15;
+            transition: opacity 0.1s ease-out;
+        }
+
+        #damage-flash {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 0, 0, 0.6); opacity: 0; pointer-events: none; z-index: 15;
+            transition: opacity 0.3s ease-out; box-shadow: inset 0 0 150px rgba(255, 0, 0, 1);
+        }
+
+        .menu {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(40, 0, 0, 0.9), rgba(10, 0, 0, 0.95));
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 20; color: white;
+        }
+
+        .hidden { display: none !important; }
+
+        h1 {
+            color: #ff5555; font-size: 80px; text-shadow: 0 0 30px #ff0000;
+            margin-bottom: 20px; letter-spacing: 5px; text-transform: uppercase; text-align: center;
+        }
+
+        .controls-text {
+            color: #ddd; text-align: left; max-width: 600px;
+            margin-bottom: 50px; font-size: 18px; line-height: 1.6;
+            background: rgba(0, 0, 0, 0.7); padding: 30px;
+            border: 1px solid #ff5555; border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
+        }
+
+        .controls-text span { color: #00ffff; font-weight: bold; }
+
+        button {
+            padding: 15px 50px; font-size: 28px; font-family: 'Courier New', Courier, monospace;
+            background: #220000; color: #ff5555; border: 2px solid #ff5555;
+            cursor: pointer; transition: all 0.3s; font-weight: bold; border-radius: 5px;
+        }
+
+        button:hover { background: #ff5555; color: #000; box-shadow: 0 0 30px #ff0000; transform: scale(1.1); }
+        
+        #message-log {
+            position: absolute; top: 30px; left: 50%; transform: translateX(-50%);
+            color: #fff; text-shadow: 1px 1px 3px #000; font-size: 24px; z-index: 10;
+            text-align: center; pointer-events: none; transition: opacity 1s; opacity: 0;
+            background: rgba(0,0,0,0.5); padding: 5px 20px; border-radius: 20px; border: 1px solid #555;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="ui" class="hidden">
+        <div id="crosshair"></div>
+        <div id="message-log">SYSTEM MESSAGE</div>
+        
+        <div id="interaction-prompt" class="hidden">[E] Interagieren</div>
+        
+        <div id="quests" class="ui-panel">
+            <h3>ACTIVE QUESTS</h3>
+            <div id="quest-list">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
+        <div id="inventory" class="ui-panel">
+            <h3>INVENTORY</h3>
+            <div class="inv-item">Wasser: <span id="inv-water">0</span></div>
+            <div class="inv-item">Samen: <span id="inv-seeds">0</span></div>
+            <div class="inv-item">Schrott: <span id="inv-scrap">0</span></div>
+            <div class="inv-item">Teile: <span id="inv-parts">0</span></div>
+        </div>
+
+        <div id="hud" class="ui-panel">
+            HEALTH: <span id="hpVal">100</span>% &nbsp;&nbsp; AMMO: <span id="ammoVal">150</span><br>
+            WAVE: <span id="lvlVal">1</span> &nbsp;&nbsp; HOSTILES: <span id="alienVal">0</span>
+        </div>
+
+        <div id="minimap">
+            <div id="minimap-center"></div>
+            <div id="minimap-entities"></div>
+        </div>
+
+        <div id="hit-flash"></div>
+        <div id="damage-flash"></div>
+    </div>
+
+    <div id="start-menu" class="menu">
+        <h1>Mars Open World<br>Survival</h1>
+        <div class="controls-text">
+            <span>W A S D</span> - Bewegen<br>
+            <span>MAUS</span> - Umsehen<br>
+            <span>E</span> - Interagieren / Aufheben<br>
+            <span>LINKSKLICK</span> - Schießen<br>
+            <span>LEERTASTE</span> - Springen<br>
+            <span>V</span> - Ansicht wechseln<br><br>
+            Erkunde Marsstationen, erfülle Quests (Bot-Reparatur, Anbau), farme Items und überlebe die offene Welt.
+        </div>
+        <button id="start-btn">Mission Starten</button>
+    </div>
+
+    <div id="game-over-menu" class="menu hidden">
+        <h1>M.I.A. / GAME OVER</h1>
+        <div class="controls-text" style="text-align: center;">
+            <p>Dein Überlebenskampf ist vorbei.</p>
+        </div>
+        <button id="restart-btn" onclick="location.reload()">Neustarten</button>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
+    
+    <script>
+        /*******************************************************
+         * GLOBALS & SETTINGS
+         *******************************************************/
+        const GAME_STATE = { running: false, wave: 1, kills: 0 };
+        const SETTINGS = { mouseSens: 0.0015, speed: 7, sprintMulti: 1.5, jump: 9, gravity: 22, pHeight: 2.2, mapSize: 1500 };
+        const KEYS = { w: false, a: false, s: false, d: false, space: false, shift: false, e: false };
+        let eKeyPressedHandled = false;
+
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x4a1805, 0.002);
+        scene.background = new THREE.Color(0x200a02);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.0;
+        document.body.appendChild(renderer.domElement);
+
+        let cameraGroup, pitchGroup, camera, tpGroup;
+        let dirLight, ambientLight;
+
+        const solidMeshes = []; // Für Kollisionen (Wände etc.)
+        const interactables = []; // Für Raycast Items/Türen
+
+        /*******************************************************
+         * UI & NOTIFICATIONS
+         *******************************************************/
+        function showMessage(msg) {
+            let el = document.getElementById('message-log');
+            el.innerText = msg;
+            el.style.opacity = 1;
+            el.style.transition = 'none';
+            setTimeout(() => {
+                el.style.transition = 'opacity 1s';
+                el.style.opacity = 0;
+            }, 3000);
+        }
+
+        /*******************************************************
+         * PLAYER & CAMERA SETUP
+         *******************************************************/
+        cameraGroup = new THREE.Group();
+        pitchGroup = new THREE.Group();
+        cameraGroup.add(pitchGroup);
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+        pitchGroup.add(camera);
+        scene.add(cameraGroup);
+
+        tpGroup = new THREE.Group();
+        let tpBody = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 2), new THREE.MeshStandardMaterial({ color: 0x2244aa }));
+        tpBody.position.y = 1; tpBody.castShadow = true;
+        tpGroup.add(tpBody); scene.add(tpGroup); tpGroup.visible = false;
+
+        const player = { pos: new THREE.Vector3(0, 50, 0), vel: new THREE.Vector3(), yaw: 0, pitch: 0, tYaw: 0, tPitch: 0, hp: 100, ammo: 150, viewMode: 1, grounded: false, lastShoot: 0, inventory: { water: 0, seeds: 0, scrap: 0, parts: 0 } };
+
+        const fpsArmGrp = new THREE.Group();
+        fpsArmGrp.position.set(0.6, -0.6, -1.2); pitchGroup.add(fpsArmGrp);
+        
+        let rArm = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.8).rotateX(Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x4a3a2a }));
+        rArm.position.set(0.1, -0.1, 0.2); fpsArmGrp.add(rArm);
+        const gunGrp = new THREE.Group();
+        gunGrp.add(new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.25, 0.9), new THREE.MeshStandardMaterial({ color: 0x222222, metalness: 0.8 })));
+        gunGrp.add(new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.6).rotateX(Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x050505 })).translateY(0.05).translateZ(-0.6));
+        let core = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.1, 0.4), new THREE.MeshStandardMaterial({ color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 2 }));
+        core.position.set(0, 0.05, -0.1); gunGrp.add(core);
+        fpsArmGrp.add(gunGrp);
+        
+        const muzzleLight = new THREE.PointLight(0x00ffff, 0, 15); muzzleLight.position.set(0, 0.05, -1.0); fpsArmGrp.add(muzzleLight);
+
+        /*******************************************************
+         * TERRAIN & ENVIRONMENT
+         *******************************************************/
+        const simplex = new SimplexNoise();
+        function getElevation(x, z) {
+            let e = 1 * simplex.noise2D(x/400, z/400) + 0.5 * simplex.noise2D(x/200, z/200) + 0.1 * simplex.noise2D(x/50, z/50);
+            return e * 25;
+        }
+
+        const buildTerrain = () => {
+            ambientLight = new THREE.HemisphereLight(0xcc7755, 0x110502, 0.4); scene.add(ambientLight);
+            dirLight = new THREE.DirectionalLight(0xffddaa, 1.2);
+            dirLight.position.set(-200, 300, -100); dirLight.castShadow = true;
+            dirLight.shadow.camera.left = -200; dirLight.shadow.camera.right = 200;
+            dirLight.shadow.camera.top = 200; dirLight.shadow.camera.bottom = -200;
+            dirLight.shadow.mapSize.width = 2048; dirLight.shadow.mapSize.height = 2048;
+            scene.add(dirLight);
+
+            const terrainGeo = new THREE.PlaneGeometry(SETTINGS.mapSize, SETTINGS.mapSize, 150, 150);
+            terrainGeo.rotateX(-Math.PI / 2);
+            const tPos = terrainGeo.attributes.position;
+            for (let i = 0; i < tPos.count; i++) tPos.setY(i, getElevation(tPos.getX(i), tPos.getZ(i)));
+            terrainGeo.computeVertexNormals();
+            const terrain = new THREE.Mesh(terrainGeo, new THREE.MeshStandardMaterial({ color: 0x822a10, roughness: 1.0, flatShading: true }));
+            terrain.receiveShadow = true; scene.add(terrain);
+
+            // Rocks Instancing
+            const rockGeo = new THREE.DodecahedronGeometry(1, 0);
+            const rocksGrp = new THREE.InstancedMesh(rockGeo, new THREE.MeshStandardMaterial({ color: 0x3d170a, flatShading: true }), 500);
+            const rockDummy = new THREE.Object3D();
+            for (let i = 0; i < 500; i++) {
+                let rx = (Math.random() - 0.5) * (SETTINGS.mapSize * 0.9); let rz = (Math.random() - 0.5) * (SETTINGS.mapSize * 0.9);
+                rockDummy.position.set(rx, getElevation(rx, rz) + 0.5, rz);
+                rockDummy.scale.set(1+Math.random()*2, 1+Math.random()*3, 1+Math.random()*2);
+                rockDummy.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0); rockDummy.updateMatrix();
+                rocksGrp.setMatrixAt(i, rockDummy.matrix);
+            }
+            rocksGrp.castShadow = true; rocksGrp.receiveShadow = true; scene.add(rocksGrp);
+            
+            // Moon
+            let moon = new THREE.Mesh(new THREE.SphereGeometry(60, 32, 32), new THREE.MeshStandardMaterial({ color: 0xffaa77, emissive: 0x221100 }));
+            moon.position.set(-400, 300, -700); scene.add(moon);
+        };
+        buildTerrain();
+
+        /*******************************************************
+         * SYSTEM: INTERACTABLES & ITEMS
+         *******************************************************/
+        class Interactable {
+            constructor(mesh, name, actionText, callback) {
+                this.mesh = mesh; this.name = name; this.actionText = actionText; this.callback = callback;
+                interactables.push(this);
+            }
+            interact() { this.callback(); }
+        }
+
+        function createItem(x, z, type, name) {
+            let y = getElevation(x, z) + 0.5;
+            let geo, col;
+            if(type === 'water') { geo = new THREE.CylinderGeometry(0.2, 0.2, 0.8); col = 0x0055ff; }
+            if(type === 'seeds') { geo = new THREE.BoxGeometry(0.5, 0.2, 0.5); col = 0x22bb22; }
+            if(type === 'scrap') { geo = new THREE.DodecahedronGeometry(0.3); col = 0x888888; }
+            if(type === 'parts') { geo = new THREE.BoxGeometry(0.4, 0.4, 0.4); col = 0xffaa00; }
+            
+            let mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({color: col, emissive: col, emissiveIntensity: 0.2}));
+            mesh.position.set(x, y, z); mesh.castShadow = true; scene.add(mesh);
+            
+            // Bobbing animation data attached to mesh
+            mesh.userData = { isItem: true, seedY: y, tick: Math.random()*10 };
+
+            let interactObj = new Interactable(mesh, name, "Aufheben", () => {
+                player.inventory[type]++;
+                updateInventoryUI();
+                showMessage(`${name} aufgesammelt!`);
+                scene.remove(mesh);
+                interactables.splice(interactables.indexOf(interactObj), 1);
+            });
+        }
+
+        // Spawn items across map
+        for(let i=0; i<30; i++) {
+            createItem((Math.random()-0.5)*400, (Math.random()-0.5)*400, 'water', 'Wasserflasche');
+            createItem((Math.random()-0.5)*400, (Math.random()-0.5)*400, 'seeds', 'Alien-Samen');
+            createItem((Math.random()-0.5)*400, (Math.random()-0.5)*400, 'scrap', 'Metallschrott');
+            if(i < 10) createItem((Math.random()-0.5)*400, (Math.random()-0.5)*400, 'parts', 'Ersatzteile');
+        }
+
+        /*******************************************************
+         * SYSTEM: BUILDINGS & INTERIORS
+         *******************************************************/
+        function spawnBuilding(x, z, type) {
+            let y = getElevation(x, z);
+            let grp = new THREE.Group();
+            grp.position.set(x, y, z);
+            
+            let bMat = new THREE.MeshStandardMaterial({color: 0x555555, roughness: 0.8});
+            let inMat = new THREE.MeshStandardMaterial({color: 0xbbbbbb});
+            let w, d, h;
+            
+            if (type === 'station') { w = 24; d = 24; h = 8; }
+            else { w = 14; d = 14; h = 6; } // outpost
+
+            // Floor
+            let floor = new THREE.Mesh(new THREE.PlaneGeometry(w, d), inMat); 
+            floor.rotation.x = -Math.PI/2; floor.position.y = 0.1; floor.receiveShadow = true; grp.add(floor);
+            
+            // Roof
+            let roof = new THREE.Mesh(new THREE.BoxGeometry(w+1, 0.5, d+1), bMat);
+            roof.position.y = h; roof.castShadow = true; grp.add(roof);
+
+            // 4 Walls (Front has Door gap)
+            const addWall = (wx, wz, posx, posz) => {
+                let wall = new THREE.Mesh(new THREE.BoxGeometry(wx, h, wz), bMat);
+                wall.position.set(posx, h/2, posz); wall.castShadow = true; wall.receiveShadow = true;
+                grp.add(wall); solidMeshes.push(wall);
+            };
+            
+            addWall(w, 1, 0, -d/2); // back
+            addWall(1, h, d, -w/2, 0); // left  (Wait, function signature mismatch)
+            addWall(1, h, d, w/2, 0); // right
+            // Front wall setup (Door is 3 wide in center)
+            let sideW = (w - 3)/2;
+            let frontL = new THREE.Mesh(new THREE.BoxGeometry(sideW, h, 1), bMat); frontL.position.set(-w/2 + sideW/2, h/2, d/2); solidMeshes.push(frontL); grp.add(frontL);
+            let frontR = new THREE.Mesh(new THREE.BoxGeometry(sideW, h, 1), bMat); frontR.position.set(w/2 - sideW/2, h/2, d/2); solidMeshes.push(frontR); grp.add(frontR);
+            let frontT = new THREE.Mesh(new THREE.BoxGeometry(3, h-4, 1), bMat); frontT.position.set(0, h - (h-4)/2, d/2); solidMeshes.push(frontT); grp.add(frontT);
+
+            // Door interactable
+            let door = new THREE.Mesh(new THREE.BoxGeometry(3, 4, 0.5), new THREE.MeshStandardMaterial({color: 0x883333, metalness: 0.5}));
+            door.position.set(0, 2, d/2);
+            grp.add(door);
+            solidMeshes.push(door);
+            
+            let doorState = false;
+            let dInteract = new Interactable(door, "Schotttür", "Öffnen/Schließen", () => {
+                doorState = !doorState;
+                door.position.y = doorState ? 8 : 2; // Simple slide up
+                showMessage(doorState ? "Tür geöffnet" : "Tür geschlossen");
+            });
+
+            // Interior Light
+            let iLight = new THREE.PointLight(0xffffee, 0.8, 30);
+            iLight.position.set(0, h-1, 0);
+            grp.add(iLight);
+
+            // Special Stations Content
+            if(type === 'station') {
+                // Weed Quest Planter Box
+                let planter = new THREE.Mesh(new THREE.BoxGeometry(4, 1, 2), new THREE.MeshStandardMaterial({color: 0x3d2005}));
+                planter.position.set(-6, 0.5, -6); grp.add(planter); solidMeshes.push(planter);
+                
+                let pInteract = new Interactable(planter, "Hydrokultur", "Gras pflanzen (Braucht 1x Samen, 1x Wasser)", () => QUEST_SYS.interactPlanter(planter));
+
+                // Rover broken mesh
+                let rovg = new THREE.Group(); rovg.position.set(6, 0.5, -4);
+                let rBody = new THREE.Mesh(new THREE.BoxGeometry(3, 1.5, 4), new THREE.MeshStandardMaterial({color: 0xaa2222, metalness:0.8})); rovg.add(rBody);
+                let rTurret = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.8, 1), new THREE.MeshStandardMaterial({color:0x333333})); rTurret.position.y=1; rovg.add(rTurret);
+                grp.add(rovg); solidMeshes.push(rBody);
+                
+                let rInteract = new Interactable(rBody, "Defekter Rover", "Reparieren (Braucht 3x Schrott, 1x Teile)", () => QUEST_SYS.interactRover(rovg, rInteract, rBody));
+                
+                // Set spawning pos for player inside main station
+                player.pos.set(x, y + SETTINGS.pHeight, z);
+            }
+
+            scene.add(grp);
+        }
+
+        spawnBuilding(0, 0, 'station'); // Main base
+        spawnBuilding(150, 100, 'outpost');
+        spawnBuilding(-120, -180, 'outpost');
+
+        /*******************************************************
+         * SYSTEM: QUESTS
+         *******************************************************/
+        const QUEST_SYS = {
+            weedState: 0, // 0=empty, 1=growing, 2=ready
+            growTimer: 0,
+            weedPlants: [],
+            
+            interactPlanter: function(planterMesh) {
+                if(this.weedState === 0) {
+                    if (player.inventory.seeds >= 1 && player.inventory.water >= 1) {
+                        player.inventory.seeds--; player.inventory.water--; updateInventoryUI();
+                        this.weedState = 1; this.growTimer = 15; // 15 sec grow
+                        showMessage("Alien-Pflanze eingepflanzt. Sie wächst...");
+                        this.renderQuestUI();
+                        
+                        // Show dirty sprouts
+                        for(let i=0; i<3; i++) {
+                            let w = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.5), new THREE.MeshStandardMaterial({color:0x00ff00}));
+                            w.position.set((Math.random()-0.5)*3, 0.5, (Math.random()-0.5)*1.5);
+                            planterMesh.add(w); this.weedPlants.push(w);
+                        }
+                    } else showMessage("Es fehlt Saatgut oder Wasser!");
+                } else if(this.weedState === 1) {
+                    showMessage("Die Pflanze muss noch wachsen...");
+                } else if(this.weedState === 2) {
+                    this.weedState = 0;
+                    player.hp = Math.min(player.hp + 50, 150); // Buff
+                    showMessage("Ernte erfolgreich! Leben regeneriert (+50 HP).");
+                    this.weedPlants.forEach(p => planterMesh.remove(p));
+                    this.weedPlants = [];
+                    this.renderQuestUI();
+                }
+            },
+            
+            roverRepaired: false,
+            roverGrp: null,
+            interactRover: function(grp, interactObj, bodyMesh) {
+                if(!this.roverRepaired) {
+                    if(player.inventory.scrap >= 3 && player.inventory.parts >= 1) {
+                        player.inventory.scrap -= 3; player.inventory.parts -= 1; updateInventoryUI();
+                        this.roverRepaired = true;
+                        this.roverGrp = grp;
+                        showMessage("Rover Repariert! System online.");
+                        
+                        // Glow up
+                        grp.children[1].material.emissive.setHex(0x00ffff);
+                        
+                        // Disable interaction
+                        interactables.splice(interactables.indexOf(interactObj), 1);
+                        this.renderQuestUI();
+                    } else {
+                        showMessage("Bauteile fehlen (3x Schrott, 1x Teile)!");
+                    }
+                }
+            },
+            
+            update: function(dt) {
+                if(this.weedState === 1) {
+                    this.growTimer -= dt;
+                    // Visual grow
+                    this.weedPlants.forEach(p => p.scale.y = 1 + (15 - this.growTimer)*0.2);
+                    
+                    if(this.growTimer <= 0) {
+                        this.weedState = 2;
+                        showMessage("Alien-Pflanze ist erntebereit!");
+                        this.renderQuestUI();
+                    }
+                }
+                
+                if(this.roverRepaired && this.roverGrp) {
+                    // Simple rover behavior: driving around in circles or tracking player loosely
+                    this.roverGrp.rotation.y += 0.5 * dt;
+                    let fw = new THREE.Vector3(0,0,1).applyAxisAngle(new THREE.Vector3(0,1,0), this.roverGrp.rotation.y);
+                    this.roverGrp.position.addScaledVector(fw, 3 * dt);
+                    this.roverGrp.position.y = getElevation(this.roverGrp.position.x, this.roverGrp.position.z) + 0.5;
+                }
+            },
+            
+            renderQuestUI: function() {
+                let html = "";
+                if(this.roverRepaired) html += `<div class="quest-item"><span>[X]</span> Rover Repariert</div>`;
+                else html += `<div class="quest-item"><span>[ ]</span> Bot reparieren (3 Schrott, 1 Teile)</div>`;
+                
+                if(this.weedState === 0) html += `<div class="quest-item"><span>[ ]</span> Gras Anbauen (Wasser & Samen in Pflanzenbox)</div>`;
+                else if(this.weedState === 1) html += `<div class="quest-item"><span>[-]</span> Gras wächst... ${Math.ceil(this.growTimer)}s</div>`;
+                else html += `<div class="quest-item"><span>[!]</span> Gras ist erntebereit!</div>`;
+                
+                document.getElementById('quest-list').innerHTML = html;
+            }
+        };
+
+        /*******************************************************
+         * SYSTEM: ALIENS (AI & PATHING)
+         *******************************************************/
+        const aliens = [];
+        const entitiesGrp = new THREE.Group(); scene.add(entitiesGrp);
+        
+        function createAlien(x, z, lvl) {
+            let grp = new THREE.Group();
+            grp.position.set(x, getElevation(x, z), z);
+            
+            const armorMat = new THREE.MeshStandardMaterial({ color: 0x111115, roughness: 0.7});
+            const glowMat = new THREE.MeshStandardMaterial({ color: 0xff3300, emissive: 0xbb1100 });
+            
+            let body = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.5, 2.0, 8), armorMat); body.position.y = 1.8; body.castShadow = true; grp.add(body);
+            let core = new THREE.Mesh(new THREE.SphereGeometry(0.4, 8, 8), glowMat); core.position.set(0, 1.8, 0.4); grp.add(core);
+
+            let headGrp = new THREE.Group(); headGrp.position.y = 3.0;
+            let head = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.8, 1.0), armorMat); head.castShadow = true; head.name = "head"; headGrp.add(head);
+            let leye = new THREE.Mesh(new THREE.SphereGeometry(0.15, 8, 8), glowMat); leye.position.set(-0.3, 0.1, 0.5); headGrp.add(leye);
+            let reye = new THREE.Mesh(new THREE.SphereGeometry(0.15, 8, 8), glowMat); reye.position.set(0.3, 0.1, 0.5); headGrp.add(reye);
+            grp.add(headGrp);
+            
+            let armGeo = new THREE.BoxGeometry(0.3, 1.4, 0.3); armGeo.translate(0, -0.6, 0);
+            let la = new THREE.Mesh(armGeo, armorMat); la.position.set(-1.0, 2.6, 0); la.castShadow = true; grp.add(la);
+            let ra = new THREE.Mesh(armGeo, armorMat); ra.position.set(1.0, 2.6, 0); ra.castShadow = true; grp.add(ra);
+            let cGeo = new THREE.ConeGeometry(0.15, 0.8, 4); cGeo.translate(0, -0.4, 0);
+            let lc = new THREE.Mesh(cGeo, glowMat); lc.position.set(0, -1.2, 0); la.add(lc);
+            let rc = new THREE.Mesh(cGeo, glowMat); rc.position.set(0, -1.2, 0); ra.add(rc);
+
+            let legGeo = new THREE.BoxGeometry(0.35, 1.6, 0.35); legGeo.translate(0, -0.8, 0);
+            let ll = new THREE.Mesh(legGeo, armorMat); ll.position.set(-0.4, 1.6, 0); ll.castShadow = true; grp.add(ll);
+            let rl = new THREE.Mesh(legGeo, armorMat); rl.position.set(0.4, 1.6, 0); rl.castShadow = true; grp.add(rl);
+            
+            entitiesGrp.add(grp);
+            aliens.push({ mesh: grp, parts: { head: headGrp, la, ra, ll, rl }, hp: 100 + lvl * 20, speed: 4 + Math.random(), state: 'patrol', anim: Math.random() * 10, target: new THREE.Vector3(x,0,z), t: 0, alert: 0 });
+        }
+
+        // Initially spawn roaming aliens globally
+        for(let i=0; i<15; i++) {
+            createAlien((Math.random()-0.5)*800, (Math.random()-0.5)*800, 1);
+        }
+        GAME_STATE.aliensRemaining = 15;
+
+        /*******************************************************
+         * SYSTEM: PARTICLES
+         *******************************************************/
+        const pSystem = {
+            dust: null, combat: [],
+            
+            init: function() {
+                let geo = new THREE.BufferGeometry();
+                let pts = new Float32Array(5000 * 3);
+                for(let i=0; i<5000; i++) {
+                    pts[i*3] = (Math.random() - 0.5) * 300;
+                    pts[i*3+1] = Math.random() * 50;
+                    pts[i*3+2] = (Math.random() - 0.5) * 300;
+                }
+                geo.setAttribute('position', new THREE.BufferAttribute(pts, 3));
+                this.dust = new THREE.Points(geo, new THREE.PointsMaterial({ color: 0xffaa66, size: 0.5, transparent: true, opacity: 0.4 }));
+                scene.add(this.dust);
+            },
+            
+            spawnExplosion: function(pos, color, amount, speed) {
+                let g = new THREE.BufferGeometry();
+                let p = new Float32Array(amount * 3);
+                let v = [];
+                for (let i=0; i<amount; i++) {
+                    p[i*3] = pos.x; p[i*3+1] = pos.y; p[i*3+2] = pos.z;
+                    v.push((Math.random()-0.5)*speed, Math.random()*speed, (Math.random()-0.5)*speed);
+                }
+                g.setAttribute('position', new THREE.BufferAttribute(p, 3));
+                let pts = new THREE.Points(g, new THREE.PointsMaterial({color: color, size: 0.4, transparent: true}));
+                scene.add(pts);
+                this.combat.push({ pts, v, life: 1.0, amount });
+            },
+            
+            update: function(dt) {
+                if(this.dust) {
+                    this.dust.position.copy(player.pos);
+                    // Dust storm sliding
+                    let arr = this.dust.geometry.attributes.position.array;
+                    for(let i=0; i<5000; i++) {
+                        arr[i*3] += 5 * dt; // Wind moves +X
+                        if(arr[i*3] > 150) arr[i*3] -= 300; // loop
+                    }
+                    this.dust.geometry.attributes.position.needsUpdate = true;
+                }
+                for (let i = this.combat.length - 1; i >= 0; i--) {
+                    let c = this.combat[i];
+                    let p = c.pts.geometry.attributes.position.array;
+                    for (let j = 0; j < c.amount; j++) {
+                        p[j*3] += c.v[j*3] * dt;
+                        p[j*3+1] += c.v[j*3+1] * dt; c.v[j*3+1] -= SETTINGS.gravity * dt;
+                        p[j*3+2] += c.v[j*3+2] * dt;
+                    }
+                    c.pts.geometry.attributes.position.needsUpdate = true;
+                    c.pts.material.opacity = c.life;
+                    c.life -= dt;
+                    if (c.life <= 0) { scene.remove(c.pts); this.combat.splice(i, 1); }
+                }
+            }
+        };
+        pSystem.init();
+
+        /*******************************************************
+         * INPUT & INTERACTION
+         *******************************************************/
+        const raycaster = new THREE.Raycaster();
+        
+        function updateInventoryUI() {
+            document.getElementById('inv-water').innerText = player.inventory.water;
+            document.getElementById('inv-seeds').innerText = player.inventory.seeds;
+            document.getElementById('inv-scrap').innerText = player.inventory.scrap;
+            document.getElementById('inv-parts').innerText = player.inventory.parts;
+        }
+
+        function checkInteraction() {
+            raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
+            let hitMeshes = interactables.map(i => i.mesh);
+            let hits = raycaster.intersectObjects(hitMeshes, true);
+            
+            let prompt = document.getElementById('interaction-prompt');
+            if (hits.length > 0 && hits[0].distance < 4.0) {
+                // Find top level mesh reference from children
+                let objMesh = hits[0].object;
+                while(objMesh.parent && !hitMeshes.includes(objMesh)) objMesh = objMesh.parent;
+                
+                let iObj = interactables.find(i => i.mesh === objMesh);
+                if (iObj) {
+                    prompt.innerText = `[E] ${iObj.actionText} (${iObj.name})`;
+                    prompt.classList.remove('hidden');
+                    
+                    if (KEYS.e && !eKeyPressedHandled) {
+                        iObj.interact();
+                        eKeyPressedHandled = true;
+                    }
+                    return;
+                }
+            }
+            prompt.classList.add('hidden');
+            if(!KEYS.e) eKeyPressedHandled = false;
+        }
+
+        function shoot() {
+            if (player.ammo <= 0 || performance.now() - player.lastShoot < 120) return;
+            player.ammo--; player.lastShoot = performance.now();
+            updateHUD();
+            
+            // Alert nearby aliens
+            aliens.forEach(a => { if(a.mesh.position.distanceTo(player.pos) < 60) a.alert = 10; });
+            
+            fpsArmGrp.position.z += 0.25; fpsArmGrp.rotation.x += 0.15; player.tPitch += 0.03 + Math.random()*0.02;
+            muzzleLight.intensity = 8; setTimeout(()=> { muzzleLight.intensity = 0; }, 50);
+
+            let tGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,-1), new THREE.Vector3(0,0,-100)]);
+            let t = new THREE.Line(tGeo, new THREE.LineBasicMaterial({ color: 0x00ffff, linewidth: 2 }));
+            t.position.setFromMatrixPosition(core.matrixWorld); t.quaternion.copy(cameraGroup.quaternion).multiply(pitchGroup.quaternion);
+            scene.add(t); setTimeout(() => scene.remove(t), 50);
+
+            raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
+            let hitTargets = []; entitiesGrp.traverse(c => { if(c.isMesh) hitTargets.push(c); });
+            let hits = raycaster.intersectObjects(hitTargets);
+            
+            if (hits.length > 0) {
+                let h = hits[0].object;
+                let hitAlien = aliens.find(a => { let f=false; a.mesh.traverse(c => { if(c===h) f=true; }); return f; });
+                
+                if (hitAlien && hitAlien.hp > 0) {
+                    let head = h.name === "head";
+                    hitAlien.hp -= head ? 150 : 40;
+                    hitAlien.alert = 10; // Instantly aggro
+                    
+                    showHit(head);
+                    pSystem.spawnExplosion(hits[0].point, head ? 0xff0000 : 0xffaa00, 20, 5);
+
+                    if (hitAlien.hp <= 0) {
+                        hitAlien.hp = 0; hitAlien.state = 'dead';
+                        hitAlien.mesh.rotation.x = -Math.PI / 2; hitAlien.mesh.position.y -= 1.0; 
+                        GAME_STATE.kills++; GAME_STATE.aliensRemaining--;
+                        pSystem.spawnExplosion(hitAlien.mesh.position, 0x550000, 50, 8);
+                        
+                        // Random drop
+                        if(Math.random() > 0.5) createItem(hitAlien.mesh.position.x, hitAlien.mesh.position.z, 'alien_blood', 'Alien Biomasse');
+                        
+                        setTimeout(() => { entitiesGrp.remove(hitAlien.mesh); aliens.splice(aliens.indexOf(hitAlien), 1); }, 5000);
+                        if (GAME_STATE.aliensRemaining <= 5) {
+                            // Infinite open world trickle spawn
+                            for(let i=0; i<5; i++) createAlien(player.pos.x + (Math.random()-0.5)*200, player.pos.z + (Math.random()-0.5)*200, GAME_STATE.wave);
+                            GAME_STATE.wave++; GAME_STATE.aliensRemaining += 5;
+                            showMessage("Weitere Aliens detektiert...");
+                        }
+                        updateHUD();
+                    }
+                }
+            }
+        }
+
+        function updateHUD() {
+            document.getElementById('hpVal').innerText = Math.floor(player.hp);
+            document.getElementById('ammoVal').innerText = player.ammo;
+            document.getElementById('lvlVal').innerText = GAME_STATE.wave;
+            document.getElementById('alienVal').innerText = GAME_STATE.aliensRemaining;
+            
+            let mmp = document.getElementById('minimap-entities'); mmp.innerHTML = '';
+            aliens.forEach(a => {
+                if (a.hp > 0) {
+                    let d = document.createElement('div'); d.className = 'map-alien';
+                    d.style.left = (50 + (a.mesh.position.x - player.pos.x) / 4) + '%';
+                    d.style.top = (50 + (a.mesh.position.z - player.pos.z) / 4) + '%';
+                    mmp.appendChild(d);
+                }
+            });
+            document.getElementById('minimap-center').style.transform = `translate(-50%, -50%) rotate(${-player.yaw}rad)`;
+        }
+
+        function showHit(crit) {
+            let f = document.getElementById('hit-flash'); f.style.background = crit ? "rgba(255,0,0,0.7)" : "rgba(0,255,255,0.4)";
+            f.style.opacity = 1; setTimeout(() => f.style.opacity = 0, crit ? 150 : 100);
+        }
+
+        // Setup Events
+        document.addEventListener('keydown', e => {
+            let k = e.code.toLowerCase().replace('key', '');
+            if (KEYS.hasOwnProperty(k)) KEYS[k] = true;
+            if (e.code === 'Space') KEYS.space = true;
+            if (e.code === 'ShiftLeft') KEYS.shift = true;
+            if (e.code === 'KeyV') { player.viewMode = player.viewMode === 1 ? 3 : 1; tpGroup.visible = player.viewMode === 3; fpsArmGrp.visible = player.viewMode === 1; }
+        });
+        document.addEventListener('keyup', e => {
+            let k = e.code.toLowerCase().replace('key', '');
+            if (KEYS.hasOwnProperty(k)) KEYS[k] = false;
+            if (e.code === 'Space') KEYS.space = false;
+            if (e.code === 'ShiftLeft') KEYS.shift = false;
+        });
+        document.addEventListener('mousemove', e => {
+            if (document.pointerLockElement) {
+                player.tYaw -= e.movementX * SETTINGS.mouseSens;
+                player.tPitch -= e.movementY * SETTINGS.mouseSens;
+                player.tPitch = Math.max(-Math.PI / 2 + 0.1, Math.min(Math.PI / 2 - 0.1, player.tPitch));
+            }
+        });
+        document.addEventListener('mousedown', () => {
+            if (!document.pointerLockElement && GAME_STATE.running) document.body.requestPointerLock();
+            else if (GAME_STATE.running && player.hp > 0) shoot();
+        });
+
+        document.getElementById('start-btn').addEventListener('click', () => { 
+            document.getElementById('start-menu').classList.add('hidden'); 
+            document.getElementById('ui').classList.remove('hidden'); 
+            document.body.requestPointerLock(); 
+            GAME_STATE.running = true; 
+            QUEST_SYS.renderQuestUI();
+            updateInventoryUI();
+            updateHUD();
+            showMessage("Willkommen auf der Mars Station. Überlebe.");
+        });
+
+        /*******************************************************
+         * MAIN LOOP
+         *******************************************************/
+        const clock = new THREE.Clock();
+        function animate() {
+            requestAnimationFrame(animate);
+            let dt = Math.min(clock.getDelta(), 0.1);
+
+            if (GAME_STATE.running && player.hp > 0) {
+                // Systems update
+                checkInteraction();
+                QUEST_SYS.update(dt);
+                pSystem.update(dt);
+                
+                // Item bobbing
+                scene.traverse(c => {
+                    if(c.userData && c.userData.isItem) {
+                        c.userData.tick += dt * 3;
+                        c.position.y = c.userData.seedY + Math.sin(c.userData.tick)*0.2;
+                        c.rotation.y += dt;
+                    }
+                });
+
+                // Camera Look
+                player.yaw += (player.tYaw - player.yaw) * 20 * dt;
+                player.pitch += (player.tPitch - player.pitch) * 20 * dt;
+                cameraGroup.rotation.y = player.yaw;
+                pitchGroup.rotation.x = player.pitch;
+
+                // Weapon recoil recover
+                fpsArmGrp.position.z += (-1.2 - fpsArmGrp.position.z) * 12 * dt;
+                fpsArmGrp.rotation.x += (0 - fpsArmGrp.rotation.x) * 12 * dt;
+
+                // Movement Input
+                let cF = new THREE.Vector3(); camera.getWorldDirection(cF); cF.y = 0; cF.normalize();
+                let cR = new THREE.Vector3(-cF.z, 0, cF.x);
+                let dir = new THREE.Vector3();
+                if (KEYS.w) dir.add(cF); if (KEYS.s) dir.sub(cF);
+                if (KEYS.a) dir.sub(cR); if (KEYS.d) dir.add(cR);
+                if (dir.lengthSq() > 0.01) dir.normalize();
+
+                let speed = SETTINGS.speed * (KEYS.shift ? SETTINGS.sprintMulti : 1);
+                player.vel.x = dir.x * speed;
+                player.vel.z = dir.z * speed;
+
+                // AABB / Raycast Wall Collision (Sliding)
+                let bodyR = 0.5;
+                if(player.vel.x !== 0) {
+                    let rx = new THREE.Raycaster(player.pos, new THREE.Vector3(Math.sign(player.vel.x),0,0), 0, Math.abs(player.vel.x*dt) + bodyR);
+                    if(rx.intersectObjects(solidMeshes).length > 0) player.vel.x = 0;
+                }
+                if(player.vel.z !== 0) {
+                    let rz = new THREE.Raycaster(player.pos, new THREE.Vector3(0,0,Math.sign(player.vel.z)), 0, Math.abs(player.vel.z*dt) + bodyR);
+                    if(rz.intersectObjects(solidMeshes).length > 0) player.vel.z = 0;
+                }
+
+                // Jump / Gravity
+                if (KEYS.space && player.grounded) { player.vel.y = SETTINGS.jump; player.grounded = false; KEYS.space = false; }
+                player.vel.y -= SETTINGS.gravity * dt;
+
+                player.pos.addScaledVector(player.vel, dt);
+                
+                // Floor Collision
+                let ty = getElevation(player.pos.x, player.pos.z);
+                // Also check if inside building bounding box (simplistic: buildings have floor at Y=0.1 + terrain base)
+                // We just rely on terrain. If buildings are flat, we could raycast down.
+                let rd = new THREE.Raycaster(player.pos, new THREE.Vector3(0,-1,0), 0, 100);
+                let floorHits = rd.intersectObjects(solidMeshes); // Check building floors/roofs
+                let targetY = ty;
+                if(floorHits.length > 0 && floorHits[0].point.y > ty) {
+                    targetY = floorHits[0].point.y;
+                }
+                
+                if (player.pos.y - SETTINGS.pHeight <= targetY) {
+                    player.pos.y = targetY + SETTINGS.pHeight; player.vel.y = 0; player.grounded = true;
+                }
+
+                // Camera Position Updates
+                if (player.viewMode === 1) { cameraGroup.position.copy(player.pos); } 
+                else {
+                    let off = cF.clone().multiplyScalar(-6).add(new THREE.Vector3(0, 3, 0));
+                    cameraGroup.position.copy(player.pos).add(off);
+                    tpGroup.position.copy(player.pos); tpGroup.position.y -= SETTINGS.pHeight / 2; tpGroup.rotation.y = player.yaw;
+                }
+
+                // Alien AI Loop
+                QUEST_SYS.renderQuestUI(); // Continuous update for timer
+                aliens.forEach(a => {
+                    if (a.state === 'dead') return;
+                    a.anim += dt; a.t += dt; a.alert -= dt;
+                    
+                    let dist = a.mesh.position.distanceTo(player.pos);
+                    
+                    // Simple wall avoidance for aliens (cast ray forward)
+                    let afw = new THREE.Vector3(1,0,0).applyAxisAngle(new THREE.Vector3(0,1,0), a.mesh.rotation.y);
+                    let aray = new THREE.Raycaster(a.mesh.position, afw, 0, 2.0);
+                    if(aray.intersectObjects(solidMeshes).length > 0) {
+                        a.mesh.rotation.y += Math.PI/2 * dt * 5; // Turn
+                    }
+
+                    if (dist < 3.5) a.state = 'attack'; 
+                    else if (dist < 40 || a.alert > 0) { a.state = 'chase'; a.target.copy(player.pos); }
+                    else if (a.t > 4) { 
+                        a.state = Math.random() > 0.3 ? 'idle' : 'patrol'; a.t = 0; 
+                        a.target.set(a.mesh.position.x + (Math.random()-0.5)*30, 0, a.mesh.position.z + (Math.random()-0.5)*30); 
+                    }
+
+                    let moving = false;
+                    if (a.state === 'chase' || a.state === 'patrol') {
+                        let dVec = a.target.clone().sub(a.mesh.position); dVec.y = 0;
+                        if (dVec.length() > 2.0) {
+                            dVec.normalize(); 
+                            
+                            // Alien collision sliding
+                            if(new THREE.Raycaster(a.mesh.position, new THREE.Vector3(Math.sign(dVec.x),0,0), 0, 1.0).intersectObjects(solidMeshes).length > 0) dVec.x=0;
+                            if(new THREE.Raycaster(a.mesh.position, new THREE.Vector3(0,0,Math.sign(dVec.z)), 0, 1.0).intersectObjects(solidMeshes).length > 0) dVec.z=0;
+                            
+                            a.mesh.position.addScaledVector(dVec, a.speed * dt);
+                            
+                            // Smooth LookAt
+                            if(dVec.lengthSq() > 0) {
+                                let tRot = Math.atan2(dVec.x, dVec.z);
+                                let rd = tRot - a.mesh.rotation.y;
+                                while(rd < -Math.PI) rd+=Math.PI*2; while(rd > Math.PI) rd-=Math.PI*2;
+                                a.mesh.rotation.y += rd * 5 * dt;
+                            }
+                            moving = true;
+                            a.parts.la.rotation.x = Math.sin(a.anim * 12) * 0.6; a.parts.ra.rotation.x = -Math.sin(a.anim * 12) * 0.6;
+                            a.parts.ll.rotation.x = -Math.sin(a.anim * 12) * 0.6; a.parts.rl.rotation.x = Math.sin(a.anim * 12) * 0.6;
+                        } else if(a.state === 'patrol') a.state = 'idle';
+                    }
+                    if (a.state === 'attack') {
+                        a.parts.la.rotation.x = Math.PI - Math.sin(a.anim*20)*0.8; a.parts.ra.rotation.x = Math.PI - Math.sin(a.anim*20)*0.8;
+                        if (a.t > 1.2) {
+                            player.hp -= 15; a.t = 0; updateHUD();
+                            let df = document.getElementById('damage-flash'); df.style.opacity = 1.0; setTimeout(() => df.style.opacity = 0, 300);
+                            cameraGroup.rotation.z += (Math.random()-0.5)*0.2;
+                            if (player.hp <= 0) {
+                                document.exitPointerLock(); document.getElementById('ui').classList.add('hidden');
+                                document.getElementById('game-over-menu').classList.remove('hidden');
+                            }
+                        }
+                    }
+                    if (!moving && a.state !== 'attack') {
+                        a.parts.la.rotation.x = Math.sin(a.anim*2)*0.05; a.parts.ra.rotation.x = Math.sin(a.anim*2)*0.05;
+                        a.parts.ll.rotation.x = 0; a.parts.rl.rotation.x = 0;
+                    }
+                    
+                    let aty = getElevation(a.mesh.position.x, a.mesh.position.z);
+                    let ard = new THREE.Raycaster(new THREE.Vector3(a.mesh.position.x, a.mesh.position.y+5, a.mesh.position.z), new THREE.Vector3(0,-1,0), 0, 10);
+                    let afh = ard.intersectObjects(solidMeshes);
+                    if(afh.length > 0 && afh[0].point.y > aty) aty = afh[0].point.y;
+                    a.mesh.position.y += (aty - a.mesh.position.y) * 10 * dt; // smooth snap to floor
+                });
+            }
+            renderer.render(scene, camera);
+        }
+        
+        window.addEventListener('resize', () => { 
+            camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); 
+            renderer.setSize(window.innerWidth, window.innerHeight); 
+        });
+        
+        animate();
+    </script>
+</body>
+</html>
