@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI-Quiz</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .quiz-wrap {
+            margin: 30px 0 40px;
+        }
+
+        .quiz-hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            letter-spacing: 2px;
+            color: #39ff14;
+            border: 1px solid #1a7a0a;
+            padding: 10px 14px;
+            margin-bottom: 22px;
+            text-transform: uppercase;
+            background: #050a05;
+        }
+
+        .quiz-hud .hud-score {
+            color: #39ff14;
+            text-shadow: 0 0 4px #39ff1466;
+        }
+
+        .quiz-card {
+            border: 2px solid #39ff14;
+            padding: 26px 22px;
+            background: #000;
+            box-shadow: 0 0 14px rgba(57, 255, 20, 0.18);
+        }
+
+        .quiz-question {
+            font-family: Arial, sans-serif;
+            font-size: 22px;
+            line-height: 1.5;
+            margin-bottom: 22px;
+            color: #39ff14;
+        }
+
+        .quiz-answers {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-answer {
+            background: #000;
+            color: #39ff14;
+            border: 2px solid #39ff14;
+            padding: 15px 18px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.12s linear, color 0.12s linear, box-shadow 0.12s linear;
+            line-height: 1.4;
+        }
+
+        .quiz-answer:hover:not(:disabled),
+        .quiz-answer:focus:not(:disabled) {
+            background: #39ff14;
+            color: #000;
+            outline: none;
+            box-shadow: 0 0 12px rgba(57, 255, 20, 0.5);
+        }
+
+        .quiz-answer:disabled {
+            cursor: default;
+        }
+
+        .quiz-answer.is-correct {
+            background: #39ff14;
+            color: #000;
+            border-color: #39ff14;
+            animation: pulse-correct 0.6s ease-out;
+        }
+
+        .quiz-answer.is-wrong {
+            background: #2a0008;
+            color: #ff5571;
+            border-color: #ff1439;
+            animation: shake-wrong 0.4s ease-in-out;
+        }
+
+        @keyframes pulse-correct {
+            0% {
+                box-shadow: 0 0 0 #39ff14;
+                text-shadow: 0 0 0 #39ff14;
+            }
+
+            50% {
+                box-shadow: 0 0 22px #39ff14;
+                text-shadow: 0 0 10px #ffffff88;
+            }
+
+            100% {
+                box-shadow: 0 0 8px #39ff1466;
+                text-shadow: none;
+            }
+        }
+
+        @keyframes shake-wrong {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+
+        .quiz-explanation {
+            margin-top: 20px;
+            padding: 14px 16px;
+            border-left: 3px solid #39ff14;
+            background: #050a05;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #b8ffb0;
+            display: none;
+        }
+
+        .quiz-explanation.is-shown {
+            display: block;
+        }
+
+        .quiz-explanation strong {
+            color: #39ff14;
+            font-family: 'Courier New', Courier, monospace;
+            letter-spacing: 1px;
+        }
+
+        .quiz-action {
+            margin-top: 22px;
+            display: none;
+            justify-content: flex-end;
+        }
+
+        .quiz-action.is-shown {
+            display: flex;
+        }
+
+        .quiz-btn {
+            background: #000;
+            color: #39ff14;
+            border: 2px solid #39ff14;
+            padding: 14px 34px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            cursor: pointer;
+            text-transform: uppercase;
+            text-shadow: 0 0 5px #39ff1466;
+            transition: background 0.15s linear, color 0.15s linear, box-shadow 0.15s linear;
+        }
+
+        .quiz-btn:hover:not(:disabled),
+        .quiz-btn:focus:not(:disabled) {
+            background: #39ff14;
+            color: #000;
+            outline: none;
+            box-shadow: 0 0 18px rgba(57, 255, 20, 0.55);
+        }
+
+        .quiz-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .quiz-btn-wide {
+            padding: 18px 0;
+            width: 100%;
+            font-size: 22px;
+        }
+
+        .quiz-name,
+        .quiz-start,
+        .quiz-result {
+            border: 2px solid #39ff14;
+            padding: 30px 24px;
+            background: #000;
+            text-align: center;
+            box-shadow: 0 0 14px rgba(57, 255, 20, 0.18);
+        }
+
+        .quiz-name h2,
+        .quiz-start h2 {
+            border: none;
+            margin: 0 0 14px;
+            font-family: 'Courier New', Courier, monospace;
+            letter-spacing: 4px;
+            text-shadow: 0 0 8px #39ff1466;
+        }
+
+        .quiz-name p,
+        .quiz-start p {
+            margin: 0 auto 14px;
+            max-width: 640px;
+            text-align: left;
+        }
+
+        .quiz-start .meta {
+            font-family: 'Courier New', Courier, monospace;
+            color: #28cc10;
+            font-size: 14px;
+            letter-spacing: 2px;
+            margin: 18px 0 26px;
+        }
+
+        .name-input {
+            display: block;
+            width: 100%;
+            max-width: 480px;
+            margin: 18px auto 24px;
+            padding: 12px 14px;
+            border: 2px solid #39ff14;
+            background: #000;
+            color: #39ff14;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 18px;
+            letter-spacing: 1px;
+            text-align: center;
+            transition: border-color 0.12s linear, box-shadow 0.12s linear;
+        }
+
+        .name-input:focus {
+            outline: none;
+            border-color: #6bff5a;
+            box-shadow: 0 0 14px rgba(57, 255, 20, 0.5);
+        }
+
+        .name-input::placeholder {
+            color: #226600;
+            font-style: italic;
+            letter-spacing: 0;
+        }
+
+        .quiz-result .result-score {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 64px;
+            font-weight: bold;
+            letter-spacing: 4px;
+            margin: 8px 0 4px;
+            text-shadow: 0 0 12px #39ff14, 0 0 24px #39ff1466;
+        }
+
+        .quiz-result .result-percent {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 18px;
+            color: #28cc10;
+            letter-spacing: 3px;
+            margin-bottom: 6px;
+        }
+
+        .quiz-result .result-duration {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 15px;
+            color: #28cc10;
+            letter-spacing: 3px;
+            margin-bottom: 18px;
+        }
+
+        .quiz-result .result-rating {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 32px;
+            letter-spacing: 6px;
+            margin: 6px 0 18px;
+            text-shadow: 0 0 10px #39ff14, 0 0 24px #39ff1488;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        .quiz-result .result-highscore {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            color: #226600;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+        }
+
+        .quiz-result .result-highscore strong {
+            color: #39ff14;
+        }
+
+        .lb-status {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            letter-spacing: 2px;
+            margin: 18px 0;
+            color: #28cc10;
+        }
+
+        .lb-status.is-error {
+            color: #ff5571;
+            border: 1px solid #ff1439;
+            padding: 10px;
+        }
+
+        .lb-loading-dots::after {
+            content: '';
+            display: inline-block;
+            min-width: 1.6em;
+            text-align: left;
+            animation: lb-dots 1.2s steps(4) infinite;
+        }
+
+        @keyframes lb-dots {
+            0%   { content: ''; }
+            25%  { content: '.'; }
+            50%  { content: '..'; }
+            75%  { content: '...'; }
+            100% { content: ''; }
+        }
+
+        .leaderboard-wrap {
+            margin: 22px 0 8px;
+            text-align: left;
+        }
+
+        .leaderboard-wrap h3 {
+            font-family: 'Courier New', Courier, monospace;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            font-size: 15px;
+            color: #28cc10;
+            text-align: left;
+        }
+
+        table.leaderboard {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+        }
+
+        table.leaderboard th {
+            background: #39ff14;
+            color: #000;
+            padding: 8px 10px;
+            text-align: left;
+            letter-spacing: 1px;
+            font-size: 13px;
+        }
+
+        table.leaderboard td {
+            border: 1px solid #1a7a0a;
+            padding: 8px 10px;
+            color: #39ff14;
+            background: #000;
+            font-size: 14px;
+        }
+
+        table.leaderboard tr:nth-child(even) td {
+            background: rgb(5, 15, 5);
+        }
+
+        table.leaderboard tr.is-self td {
+            border-top: 2px solid #00ffff;
+            border-bottom: 2px solid #00ffff;
+            background: rgba(0, 255, 255, 0.06);
+            color: #b8ffff;
+            text-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
+        }
+
+        table.leaderboard tr.is-self td:first-child {
+            border-left: 2px solid #00ffff;
+        }
+
+        table.leaderboard tr.is-self td:last-child {
+            border-right: 2px solid #00ffff;
+        }
+
+        .own-position {
+            font-family: 'Courier New', Courier, monospace;
+            color: #00ffff;
+            font-size: 14px;
+            letter-spacing: 2px;
+            margin: 14px 0 4px;
+            text-align: left;
+            text-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
+        }
+
+        .quiz-mistakes {
+            text-align: left;
+            margin: 24px 0 22px;
+            border-top: 1px dashed #1a7a0a;
+            padding-top: 18px;
+        }
+
+        .quiz-mistakes h3 {
+            font-family: 'Courier New', Courier, monospace;
+            color: #28cc10;
+            letter-spacing: 2px;
+            font-size: 15px;
+            margin-bottom: 14px;
+        }
+
+        .quiz-mistakes ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .quiz-mistakes li {
+            margin-bottom: 14px;
+            padding-left: 14px;
+            border-left: 2px solid #1a7a0a;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #b8ffb0;
+        }
+
+        .quiz-mistakes li .q {
+            color: #28cc10;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .quiz-mistakes li .a {
+            color: #39ff14;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+        }
+
+        .is-hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 600px) {
+            .quiz-question { font-size: 19px; }
+            .quiz-answer { font-size: 15px; padding: 14px 14px; }
+            .quiz-result .result-score { font-size: 48px; }
+            .quiz-result .result-rating { font-size: 24px; letter-spacing: 4px; }
+            .quiz-hud { flex-direction: column; gap: 6px; align-items: flex-start; }
+            table.leaderboard th,
+            table.leaderboard td { padding: 6px 6px; font-size: 12px; }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Künstliche Intelligenz</h1>
+    <nav>
+        <a href="index.html">Startseite</a>
+        <a href="grundlagen.html">Grundlagen</a>
+        <a href="geschichte.html">Geschichte</a>
+        <a href="anwendungen.html">Anwendungen</a>
+        <a href="schule.html">KI in der Schule</a>
+        <a href="risiken.html">Chancen &amp; Risiken</a>
+        <a href="programmierung.html">Programmierung</a>
+        <a href="zukunft.html">Zukunft</a>
+        <a href="spiel.html">Spiel</a>
+        <a href="quiz.html">Quiz</a>
+        <a href="quellen.html">Quellen</a>
+    </nav>
+    <hr>
+    <main>
+        <h2>KI-Quiz</h2>
+        <p class="intro">Teste dein Wissen zu allem, was du auf dieser Website gelesen hast – 15 Fragen
+            quer durch Grundlagen, Geschichte, Anwendungen, Risiken, Programmierung und Zukunft.</p>
+
+        <div class="quiz-wrap">
+            <section id="quiz-name" class="quiz-name">
+                <h2>DEIN NAME</h2>
+                <p>Damit dein Score auf dem Leaderboard erscheint, brauchen wir einen Namen.
+                    Maximal 50 Zeichen.</p>
+                <input id="name-input" class="name-input" type="text" maxlength="50"
+                    placeholder="z.B. Max Mustermann" autocomplete="off" spellcheck="false">
+                <button class="quiz-btn quiz-btn-wide" id="btn-name-next" disabled>WEITER</button>
+            </section>
+
+            <section id="quiz-start" class="quiz-start is-hidden">
+                <h2 id="start-greeting">WILLKOMMEN</h2>
+                <p>Du bekommst 15 Multiple-Choice-Fragen zum Inhalt dieser Website. Pro Frage gibt es
+                    vier Antworten – nur eine ist richtig. Nach jeder Antwort siehst du die korrekte
+                    Lösung und eine kurze Erklärung.</p>
+                <p>Reihenfolge der Fragen und Antworten ist bei jedem Durchlauf zufällig. Die Zeit
+                    läuft ab dem Klick auf „QUIZ STARTEN".</p>
+                <div class="meta" id="start-highscore">PERSÖNLICHER REKORD: --/15</div>
+                <button class="quiz-btn quiz-btn-wide" id="btn-start">QUIZ STARTEN</button>
+            </section>
+
+            <section id="quiz-question" class="is-hidden">
+                <div class="quiz-hud">
+                    <span class="hud-progress" id="hud-progress">FRAGE 1 / 15</span>
+                    <span class="hud-score" id="hud-score">SCORE: 0</span>
+                </div>
+                <div class="quiz-card">
+                    <p class="quiz-question" id="question-text"></p>
+                    <div class="quiz-answers" id="answers"></div>
+                    <div class="quiz-explanation" id="explanation"></div>
+                    <div class="quiz-action" id="next-action">
+                        <button class="quiz-btn" id="btn-next">WEITER</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="quiz-result" class="quiz-result is-hidden">
+                <div class="result-rating" id="result-rating">EXPERT</div>
+                <div class="result-score" id="result-score">0/15</div>
+                <div class="result-percent" id="result-percent">0%</div>
+                <div class="result-duration" id="result-duration">DAUER: 0:00</div>
+                <div class="result-highscore" id="result-highscore">PERSÖNLICHER REKORD: <strong>0/15</strong></div>
+
+                <div id="lb-loading" class="lb-status">
+                    <span class="lb-loading-dots">WIRD GESPEICHERT</span>
+                </div>
+                <div id="lb-error" class="lb-status is-error is-hidden"></div>
+
+                <div id="leaderboard-wrap" class="leaderboard-wrap is-hidden">
+                    <h3>// LEADERBOARD – TOP 10</h3>
+                    <table class="leaderboard">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%;">#</th>
+                                <th>NAME</th>
+                                <th style="width: 14%;">SCORE</th>
+                                <th style="width: 12%;">%</th>
+                                <th style="width: 16%;">DAUER</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-body"></tbody>
+                    </table>
+                    <div id="own-position" class="own-position is-hidden"></div>
+                </div>
+
+                <div class="quiz-mistakes is-hidden" id="result-mistakes">
+                    <h3>// FALSCH BEANTWORTET – ZUM NACHLESEN</h3>
+                    <ul id="mistakes-list"></ul>
+                </div>
+                <button class="quiz-btn quiz-btn-wide" id="btn-restart">NOCHMAL SPIELEN</button>
+            </section>
+        </div>
+    </main>
+    <footer>
+        <a href="geheim.html" class="secret-link">Erstellt von Chris Kaiser &amp; Louis Förster</a><br>
+        Informatikunterricht – Klasse 11, GK Informatik, 2026
+    </footer>
+
+    <script type="module">
+        const SUPABASE_URL = 'HIER_DIE_URL_EINFÜGEN';
+        const SUPABASE_ANON_KEY = 'HIER_DEN_ANON_KEY_EINFÜGEN';
+
+        // Dynamic import so a CDN/network failure doesn't break the local quiz.
+        let supabase = null;
+        try {
+            const mod = await import('https://esm.sh/@supabase/supabase-js@2');
+            supabase = mod.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch (e) {
+            console.error('Supabase init failed:', e);
+            supabase = null;
+        }
+
+        const HIGHSCORE_KEY = 'ki_quiz_highscore';
+        const NAME_KEY = 'ki_quiz_last_name';
+
+        const QUESTIONS = [
+            {
+                topic: 'Grundlagen',
+                question: 'Welche Architektur bildet seit 2017 die Basis aller modernen großen Sprachmodelle wie GPT, Claude oder Gemini?',
+                answers: [
+                    { text: 'Transformer', correct: true },
+                    { text: 'Perceptron', correct: false },
+                    { text: 'Convolutional Neural Network', correct: false },
+                    { text: 'Recurrent Neural Network', correct: false }
+                ],
+                explanation: 'Der Transformer mit seinem Self-Attention-Mechanismus wurde 2017 vorgestellt und ist die Grundlage aller heutigen LLMs.'
+            },
+            {
+                topic: 'Grundlagen',
+                question: 'Welche Aussage zu den drei Stufen der KI (ANI, AGI, ASI) ist korrekt?',
+                answers: [
+                    { text: 'ANI – Schwache KI ist der heutige Stand der Technik.', correct: true },
+                    { text: 'AGI – Starke KI ist seit 2024 erreicht.', correct: false },
+                    { text: 'ASI – Superintelligenz ist die einfachste Stufe.', correct: false },
+                    { text: 'ANI ist eine Spezialform von ASI.', correct: false }
+                ],
+                explanation: 'Alle heutigen KI-Systeme sind ANI – auf eine Aufgabe spezialisiert. AGI wird laut Site frühestens 2029–2035 erwartet, ASI ist reine Zukunftsvision.'
+            },
+            {
+                topic: 'Grundlagen',
+                question: 'Was bezeichnet der Begriff „Halluzination" bei KI-Sprachmodellen?',
+                answers: [
+                    { text: 'Plausibel klingende, aber inhaltlich falsche Aussagen des Modells.', correct: true },
+                    { text: 'Das Auswendiglernen der Trainingsdaten.', correct: false },
+                    { text: 'Das Überhitzen der Hardware beim Training.', correct: false },
+                    { text: 'Den Abbruch eines Trainingslaufs.', correct: false }
+                ],
+                explanation: 'Sprachmodelle optimieren auf statistische Plausibilität, nicht auf Wahrheit – sie erfinden manchmal Fakten, die überzeugend klingen.'
+            },
+            {
+                topic: 'Geschichte',
+                question: 'In welchem Jahr stellte Alan Turing seinen berühmten Turing-Test vor?',
+                answers: [
+                    { text: '1950', correct: true },
+                    { text: '1936', correct: false },
+                    { text: '1956', correct: false },
+                    { text: '1943', correct: false }
+                ],
+                explanation: '1950 stellte Turing den Turing-Test vor. 1936 entwickelte er die Turingmaschine, 1956 fand die Dartmouth-Konferenz statt.'
+            },
+            {
+                topic: 'Geschichte',
+                question: 'Auf welcher Konferenz wurde 1956 der Begriff „Artificial Intelligence" geprägt?',
+                answers: [
+                    { text: 'Dartmouth-Konferenz', correct: true },
+                    { text: 'Stanford-Konferenz', correct: false },
+                    { text: 'MIT-Symposium', correct: false },
+                    { text: 'Turing-Konferenz', correct: false }
+                ],
+                explanation: 'John McCarthy prägte den Begriff „Artificial Intelligence" 1956 auf der Dartmouth-Konferenz – dem offiziellen Startschuss der KI-Forschung.'
+            },
+            {
+                topic: 'Geschichte',
+                question: 'Welches KI-System schlug 2016 den Go-Weltmeister Lee Sedol?',
+                answers: [
+                    { text: 'AlphaGo von DeepMind', correct: true },
+                    { text: 'Deep Blue von IBM', correct: false },
+                    { text: 'Watson von IBM', correct: false },
+                    { text: 'AlexNet', correct: false }
+                ],
+                explanation: 'AlphaGo besiegte 2016 Lee Sedol in einem Spiel, das als zu komplex für Computer galt. Deep Blue schlug bereits 1997 Schachweltmeister Kasparov.'
+            },
+            {
+                topic: 'Anwendungen',
+                question: 'Warum müssen Mars-Rover wie Perseverance autonom mit KI navigieren?',
+                answers: [
+                    { text: 'Weil ein Funksignal vom Mars rund 20 Minuten zur Erde braucht.', correct: true },
+                    { text: 'Weil auf dem Mars keine Stromversorgung möglich ist.', correct: false },
+                    { text: 'Weil die Rover keine Kameras besitzen.', correct: false },
+                    { text: 'Weil die NASA keine Kontrollzentren mehr betreibt.', correct: false }
+                ],
+                explanation: 'Eine Funkverbindung zum Mars dauert ca. 20 Minuten – Echtzeit-Steuerung ist unmöglich, also muss der Rover selbst entscheiden.'
+            },
+            {
+                topic: 'Anwendungen',
+                question: 'Welche Recheneinheiten nutzen Quantencomputer statt klassischer Bits?',
+                answers: [
+                    { text: 'Qubits', correct: true },
+                    { text: 'Tensoren', correct: false },
+                    { text: 'Petabits', correct: false },
+                    { text: 'Hyperbits', correct: false }
+                ],
+                explanation: 'Qubits können mehrere Zustände gleichzeitig annehmen. Laut Site bietet IBM 2026 öffentlich zugängliche Quantenprozessoren an.'
+            },
+            {
+                topic: 'Schule',
+                question: 'Aus welchen vier Komponenten bestehen Intelligente Tutorsysteme (ITS)?',
+                answers: [
+                    { text: 'Wissensmodell, Lernermodell, Tutorenmodell, Schnittstelle', correct: true },
+                    { text: 'Datenbank, Server, Client, Cloud', correct: false },
+                    { text: 'Eingabe, Verarbeitung, Ausgabe, Feedback', correct: false },
+                    { text: 'Lehrer, Schüler, Aufgabe, Bewertung', correct: false }
+                ],
+                explanation: 'Wissensmodell (Fachwissen), Lernermodell (Lernstand), Tutorenmodell (didaktische Strategie) und Schnittstelle bilden die Standardarchitektur eines ITS.'
+            },
+            {
+                topic: 'Risiken',
+                question: 'Wie viel mehr Energie verbraucht laut Site eine ChatGPT-Anfrage im Vergleich zu einer einfachen Google-Suche?',
+                answers: [
+                    { text: 'Etwa 10–20 mal so viel', correct: true },
+                    { text: 'Etwa 2–3 mal so viel', correct: false },
+                    { text: 'Etwa 100 mal so viel', correct: false },
+                    { text: 'Genauso viel', correct: false }
+                ],
+                explanation: 'Eine ChatGPT-Anfrage verbraucht ca. 10–20x so viel Energie wie eine Google-Suche – der Strombedarf der KI-Industrie verdoppelt sich voraussichtlich bis 2027.'
+            },
+            {
+                topic: 'Risiken',
+                question: 'Welche KI-Anwendung wird vom EU AI Act als „verboten" eingestuft?',
+                answers: [
+                    { text: 'Social-Scoring-Systeme', correct: true },
+                    { text: 'Spam-Filter', correct: false },
+                    { text: 'Chatbots', correct: false },
+                    { text: 'Videospiel-KI', correct: false }
+                ],
+                explanation: 'Social-Scoring-Systeme und manipulative KI sind verboten. Spam-Filter und Videospiel-KI fallen in die Stufe „minimal", Chatbots in „begrenzt".'
+            },
+            {
+                topic: 'Programmierung',
+                question: 'Wie heißt das interne System bei Spotify, das laut Co-CEO Söderström dafür sorgt, dass die besten Entwickler „seit Dezember keine einzige Zeile Code mehr geschrieben" haben?',
+                answers: [
+                    { text: 'Honk', correct: true },
+                    { text: 'Cursor', correct: false },
+                    { text: 'Copilot', correct: false },
+                    { text: 'Devin', correct: false }
+                ],
+                explanation: 'Spotifys System „Honk" nutzt generative KI – insbesondere Claude Code – um Code-Deployments fast vollständig zu automatisieren.'
+            },
+            {
+                topic: 'Programmierung',
+                question: 'Was beschreibt das Konzept „Vibe Coding"?',
+                answers: [
+                    { text: 'Devs beschreiben in natürlicher Sprache, wie sich ein System verhalten soll – die KI baut den konkreten Code.', correct: true },
+                    { text: 'Programmieren ohne jegliche Tests oder Reviews.', correct: false },
+                    { text: 'KI-Modelle, die ohne Energieverbrauch laufen.', correct: false },
+                    { text: 'Eine Methode, mit der KI Musik komponiert.', correct: false }
+                ],
+                explanation: 'Beim Vibe Coding sinkt die Einstiegshürde für Nicht-Programmierer – Produkt-Intuition und Architektur werden wichtiger als Syntax.'
+            },
+            {
+                topic: 'Zukunft',
+                question: 'Welche AGI-Prognose stammt laut Site von Sam Altman (OpenAI)?',
+                answers: [
+                    { text: 'Etwa 2029–2030', correct: true },
+                    { text: '2026–2027', correct: false },
+                    { text: '2040–2050', correct: false },
+                    { text: 'Bereits vor 2025', correct: false }
+                ],
+                explanation: 'Sam Altman erwartet AGI „innerhalb einiger tausend Tage", was etwa 2029–2030 entspricht. Dario Amodei (Anthropic) ist optimistischer (2026–2027), die Forschung im Median konservativer (2040–2050).'
+            },
+            {
+                topic: 'Zukunft',
+                question: 'Was unterscheidet einen KI-Agenten von einem klassischen Chatbot?',
+                answers: [
+                    { text: 'Er zerlegt Aufgaben in Schritte, ruft Werkzeuge wie APIs auf und arbeitet iterativ.', correct: true },
+                    { text: 'Er kann ausschließlich Texte zusammenfassen.', correct: false },
+                    { text: 'Er funktioniert komplett ohne Trainingsdaten.', correct: false },
+                    { text: 'Er läuft nur auf Quantencomputern.', correct: false }
+                ],
+                explanation: 'Ein Agent plant Schritte, ruft Tools auf, prüft sich selbst und iteriert – statt nur auf einzelne Eingaben zu antworten.'
+            }
+        ];
+
+        const RATINGS = [
+            { min: 14, label: 'EXPERT' },
+            { min: 11, label: 'ADVANCED' },
+            { min: 8,  label: 'GUT' },
+            { min: 0,  label: 'TRY AGAIN' }
+        ];
+
+        function shuffle(arr) {
+            const a = arr.slice();
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function readHighscore() {
+            const raw = localStorage.getItem(HIGHSCORE_KEY);
+            const n = parseInt(raw, 10);
+            return Number.isFinite(n) && n >= 0 && n <= QUESTIONS.length ? n : 0;
+        }
+
+        function writeHighscore(score) {
+            try {
+                localStorage.setItem(HIGHSCORE_KEY, String(score));
+            } catch (e) { /* localStorage disabled – ignore */ }
+        }
+
+        function readSavedName() {
+            try { return localStorage.getItem(NAME_KEY) || ''; } catch (e) { return ''; }
+        }
+
+        function writeSavedName(name) {
+            try { localStorage.setItem(NAME_KEY, name); } catch (e) { /* ignore */ }
+        }
+
+        function ratingFor(score) {
+            for (const r of RATINGS) {
+                if (score >= r.min) return r.label;
+            }
+            return RATINGS[RATINGS.length - 1].label;
+        }
+
+        function formatDuration(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return m + ':' + String(s).padStart(2, '0');
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        const state = {
+            playerName: '',
+            startTime: 0,
+            duration: 0,
+            order: [],
+            current: 0,
+            score: 0,
+            answered: false,
+            mistakes: [],
+            ownInsertedId: null
+        };
+
+        const el = {
+            name: document.getElementById('quiz-name'),
+            nameInput: document.getElementById('name-input'),
+            btnNameNext: document.getElementById('btn-name-next'),
+
+            start: document.getElementById('quiz-start'),
+            startGreeting: document.getElementById('start-greeting'),
+            startHighscore: document.getElementById('start-highscore'),
+            btnStart: document.getElementById('btn-start'),
+
+            question: document.getElementById('quiz-question'),
+            hudProgress: document.getElementById('hud-progress'),
+            hudScore: document.getElementById('hud-score'),
+            questionText: document.getElementById('question-text'),
+            answers: document.getElementById('answers'),
+            explanation: document.getElementById('explanation'),
+            nextAction: document.getElementById('next-action'),
+            btnNext: document.getElementById('btn-next'),
+
+            result: document.getElementById('quiz-result'),
+            resultRating: document.getElementById('result-rating'),
+            resultScore: document.getElementById('result-score'),
+            resultPercent: document.getElementById('result-percent'),
+            resultDuration: document.getElementById('result-duration'),
+            resultHighscore: document.getElementById('result-highscore'),
+
+            lbLoading: document.getElementById('lb-loading'),
+            lbError: document.getElementById('lb-error'),
+            lbWrap: document.getElementById('leaderboard-wrap'),
+            lbBody: document.getElementById('leaderboard-body'),
+            ownPosition: document.getElementById('own-position'),
+
+            resultMistakes: document.getElementById('result-mistakes'),
+            mistakesList: document.getElementById('mistakes-list'),
+            btnRestart: document.getElementById('btn-restart')
+        };
+
+        function hideAll() {
+            el.name.classList.add('is-hidden');
+            el.start.classList.add('is-hidden');
+            el.question.classList.add('is-hidden');
+            el.result.classList.add('is-hidden');
+        }
+
+        function showNameEntry() {
+            hideAll();
+            el.name.classList.remove('is-hidden');
+            const saved = readSavedName();
+            el.nameInput.value = saved;
+            validateName();
+            el.nameInput.focus();
+            el.nameInput.select();
+        }
+
+        function validateName() {
+            const v = el.nameInput.value.trim();
+            const ok = v.length >= 1 && v.length <= 50;
+            el.btnNameNext.disabled = !ok;
+            return ok;
+        }
+
+        function onNameNext() {
+            if (!validateName()) return;
+            const v = el.nameInput.value.trim();
+            state.playerName = v;
+            writeSavedName(v);
+            showStart();
+        }
+
+        function showStart() {
+            hideAll();
+            el.start.classList.remove('is-hidden');
+            el.startGreeting.textContent = 'WILLKOMMEN, ' + state.playerName.toUpperCase();
+            el.startHighscore.textContent = 'PERSÖNLICHER REKORD: ' + readHighscore() + '/' + QUESTIONS.length;
+            el.btnStart.focus();
+        }
+
+        function startQuiz() {
+            state.order = shuffle(QUESTIONS.map((_, i) => i));
+            state.current = 0;
+            state.score = 0;
+            state.answered = false;
+            state.mistakes = [];
+            state.ownInsertedId = null;
+            state.startTime = Date.now();
+            state.duration = 0;
+            hideAll();
+            el.question.classList.remove('is-hidden');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            state.answered = false;
+            const q = QUESTIONS[state.order[state.current]];
+            el.hudProgress.textContent = 'FRAGE ' + (state.current + 1) + ' / ' + QUESTIONS.length;
+            el.hudScore.textContent = 'SCORE: ' + state.score;
+            el.questionText.textContent = q.question;
+
+            el.answers.innerHTML = '';
+            const shuffledAnswers = shuffle(q.answers);
+            shuffledAnswers.forEach((a, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'quiz-answer';
+                btn.textContent = String.fromCharCode(65 + idx) + ') ' + a.text;
+                btn.dataset.correct = a.correct ? '1' : '0';
+                btn.addEventListener('click', () => onAnswer(btn, a, q));
+                el.answers.appendChild(btn);
+            });
+
+            el.explanation.classList.remove('is-shown');
+            el.explanation.innerHTML = '';
+            el.nextAction.classList.remove('is-shown');
+
+            const first = el.answers.querySelector('.quiz-answer');
+            if (first) first.focus();
+        }
+
+        function onAnswer(btn, answer, question) {
+            if (state.answered) return;
+            state.answered = true;
+
+            const allBtns = el.answers.querySelectorAll('.quiz-answer');
+            allBtns.forEach(b => { b.disabled = true; });
+
+            if (answer.correct) {
+                btn.classList.add('is-correct');
+                state.score += 1;
+                el.hudScore.textContent = 'SCORE: ' + state.score;
+            } else {
+                btn.classList.add('is-wrong');
+                allBtns.forEach(b => {
+                    if (b.dataset.correct === '1') b.classList.add('is-correct');
+                });
+                const correctAnswer = question.answers.find(a => a.correct);
+                state.mistakes.push({
+                    question: question.question,
+                    correct: correctAnswer ? correctAnswer.text : ''
+                });
+            }
+
+            const prefix = answer.correct ? '<strong>RICHTIG.</strong> ' : '<strong>FALSCH.</strong> ';
+            el.explanation.innerHTML = prefix + escapeHtml(question.explanation);
+            el.explanation.classList.add('is-shown');
+
+            const isLast = state.current === state.order.length - 1;
+            el.btnNext.textContent = isLast ? 'ERGEBNIS' : 'WEITER';
+            el.nextAction.classList.add('is-shown');
+            el.btnNext.focus();
+        }
+
+        function nextQuestion() {
+            if (!state.answered) return;
+            if (state.current < state.order.length - 1) {
+                state.current += 1;
+                renderQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function setLbStatus(kind, text) {
+            // kind: 'loading' | 'error' | 'hide'
+            if (kind === 'loading') {
+                el.lbLoading.classList.remove('is-hidden');
+                el.lbError.classList.add('is-hidden');
+                const span = el.lbLoading.querySelector('.lb-loading-dots');
+                if (span) span.textContent = text || 'WIRD GESPEICHERT';
+            } else if (kind === 'error') {
+                el.lbLoading.classList.add('is-hidden');
+                el.lbError.textContent = text;
+                el.lbError.classList.remove('is-hidden');
+            } else {
+                el.lbLoading.classList.add('is-hidden');
+                el.lbError.classList.add('is-hidden');
+            }
+        }
+
+        function renderLeaderboard(rows) {
+            el.lbBody.innerHTML = '';
+            rows.forEach((row, idx) => {
+                const tr = document.createElement('tr');
+                if (state.ownInsertedId && row.id === state.ownInsertedId) {
+                    tr.classList.add('is-self');
+                }
+                const rank = idx + 1;
+                const dur = (row.duration_seconds == null) ? '–' : formatDuration(row.duration_seconds);
+                const pct = (row.percent == null) ? '–' : (Math.round(row.percent) + '%');
+                tr.innerHTML =
+                    '<td>' + rank + '</td>' +
+                    '<td>' + escapeHtml(row.name || '') + '</td>' +
+                    '<td>' + (row.score == null ? '–' : row.score) + '/' + QUESTIONS.length + '</td>' +
+                    '<td>' + pct + '</td>' +
+                    '<td>' + dur + '</td>';
+                el.lbBody.appendChild(tr);
+            });
+            el.lbWrap.classList.remove('is-hidden');
+        }
+
+        async function loadLeaderboardAndPosition() {
+            // Top 10
+            const { data: topRows, error: topErr } = await supabase
+                .from('quiz_results')
+                .select('id, name, score, percent, duration_seconds, created_at')
+                .order('score', { ascending: false })
+                .order('duration_seconds', { ascending: true })
+                .limit(10);
+
+            if (topErr) throw topErr;
+            renderLeaderboard(topRows || []);
+
+            // If own row is not in top 10, query position separately.
+            const inTop = (topRows || []).some(r => r.id === state.ownInsertedId);
+            if (!inTop) {
+                const [{ count: ahead, error: aheadErr }, { count: total, error: totalErr }] = await Promise.all([
+                    supabase
+                        .from('quiz_results')
+                        .select('*', { count: 'exact', head: true })
+                        .gt('score', state.score),
+                    supabase
+                        .from('quiz_results')
+                        .select('*', { count: 'exact', head: true })
+                ]);
+                if (aheadErr || totalErr) throw (aheadErr || totalErr);
+                const position = (ahead || 0) + 1;
+                el.ownPosition.textContent = 'DEINE PLATZIERUNG: #' + position + ' VON ' + (total || position);
+                el.ownPosition.classList.remove('is-hidden');
+            } else {
+                el.ownPosition.classList.add('is-hidden');
+            }
+        }
+
+        async function persistAndShowLeaderboard() {
+            if (!supabase) {
+                setLbStatus('error', 'Speichern fehlgeschlagen. Quiz lokal abgeschlossen.');
+                return;
+            }
+
+            setLbStatus('loading', 'WIRD GESPEICHERT');
+
+            const total = QUESTIONS.length;
+            const percent = (state.score / total) * 100;
+
+            try {
+                const { data, error } = await supabase
+                    .from('quiz_results')
+                    .insert({
+                        name: state.playerName,
+                        score: state.score,
+                        total: total,
+                        percent: percent,
+                        duration_seconds: state.duration
+                    })
+                    .select()
+                    .single();
+                if (error) throw error;
+                state.ownInsertedId = data ? data.id : null;
+            } catch (e) {
+                console.error('Insert failed:', e);
+                setLbStatus('error', 'Speichern fehlgeschlagen. Quiz lokal abgeschlossen.');
+                return;
+            }
+
+            setLbStatus('loading', 'LADE BESTENLISTE');
+
+            try {
+                await loadLeaderboardAndPosition();
+                setLbStatus('hide');
+            } catch (e) {
+                console.error('Leaderboard read failed:', e);
+                setLbStatus('error', 'Bestenliste konnte nicht geladen werden.');
+            }
+        }
+
+        function showResult() {
+            hideAll();
+            el.result.classList.remove('is-hidden');
+
+            state.duration = Math.max(0, Math.round((Date.now() - state.startTime) / 1000));
+
+            const total = QUESTIONS.length;
+            const score = state.score;
+            const percent = Math.round((score / total) * 100);
+
+            el.resultScore.textContent = score + '/' + total;
+            el.resultPercent.textContent = percent + '%';
+            el.resultDuration.textContent = 'DAUER: ' + formatDuration(state.duration);
+            el.resultRating.textContent = ratingFor(score);
+
+            const prevHigh = readHighscore();
+            const newHigh = Math.max(prevHigh, score);
+            if (score > prevHigh) writeHighscore(score);
+            el.resultHighscore.innerHTML = 'PERSÖNLICHER REKORD: <strong>' + newHigh + '/' + total + '</strong>'
+                + (score > prevHigh ? ' &nbsp;// NEUER REKORD' : '');
+
+            // Mistakes
+            el.mistakesList.innerHTML = '';
+            if (state.mistakes.length === 0) {
+                el.resultMistakes.classList.add('is-hidden');
+            } else {
+                el.resultMistakes.classList.remove('is-hidden');
+                state.mistakes.forEach(m => {
+                    const li = document.createElement('li');
+                    const q = document.createElement('span');
+                    q.className = 'q';
+                    q.textContent = m.question;
+                    const a = document.createElement('span');
+                    a.className = 'a';
+                    a.textContent = '→ ' + m.correct;
+                    li.appendChild(q);
+                    li.appendChild(a);
+                    el.mistakesList.appendChild(li);
+                });
+            }
+
+            // Reset leaderboard area before async load
+            el.lbWrap.classList.add('is-hidden');
+            el.ownPosition.classList.add('is-hidden');
+            el.lbBody.innerHTML = '';
+
+            persistAndShowLeaderboard();
+        }
+
+        // Wire up events
+        el.nameInput.addEventListener('input', validateName);
+        el.nameInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && validateName()) {
+                e.preventDefault();
+                onNameNext();
+            }
+        });
+        el.btnNameNext.addEventListener('click', onNameNext);
+        el.btnStart.addEventListener('click', startQuiz);
+        el.btnNext.addEventListener('click', nextQuestion);
+        el.btnRestart.addEventListener('click', showNameEntry);
+
+        showNameEntry();
+    </script>
+</body>
+
+</html>
