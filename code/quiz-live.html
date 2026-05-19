@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI-Quiz – Live</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .live-wrap {
+            margin: 30px 0 40px;
+        }
+
+        .live-card {
+            border: 2px solid #39ff14;
+            padding: 30px 24px;
+            background: #000;
+            box-shadow: 0 0 14px rgba(57, 255, 20, 0.18);
+            text-align: center;
+        }
+
+        .live-card p {
+            margin: 0 auto 14px;
+            max-width: 720px;
+            text-align: left;
+        }
+
+        .live-btn {
+            background: #000;
+            color: #39ff14;
+            border: 2px solid #39ff14;
+            padding: 16px 38px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            text-shadow: 0 0 6px #39ff1466;
+            transition: background 0.15s linear, color 0.15s linear, box-shadow 0.15s linear;
+            margin-top: 16px;
+        }
+
+        .live-btn:hover:not(:disabled),
+        .live-btn:focus:not(:disabled) {
+            background: #39ff14;
+            color: #000;
+            outline: none;
+            box-shadow: 0 0 22px rgba(57, 255, 20, 0.6);
+        }
+
+        .live-btn.is-danger {
+            color: #ff5571;
+            border-color: #ff1439;
+            text-shadow: 0 0 6px #ff143966;
+        }
+
+        .live-btn.is-danger:hover:not(:disabled),
+        .live-btn.is-danger:focus:not(:disabled) {
+            background: #ff1439;
+            color: #000;
+            box-shadow: 0 0 22px rgba(255, 20, 57, 0.6);
+        }
+
+        /* ----------- ACTIVE STATE ----------- */
+
+        .code-banner {
+            text-align: center;
+            padding: 40px 20px 20px;
+            border: 2px solid #39ff14;
+            background: #000;
+            margin-bottom: 22px;
+            box-shadow: 0 0 24px rgba(57, 255, 20, 0.25);
+        }
+
+        .code-banner.is-ended {
+            border-color: #444;
+            opacity: 0.6;
+            box-shadow: none;
+        }
+
+        .code-banner .code-label {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 18px;
+            letter-spacing: 8px;
+            color: #28cc10;
+            margin-bottom: 12px;
+        }
+
+        .code-banner .code-display {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 110px;
+            font-weight: bold;
+            letter-spacing: 18px;
+            color: #39ff14;
+            text-shadow:
+                0 0 16px #39ff14,
+                0 0 32px #39ff1488,
+                0 0 60px #39ff1444;
+            line-height: 1.1;
+            animation: codeGlow 3s ease-in-out infinite alternate;
+        }
+
+        .code-banner.is-ended .code-display {
+            color: #555;
+            text-shadow: none;
+            animation: none;
+        }
+
+        @keyframes codeGlow {
+            from { text-shadow: 0 0 14px #39ff14, 0 0 30px #39ff1466, 0 0 50px #39ff1433; }
+            to   { text-shadow: 0 0 22px #39ff14, 0 0 46px #39ff14aa, 0 0 80px #39ff1466; }
+        }
+
+        .code-instruction {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 18px;
+            color: #28cc10;
+            letter-spacing: 1px;
+            margin-top: 16px;
+            line-height: 1.6;
+        }
+
+        .code-instruction .code-url {
+            color: #39ff14;
+            text-shadow: 0 0 4px #39ff1466;
+            font-weight: bold;
+        }
+
+        .live-counter {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 24px;
+            letter-spacing: 4px;
+            color: #39ff14;
+            text-align: center;
+            margin: 22px 0 14px;
+            text-shadow: 0 0 6px #39ff1488;
+        }
+
+        .live-counter strong {
+            font-size: 32px;
+            color: #fff;
+            text-shadow: 0 0 8px #39ff14;
+        }
+
+        table.live-table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 0 0 18px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 18px;
+        }
+
+        table.live-table th {
+            background: #39ff14;
+            color: #000;
+            padding: 12px 14px;
+            text-align: left;
+            letter-spacing: 2px;
+            font-size: 16px;
+        }
+
+        table.live-table td {
+            border: 1px solid #1a7a0a;
+            padding: 12px 14px;
+            color: #39ff14;
+            background: #000;
+        }
+
+        table.live-table tr:nth-child(even) td {
+            background: rgb(5, 15, 5);
+        }
+
+        table.live-table tr.is-new td {
+            animation: rowPulse 1.6s ease-out 1;
+        }
+
+        @keyframes rowPulse {
+            0% {
+                background: rgba(0, 255, 255, 0.25);
+                border-color: #00ffff;
+                box-shadow: inset 0 0 12px rgba(0, 255, 255, 0.4);
+                color: #b8ffff;
+                text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+            }
+            100% {
+                background: #000;
+                border-color: #1a7a0a;
+                box-shadow: none;
+                color: #39ff14;
+                text-shadow: none;
+            }
+        }
+
+        .live-empty {
+            font-family: 'Courier New', Courier, monospace;
+            color: #28cc10;
+            opacity: 0.6;
+            text-align: center;
+            padding: 30px;
+            border: 1px dashed #1a7a0a;
+            margin-bottom: 18px;
+            font-size: 16px;
+            letter-spacing: 2px;
+        }
+
+        .session-actions {
+            text-align: right;
+            margin-top: 18px;
+        }
+
+        /* ----------- RESULTS STATE ----------- */
+
+        .results-section {
+            margin: 26px 0;
+        }
+
+        .results-section h3 {
+            font-family: 'Courier New', Courier, monospace;
+            color: #28cc10;
+            letter-spacing: 3px;
+            font-size: 17px;
+            margin: 0 0 14px;
+            text-transform: uppercase;
+            border-bottom: 1px dashed #1a7a0a;
+            padding-bottom: 6px;
+        }
+
+        .class-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin-bottom: 4px;
+        }
+
+        .stat-card {
+            border: 1px solid #1a7a0a;
+            background: #050a05;
+            padding: 14px 16px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .stat-card .stat-key {
+            font-size: 12px;
+            color: #28cc10;
+            letter-spacing: 3px;
+            margin-bottom: 6px;
+        }
+
+        .stat-card .stat-val {
+            font-size: 28px;
+            color: #39ff14;
+            text-shadow: 0 0 8px #39ff1466;
+            font-weight: bold;
+        }
+
+        .difficulty-row {
+            margin-bottom: 16px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .difficulty-label {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #b8ffb0;
+            margin-bottom: 6px;
+        }
+
+        .difficulty-label .topic {
+            color: #28cc10;
+            letter-spacing: 1px;
+        }
+
+        .difficulty-label strong {
+            color: #39ff14;
+            margin-right: 6px;
+        }
+
+        .difficulty-bar-track {
+            position: relative;
+            height: 22px;
+            background: #050a05;
+            border: 1px solid #1a7a0a;
+            overflow: hidden;
+        }
+
+        .difficulty-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1a7a0a 0%, #39ff14 100%);
+            box-shadow: inset 0 0 6px rgba(57, 255, 20, 0.4);
+            transition: width 0.3s ease-out;
+        }
+
+        .difficulty-pct {
+            font-size: 12px;
+            color: #28cc10;
+            letter-spacing: 2px;
+            margin-top: 4px;
+        }
+
+        .is-hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 600px) {
+            .code-banner .code-display { font-size: 64px; letter-spacing: 10px; }
+            .code-banner .code-label { font-size: 14px; letter-spacing: 4px; }
+            .code-instruction { font-size: 14px; }
+            .live-counter { font-size: 18px; }
+            .live-counter strong { font-size: 24px; }
+            table.live-table th,
+            table.live-table td { padding: 8px 8px; font-size: 14px; }
+            .stat-card .stat-val { font-size: 22px; }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Künstliche Intelligenz</h1>
+    <nav>
+        <a href="index.html">Startseite</a>
+        <a href="grundlagen.html">Grundlagen</a>
+        <a href="geschichte.html">Geschichte</a>
+        <a href="anwendungen.html">Anwendungen</a>
+        <a href="schule.html">KI in der Schule</a>
+        <a href="risiken.html">Chancen &amp; Risiken</a>
+        <a href="programmierung.html">Programmierung</a>
+        <a href="zukunft.html">Zukunft</a>
+        <a href="spiel.html">Spiel</a>
+        <a href="quiz.html">Quiz</a>
+        <a href="quiz-live.html">Live</a>
+        <a href="architektur.html">Architektur</a>
+        <a href="quellen.html">Quellen</a>
+    </nav>
+    <hr>
+    <main>
+        <h2>Quiz – Live-Modus</h2>
+        <p class="intro">Starte eine Quiz-Session und teile den Code mit deinen Schülern.
+            Sie können während deines Vortrags am Quiz teilnehmen, du siehst die Ergebnisse live.</p>
+
+        <div class="live-wrap">
+            <!-- ================== SETUP ================== -->
+            <section id="setup-state">
+                <div class="live-card">
+                    <p>Eine neue Session erzeugt einen 4-stelligen Code. Die Schüler öffnen
+                        die Quiz-Seite, tragen den Code ein und spielen das Quiz durch.
+                        Sobald jemand fertig ist, erscheint das Ergebnis hier auf dieser Seite.</p>
+                    <p>Die globale Bestenliste auf der normalen Quiz-Seite wird durch
+                        Session-Eintraege <strong>nicht</strong> beeinflusst.</p>
+                    <button class="live-btn" id="btn-new-session">NEUE SESSION STARTEN</button>
+                </div>
+            </section>
+
+            <!-- ================== ACTIVE ================== -->
+            <section id="active-state" class="is-hidden">
+                <div class="code-banner" id="code-banner">
+                    <div class="code-label">// SESSION-CODE</div>
+                    <div class="code-display" id="code-display">----</div>
+                    <div class="code-instruction" id="code-instruction"></div>
+                </div>
+
+                <div class="live-counter">TEILNEHMER: <strong id="participant-count">0</strong></div>
+
+                <div id="live-empty" class="live-empty">Noch keine Eintraege. Warte auf erste Teilnahmen…</div>
+
+                <table class="live-table is-hidden" id="live-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 8%;">#</th>
+                            <th>NAME</th>
+                            <th style="width: 14%;">SCORE</th>
+                            <th style="width: 10%;">%</th>
+                            <th style="width: 14%;">DAUER</th>
+                        </tr>
+                    </thead>
+                    <tbody id="live-body"></tbody>
+                </table>
+
+                <div class="session-actions">
+                    <button class="live-btn is-danger" id="btn-end-session">SESSION BEENDEN</button>
+                </div>
+            </section>
+
+            <!-- ================== RESULTS ================== -->
+            <section id="results-state" class="is-hidden">
+                <div class="code-banner is-ended">
+                    <div class="code-label">// SESSION BEENDET</div>
+                    <div class="code-display" id="ended-code">----</div>
+                </div>
+
+                <div class="results-section">
+                    <h3>// VOLLSTAENDIGE RANGLISTE</h3>
+                    <div id="results-empty" class="live-empty is-hidden">Keine Teilnahmen in dieser Session.</div>
+                    <table class="live-table" id="results-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 8%;">#</th>
+                                <th>NAME</th>
+                                <th style="width: 14%;">SCORE</th>
+                                <th style="width: 10%;">%</th>
+                                <th style="width: 14%;">DAUER</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-body"></tbody>
+                    </table>
+                </div>
+
+                <div class="results-section">
+                    <h3>// KLASSEN-STATISTIK</h3>
+                    <div class="class-stats" id="class-stats"></div>
+                </div>
+
+                <div class="results-section">
+                    <h3>// SCHWIERIGKEITSANALYSE – schwerste zuerst</h3>
+                    <p style="font-size:13px;color:#28cc10;margin-bottom:14px;">
+                        Pro Frage: Anteil der richtigen Antworten. Niedrig = Thema noch nicht klar.
+                    </p>
+                    <div id="difficulty-bars"></div>
+                </div>
+
+                <div class="session-actions" style="text-align:center;margin-top:30px;">
+                    <button class="live-btn" id="btn-new-session-again">NEUE SESSION STARTEN</button>
+                </div>
+            </section>
+        </div>
+    </main>
+    <footer>
+        <a href="geheim.html" class="secret-link">Erstellt von Chris Kaiser &amp; Louis Förster</a><br>
+        Informatikunterricht – Klasse 11, GK Informatik, 2026
+    </footer>
+
+    <!-- Gemeinsame Fragen-Datenbank (auch von quiz.html geladen). -->
+    <script src="quiz-questions.js"></script>
+
+    <!-- Lokale, gitignorierte Config (klassisches Script, damit file:// funktioniert). -->
+    <script src="quiz-config.js"></script>
+
+    <script type="module">
+        // Supabase-Init (gleicher Pattern wie quiz.html).
+        let supabase = null;
+        try {
+            if (!window.QUIZ_CONFIG || !window.QUIZ_CONFIG.SUPABASE_URL || !window.QUIZ_CONFIG.SUPABASE_ANON_KEY) {
+                throw new Error('quiz-config.js fehlt oder hat keine Werte.');
+            }
+            const mod = await import('https://esm.sh/@supabase/supabase-js@2');
+            supabase = mod.createClient(window.QUIZ_CONFIG.SUPABASE_URL, window.QUIZ_CONFIG.SUPABASE_ANON_KEY);
+        } catch (e) {
+            console.error('Supabase init failed:', e);
+        }
+
+        if (!Array.isArray(window.QUIZ_QUESTIONS) || window.QUIZ_QUESTIONS.length === 0) {
+            document.body.innerHTML = '<p style="color:#ff5571;padding:30px;font-family:Courier New, monospace;">' +
+                'Fehler: <code>quiz-questions.js</code> fehlt oder konnte nicht geladen werden.</p>';
+            throw new Error('QUIZ_QUESTIONS missing');
+        }
+
+        const SESSION_KEY = 'ki_quiz_active_session';
+        const POOL = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        const POLL_MS = 3000;
+        const NEW_HIGHLIGHT_WINDOW_MS = 5000;
+
+        const state = {
+            code: '',
+            startedAt: null,
+            pollTimer: null,
+            seenIds: new Set(),
+            lastRows: [],
+            lastRowsAll: [],
+            mode: 'setup'  // 'setup' | 'active' | 'results'
+        };
+
+        const el = {
+            setup: document.getElementById('setup-state'),
+            active: document.getElementById('active-state'),
+            results: document.getElementById('results-state'),
+            codeBanner: document.getElementById('code-banner'),
+            codeDisplay: document.getElementById('code-display'),
+            codeInstruction: document.getElementById('code-instruction'),
+            participantCount: document.getElementById('participant-count'),
+            liveEmpty: document.getElementById('live-empty'),
+            liveTable: document.getElementById('live-table'),
+            liveBody: document.getElementById('live-body'),
+            endedCode: document.getElementById('ended-code'),
+            resultsEmpty: document.getElementById('results-empty'),
+            resultsTable: document.getElementById('results-table'),
+            resultsBody: document.getElementById('results-body'),
+            classStats: document.getElementById('class-stats'),
+            difficultyBars: document.getElementById('difficulty-bars'),
+            btnNewSession: document.getElementById('btn-new-session'),
+            btnEndSession: document.getElementById('btn-end-session'),
+            btnNewSessionAgain: document.getElementById('btn-new-session-again')
+        };
+
+        function escapeHtml(s) {
+            return String(s)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        function formatDuration(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return m + ':' + String(s).padStart(2, '0');
+        }
+
+        function generateCode() {
+            let c = '';
+            for (let i = 0; i < 4; i++) {
+                c += POOL[Math.floor(Math.random() * POOL.length)];
+            }
+            return c;
+        }
+
+        function loadStoredSession() {
+            try {
+                const raw = localStorage.getItem(SESSION_KEY);
+                if (!raw) return null;
+                const data = JSON.parse(raw);
+                if (!data || !/^[A-Z0-9]{4}$/.test(data.code) || !data.startedAt) return null;
+                return data;
+            } catch (e) { return null; }
+        }
+
+        function saveStoredSession(code, startedAt) {
+            try {
+                localStorage.setItem(SESSION_KEY, JSON.stringify({ code, startedAt }));
+            } catch (e) { /* ignore */ }
+        }
+
+        function clearStoredSession() {
+            try { localStorage.removeItem(SESSION_KEY); } catch (e) { /* ignore */ }
+        }
+
+        function buildQuizUrl(code) {
+            if (window.location.protocol === 'file:') {
+                return 'quiz.html?session=' + code;
+            }
+            const base = window.location.origin
+                + window.location.pathname.replace(/quiz-live\.html.*$/, 'quiz.html');
+            return base + '?session=' + code;
+        }
+
+        function hideAll() {
+            el.setup.classList.add('is-hidden');
+            el.active.classList.add('is-hidden');
+            el.results.classList.add('is-hidden');
+        }
+
+        function stopPolling() {
+            if (state.pollTimer) {
+                clearInterval(state.pollTimer);
+                state.pollTimer = null;
+            }
+        }
+
+        function startPolling() {
+            stopPolling();
+            fetchSessionRows();
+            state.pollTimer = setInterval(fetchSessionRows, POLL_MS);
+        }
+
+        async function fetchSessionRows() {
+            if (!supabase || !state.code) return;
+            try {
+                const { data, error } = await supabase
+                    .from('quiz_results')
+                    .select('id, name, score, percent, duration_seconds, created_at, answers, player_id')
+                    .eq('session_code', state.code)
+                    .gte('created_at', state.startedAt)
+                    .not('player_id', 'is', null)
+                    .order('score', { ascending: false })
+                    .order('duration_seconds', { ascending: true });
+                if (error) throw error;
+                const all = data || [];
+                // Dedup pro player_id (Bestleistung dank Sortierung oben).
+                const seen = new Set();
+                const dedupedBest = [];
+                for (const row of all) {
+                    if (!seen.has(row.player_id)) {
+                        seen.add(row.player_id);
+                        dedupedBest.push(row);
+                    }
+                }
+                state.lastRowsAll = all;          // fuer Schwierigkeitsanalyse (alle Antworten)
+                state.lastRows    = dedupedBest;  // fuer Live-Tabelle + Counter (1 pro Spieler)
+                renderLive(state.lastRows);
+            } catch (e) {
+                console.error('Polling failed:', e);
+            }
+        }
+
+        function renderLive(rows) {
+            el.participantCount.textContent = rows.length;
+            if (rows.length === 0) {
+                el.liveEmpty.classList.remove('is-hidden');
+                el.liveTable.classList.add('is-hidden');
+                el.liveBody.innerHTML = '';
+                return;
+            }
+            el.liveEmpty.classList.add('is-hidden');
+            el.liveTable.classList.remove('is-hidden');
+            el.liveBody.innerHTML = '';
+            const total = window.QUIZ_QUESTIONS.length;
+            const now = Date.now();
+            rows.forEach((row, idx) => {
+                const tr = document.createElement('tr');
+                // "Neu"-Animation einmalig: ID noch nie gesehen UND created_at innerhalb 5 s.
+                const createdMs = new Date(row.created_at).getTime();
+                const fresh = !state.seenIds.has(row.id) && (now - createdMs) < NEW_HIGHLIGHT_WINDOW_MS;
+                if (fresh) tr.classList.add('is-new');
+                state.seenIds.add(row.id);
+                const dur = (row.duration_seconds == null) ? '–' : formatDuration(row.duration_seconds);
+                const pct = (row.percent == null) ? '–' : (Math.round(row.percent) + '%');
+                tr.innerHTML =
+                    '<td>' + (idx + 1) + '</td>' +
+                    '<td>' + escapeHtml(row.name || '') + '</td>' +
+                    '<td>' + (row.score == null ? '–' : row.score) + '/' + total + '</td>' +
+                    '<td>' + pct + '</td>' +
+                    '<td>' + dur + '</td>';
+                el.liveBody.appendChild(tr);
+            });
+        }
+
+        function renderResults(rows) {
+            el.endedCode.textContent = state.code || '----';
+
+            // Vollstaendige Rangliste
+            el.resultsBody.innerHTML = '';
+            if (rows.length === 0) {
+                el.resultsEmpty.classList.remove('is-hidden');
+                el.resultsTable.classList.add('is-hidden');
+            } else {
+                el.resultsEmpty.classList.add('is-hidden');
+                el.resultsTable.classList.remove('is-hidden');
+                const total = window.QUIZ_QUESTIONS.length;
+                rows.forEach((row, idx) => {
+                    const tr = document.createElement('tr');
+                    const dur = (row.duration_seconds == null) ? '–' : formatDuration(row.duration_seconds);
+                    const pct = (row.percent == null) ? '–' : (Math.round(row.percent) + '%');
+                    tr.innerHTML =
+                        '<td>' + (idx + 1) + '</td>' +
+                        '<td>' + escapeHtml(row.name || '') + '</td>' +
+                        '<td>' + (row.score == null ? '–' : row.score) + '/' + total + '</td>' +
+                        '<td>' + pct + '</td>' +
+                        '<td>' + dur + '</td>';
+                    el.resultsBody.appendChild(tr);
+                });
+            }
+
+            // Klassen-Statistik
+            el.classStats.innerHTML = '';
+            if (rows.length > 0) {
+                let sumScore = 0, sumDur = 0;
+                let minScore = Infinity, maxScore = -Infinity;
+                rows.forEach(r => {
+                    const s = r.score || 0;
+                    sumScore += s;
+                    sumDur += r.duration_seconds || 0;
+                    if (s < minScore) minScore = s;
+                    if (s > maxScore) maxScore = s;
+                });
+                const total = window.QUIZ_QUESTIONS.length;
+                const stats = [
+                    { key: 'Teilnehmer', val: rows.length },
+                    { key: 'Durchschnitt', val: (sumScore / rows.length).toFixed(1) + '/' + total },
+                    { key: 'Bester Score', val: maxScore + '/' + total },
+                    { key: 'Schlechtester', val: minScore + '/' + total },
+                    { key: 'Schnitt-Dauer', val: formatDuration(Math.round(sumDur / rows.length)) }
+                ];
+                stats.forEach(s => {
+                    const card = document.createElement('div');
+                    card.className = 'stat-card';
+                    card.innerHTML = '<div class="stat-key">' + escapeHtml(s.key) + '</div>'
+                        + '<div class="stat-val">' + escapeHtml(String(s.val)) + '</div>';
+                    el.classStats.appendChild(card);
+                });
+            } else {
+                const card = document.createElement('div');
+                card.className = 'stat-card';
+                card.innerHTML = '<div class="stat-key">Teilnehmer</div><div class="stat-val">0</div>';
+                el.classStats.appendChild(card);
+            }
+
+            // Schwierigkeitsanalyse: ALLE Antworten aggregieren (nicht nur Bestleistungen).
+            // Wenn ein Schueler eine Frage in Runde 1 falsch und in Runde 2 richtig hatte,
+            // zaehlen beide Versuche - das spiegelt die echte Schwierigkeit + Lernkurve.
+            renderDifficulty(state.lastRowsAll || rows);
+        }
+
+        function renderDifficulty(rows) {
+            const total = window.QUIZ_QUESTIONS.length;
+            const stats = Array.from({ length: total }, () => ({ correct: 0, count: 0 }));
+            rows.forEach(r => {
+                if (!Array.isArray(r.answers)) return;
+                r.answers.forEach(a => {
+                    if (!a || typeof a.q !== 'number') return;
+                    if (a.q < 0 || a.q >= total) return;
+                    stats[a.q].count++;
+                    if (a.correct) stats[a.q].correct++;
+                });
+            });
+
+            const indexed = stats.map((s, i) => ({
+                index: i,
+                correct: s.correct,
+                count: s.count,
+                pct: s.count > 0 ? (s.correct / s.count) * 100 : null,
+                topic: window.QUIZ_QUESTIONS[i].topic,
+                question: window.QUIZ_QUESTIONS[i].question
+            }));
+
+            // Hardest first; no-data last.
+            indexed.sort((a, b) => {
+                if (a.pct === null && b.pct === null) return a.index - b.index;
+                if (a.pct === null) return 1;
+                if (b.pct === null) return -1;
+                return a.pct - b.pct;
+            });
+
+            el.difficultyBars.innerHTML = '';
+            indexed.forEach(item => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'difficulty-row';
+
+                const label = document.createElement('div');
+                label.className = 'difficulty-label';
+                label.innerHTML = '<strong>F' + (item.index + 1) + '</strong> '
+                    + '<span class="topic">[' + escapeHtml(item.topic) + ']</span> '
+                    + escapeHtml(item.question);
+                wrapper.appendChild(label);
+
+                const track = document.createElement('div');
+                track.className = 'difficulty-bar-track';
+                const fill = document.createElement('div');
+                fill.className = 'difficulty-bar-fill';
+                fill.style.width = (item.pct === null ? 0 : item.pct) + '%';
+                track.appendChild(fill);
+                wrapper.appendChild(track);
+
+                const pctLabel = document.createElement('div');
+                pctLabel.className = 'difficulty-pct';
+                pctLabel.textContent = item.count === 0
+                    ? 'keine Daten (Antwort fehlt im Eintrag)'
+                    : Math.round(item.pct) + '% richtig (' + item.correct + '/' + item.count + ')';
+                wrapper.appendChild(pctLabel);
+
+                el.difficultyBars.appendChild(wrapper);
+            });
+        }
+
+        function showSetup() {
+            stopPolling();
+            state.mode = 'setup';
+            state.code = '';
+            state.startedAt = null;
+            state.seenIds = new Set();
+            state.lastRows = [];
+            state.lastRowsAll = [];
+            clearStoredSession();
+            hideAll();
+            el.setup.classList.remove('is-hidden');
+        }
+
+        function showActive(code, startedAt) {
+            state.mode = 'active';
+            state.code = code;
+            state.startedAt = startedAt;
+            state.seenIds = new Set();
+            state.lastRows = [];
+            state.lastRowsAll = [];
+            hideAll();
+            el.active.classList.remove('is-hidden');
+            el.codeDisplay.textContent = code;
+            el.codeInstruction.innerHTML = '';
+            // Reset participant UI
+            el.participantCount.textContent = '0';
+            el.liveEmpty.classList.remove('is-hidden');
+            el.liveTable.classList.add('is-hidden');
+            el.liveBody.innerHTML = '';
+            startPolling();
+        }
+
+        function showResults() {
+            // Snapshot der letzten Polling-Daten verwenden (kein erneuter Fetch).
+            stopPolling();
+            state.mode = 'results';
+            hideAll();
+            el.results.classList.remove('is-hidden');
+            renderResults(state.lastRows);
+        }
+
+        async function startNewSession() {
+            if (!supabase) {
+                alert('Supabase nicht verbunden – siehe Browser-Konsole. Quiz-Live benoetigt Supabase.');
+                return;
+            }
+            const code = generateCode();
+            const startedAt = new Date().toISOString();
+            saveStoredSession(code, startedAt);
+            showActive(code, startedAt);
+        }
+
+        async function endSession() {
+            // Letzten Fetch noch durchziehen, damit die Endauswertung aktuell ist.
+            await fetchSessionRows();
+            clearStoredSession();
+            showResults();
+        }
+
+        el.btnNewSession.addEventListener('click', startNewSession);
+        el.btnNewSessionAgain.addEventListener('click', startNewSession);
+        el.btnEndSession.addEventListener('click', endSession);
+
+        // Init: bei Reload waehrend aktiver Session wiederherstellen.
+        (function init() {
+            const stored = loadStoredSession();
+            if (stored && supabase) {
+                showActive(stored.code, stored.startedAt);
+            } else {
+                showSetup();
+            }
+        })();
+    </script>
+</body>
+
+</html>

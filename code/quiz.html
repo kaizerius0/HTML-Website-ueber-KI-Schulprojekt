@@ -61,16 +61,26 @@
             font-size: 16px;
             text-align: left;
             cursor: pointer;
-            transition: background 0.12s linear, color 0.12s linear, box-shadow 0.12s linear;
+            transition: background 0.12s linear, color 0.12s linear, box-shadow 0.12s linear, border-color 0.12s linear;
             line-height: 1.4;
+            outline: none;
         }
 
-        .quiz-answer:hover:not(:disabled),
-        .quiz-answer:focus:not(:disabled) {
-            background: #39ff14;
-            color: #000;
+        /* Hover: nur leichter Tint, KEIN voller Fill (sonst sieht es aus wie "richtig"). */
+        .quiz-answer:hover:not(:disabled) {
+            background: rgba(57, 255, 20, 0.10);
+            border-color: #6bff5a;
+            box-shadow: 0 0 8px rgba(57, 255, 20, 0.25);
+        }
+
+        /* Focus: bei Maus-Klick unsichtbar; nur bei Tastatur-Navigation duenne Outline. */
+        .quiz-answer:focus {
             outline: none;
-            box-shadow: 0 0 12px rgba(57, 255, 20, 0.5);
+        }
+
+        .quiz-answer:focus-visible:not(:disabled) {
+            outline: 2px dashed #6bff5a;
+            outline-offset: 3px;
         }
 
         .quiz-answer:disabled {
@@ -181,6 +191,31 @@
             font-size: 22px;
         }
 
+        .quiz-btn-secondary {
+            display: inline-block;
+            background: transparent;
+            color: #28cc10;
+            border: 1px solid #1a7a0a;
+            padding: 9px 22px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: color 0.15s linear, border-color 0.15s linear;
+            margin-top: 14px;
+            opacity: 0.85;
+        }
+
+        .quiz-btn-secondary:hover:not(:disabled),
+        .quiz-btn-secondary:focus:not(:disabled) {
+            color: #39ff14;
+            border-color: #39ff14;
+            outline: none;
+            opacity: 1;
+            box-shadow: 0 0 8px rgba(57, 255, 20, 0.25);
+        }
+
         .quiz-name,
         .quiz-start,
         .quiz-result {
@@ -241,6 +276,81 @@
             color: #226600;
             font-style: italic;
             letter-spacing: 0;
+        }
+
+        .code-label {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            letter-spacing: 3px;
+            color: #28cc10;
+            margin: 4px 0 6px;
+            text-align: center;
+        }
+
+        .code-input {
+            display: block;
+            width: 100%;
+            max-width: 220px;
+            margin: 0 auto 8px;
+            padding: 10px 14px;
+            border: 2px solid #39ff14;
+            background: #000;
+            color: #39ff14;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 22px;
+            letter-spacing: 8px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: border-color 0.12s linear, box-shadow 0.12s linear, opacity 0.12s linear;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: #6bff5a;
+            box-shadow: 0 0 14px rgba(57, 255, 20, 0.5);
+        }
+
+        .code-input::placeholder {
+            color: #226600;
+            font-style: italic;
+            letter-spacing: 4px;
+        }
+
+        .code-input:disabled,
+        .code-input[readonly] {
+            opacity: 0.85;
+            border-color: #1a7a0a;
+            color: #28cc10;
+            cursor: not-allowed;
+        }
+
+        .code-hint {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            color: #28cc10;
+            margin: 0 auto 18px;
+            max-width: 480px;
+            text-align: center;
+            opacity: 0.85;
+        }
+
+        .session-hint {
+            border: 1px solid #00ffff;
+            background: rgba(0, 255, 255, 0.05);
+            color: #b8ffff;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 12px 14px;
+            margin: 18px auto 6px;
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 4px rgba(0, 255, 255, 0.3);
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .session-hint strong {
+            color: #00ffff;
+            letter-spacing: 4px;
         }
 
         .quiz-result .result-score {
@@ -459,6 +569,8 @@
         <a href="zukunft.html">Zukunft</a>
         <a href="spiel.html">Spiel</a>
         <a href="quiz.html">Quiz</a>
+        <a href="quiz-live.html">Live</a>
+        <a href="architektur.html">Architektur</a>
         <a href="quellen.html">Quellen</a>
     </nav>
     <hr>
@@ -484,6 +596,15 @@
                     Lösung und eine kurze Erklärung.</p>
                 <p>Reihenfolge der Fragen und Antworten ist bei jedem Durchlauf zufällig. Die Zeit
                     läuft ab dem Klick auf „QUIZ STARTEN".</p>
+
+                <div class="code-label">SESSION-CODE (optional)</div>
+                <input id="code-input" class="code-input" type="text" maxlength="4"
+                    placeholder="z.B. K7B3" autocomplete="off" spellcheck="false">
+                <div class="code-hint" id="code-hint">
+                    Leer lassen für ein freies Quiz – oder Code der Lehrkraft eingeben, um
+                    am Live-Quiz teilzunehmen.
+                </div>
+
                 <div class="meta" id="start-highscore">PERSÖNLICHER REKORD: --/15</div>
                 <button class="quiz-btn quiz-btn-wide" id="btn-start">QUIZ STARTEN</button>
             </section>
@@ -509,6 +630,8 @@
                 <div class="result-percent" id="result-percent">0%</div>
                 <div class="result-duration" id="result-duration">DAUER: 0:00</div>
                 <div class="result-highscore" id="result-highscore">PERSÖNLICHER REKORD: <strong>0/15</strong></div>
+
+                <div id="session-hint" class="session-hint is-hidden"></div>
 
                 <div id="lb-loading" class="lb-status">
                     <span class="lb-loading-dots">WIRD GESPEICHERT</span>
@@ -537,6 +660,7 @@
                     <ul id="mistakes-list"></ul>
                 </div>
                 <button class="quiz-btn quiz-btn-wide" id="btn-restart">NOCHMAL SPIELEN</button>
+                <button class="quiz-btn quiz-btn-secondary" id="btn-other-player">ANDERER SPIELER</button>
             </section>
         </div>
     </main>
@@ -545,190 +669,50 @@
         Informatikunterricht – Klasse 11, GK Informatik, 2026
     </footer>
 
-    <script type="module">
-        const SUPABASE_URL = 'HIER_DIE_URL_EINFÜGEN';
-        const SUPABASE_ANON_KEY = 'HIER_DEN_ANON_KEY_EINFÜGEN';
+    <!-- Gemeinsame Fragen-Datenbank (auch von quiz-live.html geladen). -->
+    <script src="quiz-questions.js"></script>
 
-        // Dynamic import so a CDN/network failure doesn't break the local quiz.
+    <!-- Lokale, gitignorierte Config (klassisches Script, damit file:// funktioniert). -->
+    <script src="quiz-config.js"></script>
+
+    <script type="module">
+        // Credentials kommen aus window.QUIZ_CONFIG (gesetzt von quiz-config.js).
+        // Fehlt die Datei oder ist der CDN-Import von supabase-js nicht
+        // erreichbar, laeuft das Quiz lokal weiter und zeigt am Ende eine
+        // "Speichern fehlgeschlagen"-Meldung.
         let supabase = null;
         try {
+            if (!window.QUIZ_CONFIG || !window.QUIZ_CONFIG.SUPABASE_URL || !window.QUIZ_CONFIG.SUPABASE_ANON_KEY) {
+                throw new Error('quiz-config.js fehlt oder hat keine Werte.');
+            }
             const mod = await import('https://esm.sh/@supabase/supabase-js@2');
-            supabase = mod.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            supabase = mod.createClient(window.QUIZ_CONFIG.SUPABASE_URL, window.QUIZ_CONFIG.SUPABASE_ANON_KEY);
         } catch (e) {
             console.error('Supabase init failed:', e);
             supabase = null;
         }
 
         const HIGHSCORE_KEY = 'ki_quiz_highscore';
-        const NAME_KEY = 'ki_quiz_last_name';
+        const PLAYER_NAME_KEY = 'ki_quiz_player_name';
+        const PLAYER_ID_KEY   = 'ki_quiz_player_id';
+        const LAST_RESULT_KEY = 'ki_quiz_last_result';
+        const LAST_RESULT_VERSION = 1;
 
-        const QUESTIONS = [
-            {
-                topic: 'Grundlagen',
-                question: 'Welche Architektur bildet seit 2017 die Basis aller modernen großen Sprachmodelle wie GPT, Claude oder Gemini?',
-                answers: [
-                    { text: 'Transformer', correct: true },
-                    { text: 'Perceptron', correct: false },
-                    { text: 'Convolutional Neural Network', correct: false },
-                    { text: 'Recurrent Neural Network', correct: false }
-                ],
-                explanation: 'Der Transformer mit seinem Self-Attention-Mechanismus wurde 2017 vorgestellt und ist die Grundlage aller heutigen LLMs.'
-            },
-            {
-                topic: 'Grundlagen',
-                question: 'Welche Aussage zu den drei Stufen der KI (ANI, AGI, ASI) ist korrekt?',
-                answers: [
-                    { text: 'ANI – Schwache KI ist der heutige Stand der Technik.', correct: true },
-                    { text: 'AGI – Starke KI ist seit 2024 erreicht.', correct: false },
-                    { text: 'ASI – Superintelligenz ist die einfachste Stufe.', correct: false },
-                    { text: 'ANI ist eine Spezialform von ASI.', correct: false }
-                ],
-                explanation: 'Alle heutigen KI-Systeme sind ANI – auf eine Aufgabe spezialisiert. AGI wird laut Site frühestens 2029–2035 erwartet, ASI ist reine Zukunftsvision.'
-            },
-            {
-                topic: 'Grundlagen',
-                question: 'Was bezeichnet der Begriff „Halluzination" bei KI-Sprachmodellen?',
-                answers: [
-                    { text: 'Plausibel klingende, aber inhaltlich falsche Aussagen des Modells.', correct: true },
-                    { text: 'Das Auswendiglernen der Trainingsdaten.', correct: false },
-                    { text: 'Das Überhitzen der Hardware beim Training.', correct: false },
-                    { text: 'Den Abbruch eines Trainingslaufs.', correct: false }
-                ],
-                explanation: 'Sprachmodelle optimieren auf statistische Plausibilität, nicht auf Wahrheit – sie erfinden manchmal Fakten, die überzeugend klingen.'
-            },
-            {
-                topic: 'Geschichte',
-                question: 'In welchem Jahr stellte Alan Turing seinen berühmten Turing-Test vor?',
-                answers: [
-                    { text: '1950', correct: true },
-                    { text: '1936', correct: false },
-                    { text: '1956', correct: false },
-                    { text: '1943', correct: false }
-                ],
-                explanation: '1950 stellte Turing den Turing-Test vor. 1936 entwickelte er die Turingmaschine, 1956 fand die Dartmouth-Konferenz statt.'
-            },
-            {
-                topic: 'Geschichte',
-                question: 'Auf welcher Konferenz wurde 1956 der Begriff „Artificial Intelligence" geprägt?',
-                answers: [
-                    { text: 'Dartmouth-Konferenz', correct: true },
-                    { text: 'Stanford-Konferenz', correct: false },
-                    { text: 'MIT-Symposium', correct: false },
-                    { text: 'Turing-Konferenz', correct: false }
-                ],
-                explanation: 'John McCarthy prägte den Begriff „Artificial Intelligence" 1956 auf der Dartmouth-Konferenz – dem offiziellen Startschuss der KI-Forschung.'
-            },
-            {
-                topic: 'Geschichte',
-                question: 'Welches KI-System schlug 2016 den Go-Weltmeister Lee Sedol?',
-                answers: [
-                    { text: 'AlphaGo von DeepMind', correct: true },
-                    { text: 'Deep Blue von IBM', correct: false },
-                    { text: 'Watson von IBM', correct: false },
-                    { text: 'AlexNet', correct: false }
-                ],
-                explanation: 'AlphaGo besiegte 2016 Lee Sedol in einem Spiel, das als zu komplex für Computer galt. Deep Blue schlug bereits 1997 Schachweltmeister Kasparov.'
-            },
-            {
-                topic: 'Anwendungen',
-                question: 'Warum müssen Mars-Rover wie Perseverance autonom mit KI navigieren?',
-                answers: [
-                    { text: 'Weil ein Funksignal vom Mars rund 20 Minuten zur Erde braucht.', correct: true },
-                    { text: 'Weil auf dem Mars keine Stromversorgung möglich ist.', correct: false },
-                    { text: 'Weil die Rover keine Kameras besitzen.', correct: false },
-                    { text: 'Weil die NASA keine Kontrollzentren mehr betreibt.', correct: false }
-                ],
-                explanation: 'Eine Funkverbindung zum Mars dauert ca. 20 Minuten – Echtzeit-Steuerung ist unmöglich, also muss der Rover selbst entscheiden.'
-            },
-            {
-                topic: 'Anwendungen',
-                question: 'Welche Recheneinheiten nutzen Quantencomputer statt klassischer Bits?',
-                answers: [
-                    { text: 'Qubits', correct: true },
-                    { text: 'Tensoren', correct: false },
-                    { text: 'Petabits', correct: false },
-                    { text: 'Hyperbits', correct: false }
-                ],
-                explanation: 'Qubits können mehrere Zustände gleichzeitig annehmen. Laut Site bietet IBM 2026 öffentlich zugängliche Quantenprozessoren an.'
-            },
-            {
-                topic: 'Schule',
-                question: 'Aus welchen vier Komponenten bestehen Intelligente Tutorsysteme (ITS)?',
-                answers: [
-                    { text: 'Wissensmodell, Lernermodell, Tutorenmodell, Schnittstelle', correct: true },
-                    { text: 'Datenbank, Server, Client, Cloud', correct: false },
-                    { text: 'Eingabe, Verarbeitung, Ausgabe, Feedback', correct: false },
-                    { text: 'Lehrer, Schüler, Aufgabe, Bewertung', correct: false }
-                ],
-                explanation: 'Wissensmodell (Fachwissen), Lernermodell (Lernstand), Tutorenmodell (didaktische Strategie) und Schnittstelle bilden die Standardarchitektur eines ITS.'
-            },
-            {
-                topic: 'Risiken',
-                question: 'Wie viel mehr Energie verbraucht laut Site eine ChatGPT-Anfrage im Vergleich zu einer einfachen Google-Suche?',
-                answers: [
-                    { text: 'Etwa 10–20 mal so viel', correct: true },
-                    { text: 'Etwa 2–3 mal so viel', correct: false },
-                    { text: 'Etwa 100 mal so viel', correct: false },
-                    { text: 'Genauso viel', correct: false }
-                ],
-                explanation: 'Eine ChatGPT-Anfrage verbraucht ca. 10–20x so viel Energie wie eine Google-Suche – der Strombedarf der KI-Industrie verdoppelt sich voraussichtlich bis 2027.'
-            },
-            {
-                topic: 'Risiken',
-                question: 'Welche KI-Anwendung wird vom EU AI Act als „verboten" eingestuft?',
-                answers: [
-                    { text: 'Social-Scoring-Systeme', correct: true },
-                    { text: 'Spam-Filter', correct: false },
-                    { text: 'Chatbots', correct: false },
-                    { text: 'Videospiel-KI', correct: false }
-                ],
-                explanation: 'Social-Scoring-Systeme und manipulative KI sind verboten. Spam-Filter und Videospiel-KI fallen in die Stufe „minimal", Chatbots in „begrenzt".'
-            },
-            {
-                topic: 'Programmierung',
-                question: 'Wie heißt das interne System bei Spotify, das laut Co-CEO Söderström dafür sorgt, dass die besten Entwickler „seit Dezember keine einzige Zeile Code mehr geschrieben" haben?',
-                answers: [
-                    { text: 'Honk', correct: true },
-                    { text: 'Cursor', correct: false },
-                    { text: 'Copilot', correct: false },
-                    { text: 'Devin', correct: false }
-                ],
-                explanation: 'Spotifys System „Honk" nutzt generative KI – insbesondere Claude Code – um Code-Deployments fast vollständig zu automatisieren.'
-            },
-            {
-                topic: 'Programmierung',
-                question: 'Was beschreibt das Konzept „Vibe Coding"?',
-                answers: [
-                    { text: 'Devs beschreiben in natürlicher Sprache, wie sich ein System verhalten soll – die KI baut den konkreten Code.', correct: true },
-                    { text: 'Programmieren ohne jegliche Tests oder Reviews.', correct: false },
-                    { text: 'KI-Modelle, die ohne Energieverbrauch laufen.', correct: false },
-                    { text: 'Eine Methode, mit der KI Musik komponiert.', correct: false }
-                ],
-                explanation: 'Beim Vibe Coding sinkt die Einstiegshürde für Nicht-Programmierer – Produkt-Intuition und Architektur werden wichtiger als Syntax.'
-            },
-            {
-                topic: 'Zukunft',
-                question: 'Welche AGI-Prognose stammt laut Site von Sam Altman (OpenAI)?',
-                answers: [
-                    { text: 'Etwa 2029–2030', correct: true },
-                    { text: '2026–2027', correct: false },
-                    { text: '2040–2050', correct: false },
-                    { text: 'Bereits vor 2025', correct: false }
-                ],
-                explanation: 'Sam Altman erwartet AGI „innerhalb einiger tausend Tage", was etwa 2029–2030 entspricht. Dario Amodei (Anthropic) ist optimistischer (2026–2027), die Forschung im Median konservativer (2040–2050).'
-            },
-            {
-                topic: 'Zukunft',
-                question: 'Was unterscheidet einen KI-Agenten von einem klassischen Chatbot?',
-                answers: [
-                    { text: 'Er zerlegt Aufgaben in Schritte, ruft Werkzeuge wie APIs auf und arbeitet iterativ.', correct: true },
-                    { text: 'Er kann ausschließlich Texte zusammenfassen.', correct: false },
-                    { text: 'Er funktioniert komplett ohne Trainingsdaten.', correct: false },
-                    { text: 'Er läuft nur auf Quantencomputern.', correct: false }
-                ],
-                explanation: 'Ein Agent plant Schritte, ruft Tools auf, prüft sich selbst und iteriert – statt nur auf einzelne Eingaben zu antworten.'
+        // Einmalige Migration: alter Key 'ki_quiz_last_name' -> 'ki_quiz_player_name'.
+        try {
+            const legacy = localStorage.getItem('ki_quiz_last_name');
+            if (legacy && !localStorage.getItem(PLAYER_NAME_KEY)) {
+                localStorage.setItem(PLAYER_NAME_KEY, legacy);
             }
-        ];
+            if (legacy) localStorage.removeItem('ki_quiz_last_name');
+        } catch (e) { /* ignore */ }
+
+        if (!Array.isArray(window.QUIZ_QUESTIONS) || window.QUIZ_QUESTIONS.length === 0) {
+            document.body.innerHTML = '<p style="color:#ff5571;padding:30px;font-family:Courier New, monospace;">' +
+                'Fehler: <code>quiz-questions.js</code> fehlt oder konnte nicht geladen werden.</p>';
+            throw new Error('QUIZ_QUESTIONS missing');
+        }
+        const QUESTIONS = window.QUIZ_QUESTIONS;
 
         const RATINGS = [
             { min: 14, label: 'EXPERT' },
@@ -758,12 +742,73 @@
             } catch (e) { /* localStorage disabled – ignore */ }
         }
 
-        function readSavedName() {
-            try { return localStorage.getItem(NAME_KEY) || ''; } catch (e) { return ''; }
+        function readPlayerName() {
+            try { return localStorage.getItem(PLAYER_NAME_KEY) || ''; } catch (e) { return ''; }
         }
 
-        function writeSavedName(name) {
-            try { localStorage.setItem(NAME_KEY, name); } catch (e) { /* ignore */ }
+        function writePlayerName(name) {
+            try { localStorage.setItem(PLAYER_NAME_KEY, name); } catch (e) { /* ignore */ }
+        }
+
+        function clearPlayerName() {
+            try { localStorage.removeItem(PLAYER_NAME_KEY); } catch (e) { /* ignore */ }
+        }
+
+        function readPlayerId() {
+            try { return localStorage.getItem(PLAYER_ID_KEY) || ''; } catch (e) { return ''; }
+        }
+
+        function writePlayerId(id) {
+            try { localStorage.setItem(PLAYER_ID_KEY, id); } catch (e) { /* ignore */ }
+        }
+
+        function clearPlayerId() {
+            try { localStorage.removeItem(PLAYER_ID_KEY); } catch (e) { /* ignore */ }
+        }
+
+        function ensurePlayerId() {
+            let id = readPlayerId();
+            if (!id) {
+                try { id = crypto.randomUUID(); }
+                catch (e) { id = 'p-' + Date.now() + '-' + Math.random().toString(36).slice(2, 10); }
+                writePlayerId(id);
+            }
+            return id;
+        }
+
+        function readLastResult() {
+            try {
+                const raw = localStorage.getItem(LAST_RESULT_KEY);
+                if (!raw) return null;
+                const data = JSON.parse(raw);
+                if (!data || data.v !== LAST_RESULT_VERSION) return null;
+                if (typeof data.score !== 'number' || typeof data.total !== 'number') return null;
+                return data;
+            } catch (e) { return null; }
+        }
+
+        function writeLastResult(data) {
+            try { localStorage.setItem(LAST_RESULT_KEY, JSON.stringify(data)); } catch (e) { /* ignore */ }
+        }
+
+        function clearLastResult() {
+            try { localStorage.removeItem(LAST_RESULT_KEY); } catch (e) { /* ignore */ }
+        }
+
+        function saveLastResultFromState() {
+            writeLastResult({
+                v: LAST_RESULT_VERSION,
+                name: state.playerName,
+                playerId: state.playerId || null,
+                sessionCode: state.sessionCode || null,
+                score: state.score,
+                total: QUESTIONS.length,
+                durationSeconds: state.duration,
+                mistakes: state.mistakes,
+                answeredCorrectly: state.answeredCorrectly,
+                ownInsertedId: state.ownInsertedId,
+                finishedAt: Date.now()
+            });
         }
 
         function ratingFor(score) {
@@ -790,6 +835,9 @@
 
         const state = {
             playerName: '',
+            playerId: '',
+            sessionCode: '',
+            sessionFromUrl: false,
             startTime: 0,
             duration: 0,
             order: [],
@@ -797,12 +845,15 @@
             score: 0,
             answered: false,
             mistakes: [],
+            answeredCorrectly: [],
             ownInsertedId: null
         };
 
         const el = {
             name: document.getElementById('quiz-name'),
             nameInput: document.getElementById('name-input'),
+            codeInput: document.getElementById('code-input'),
+            codeHint: document.getElementById('code-hint'),
             btnNameNext: document.getElementById('btn-name-next'),
 
             start: document.getElementById('quiz-start'),
@@ -834,7 +885,9 @@
 
             resultMistakes: document.getElementById('result-mistakes'),
             mistakesList: document.getElementById('mistakes-list'),
-            btnRestart: document.getElementById('btn-restart')
+            sessionHint: document.getElementById('session-hint'),
+            btnRestart: document.getElementById('btn-restart'),
+            btnOtherPlayer: document.getElementById('btn-other-player')
         };
 
         function hideAll() {
@@ -844,11 +897,23 @@
             el.result.classList.add('is-hidden');
         }
 
+        function getSessionFromUrl() {
+            try {
+                const p = new URLSearchParams(window.location.search).get('session');
+                if (!p) return '';
+                const cleaned = p.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4);
+                return /^[A-Z0-9]{4}$/.test(cleaned) ? cleaned : '';
+            } catch (e) { return ''; }
+        }
+
+        function isValidCode(v) {
+            return /^[A-Z0-9]{4}$/.test(v);
+        }
+
         function showNameEntry() {
             hideAll();
             el.name.classList.remove('is-hidden');
-            const saved = readSavedName();
-            el.nameInput.value = saved;
+            el.nameInput.value = readPlayerName();
             validateName();
             el.nameInput.focus();
             el.nameInput.select();
@@ -861,11 +926,17 @@
             return ok;
         }
 
+        function validateCode() {
+            const c = el.codeInput.value.trim().toUpperCase();
+            const ok = c.length === 0 || isValidCode(c);
+            el.btnStart.disabled = !ok;
+            return ok;
+        }
+
         function onNameNext() {
             if (!validateName()) return;
-            const v = el.nameInput.value.trim();
-            state.playerName = v;
-            writeSavedName(v);
+            state.playerName = el.nameInput.value.trim();
+            writePlayerName(state.playerName);
             showStart();
         }
 
@@ -874,7 +945,32 @@
             el.start.classList.remove('is-hidden');
             el.startGreeting.textContent = 'WILLKOMMEN, ' + state.playerName.toUpperCase();
             el.startHighscore.textContent = 'PERSÖNLICHER REKORD: ' + readHighscore() + '/' + QUESTIONS.length;
+
+            // Session-Code-Input vorbereiten (URL-Param hat Vorrang).
+            const urlCode = getSessionFromUrl();
+            if (urlCode) {
+                state.sessionFromUrl = true;
+                el.codeInput.value = urlCode;
+                el.codeInput.setAttribute('readonly', 'readonly');
+                el.codeHint.textContent = 'Live-Session: du nimmst am Quiz deiner Lehrkraft teil. ' +
+                    'Dein Ergebnis erscheint auf deren Bildschirm.';
+            } else {
+                state.sessionFromUrl = false;
+                el.codeInput.value = '';
+                el.codeInput.removeAttribute('readonly');
+                el.codeHint.textContent = 'Leer lassen für ein freies Quiz – oder Code der Lehrkraft eingeben, ' +
+                    'um am Live-Quiz teilzunehmen.';
+            }
+            validateCode();
             el.btnStart.focus();
+        }
+
+        function onStartConfirm() {
+            if (!validateCode()) return;
+            const code = el.codeInput.value.trim().toUpperCase();
+            state.sessionCode = isValidCode(code) ? code : '';
+            state.playerId = ensurePlayerId();
+            startQuiz();
         }
 
         function startQuiz() {
@@ -883,6 +979,7 @@
             state.score = 0;
             state.answered = false;
             state.mistakes = [];
+            state.answeredCorrectly = [];
             state.ownInsertedId = null;
             state.startTime = Date.now();
             state.duration = 0;
@@ -914,13 +1011,22 @@
             el.explanation.innerHTML = '';
             el.nextAction.classList.remove('is-shown');
 
-            const first = el.answers.querySelector('.quiz-answer');
-            if (first) first.focus();
+            // Focus explizit entfernen — sonst wandert er nach dem WEITER-Klick auf
+            // den ersten Antwort-Button und sieht aus wie "ausgewaehlt".
+            if (document.activeElement && document.activeElement.blur) {
+                document.activeElement.blur();
+            }
         }
 
         function onAnswer(btn, answer, question) {
             if (state.answered) return;
             state.answered = true;
+
+            // Pro Frage merken (mit original Index, nicht shuffled-Position).
+            state.answeredCorrectly.push({
+                q: state.order[state.current],
+                correct: !!answer.correct
+            });
 
             const allBtns = el.answers.querySelectorAll('.quiz-answer');
             allBtns.forEach(b => { b.disabled = true; });
@@ -982,7 +1088,9 @@
             el.lbBody.innerHTML = '';
             rows.forEach((row, idx) => {
                 const tr = document.createElement('tr');
-                if (state.ownInsertedId && row.id === state.ownInsertedId) {
+                // Eigene Zeile via player_id matchen (robuster als ownInsertedId,
+                // weil Dedup ggf. eine andere Row desselben Spielers anzeigt).
+                if (state.playerId && row.player_id === state.playerId) {
                     tr.classList.add('is-self');
                 }
                 const rank = idx + 1;
@@ -1000,32 +1108,41 @@
         }
 
         async function loadLeaderboardAndPosition() {
-            // Top 10
-            const { data: topRows, error: topErr } = await supabase
+            // Globales Leaderboard: nur freie (non-session) Eintraege, nur Eintraege MIT
+            // player_id (alte Daten ohne ID werden ausgeblendet). Generoeser Limit, dann
+            // client-side Dedup pro player_id (nur Bestleistung pro Spieler zaehlt).
+            const { data: rawRows, error: topErr } = await supabase
                 .from('quiz_results')
-                .select('id, name, score, percent, duration_seconds, created_at')
+                .select('id, name, score, percent, duration_seconds, created_at, player_id')
+                .is('session_code', null)
+                .not('player_id', 'is', null)
                 .order('score', { ascending: false })
                 .order('duration_seconds', { ascending: true })
-                .limit(10);
+                .limit(200);
 
             if (topErr) throw topErr;
-            renderLeaderboard(topRows || []);
 
-            // If own row is not in top 10, query position separately.
-            const inTop = (topRows || []).some(r => r.id === state.ownInsertedId);
-            if (!inTop) {
-                const [{ count: ahead, error: aheadErr }, { count: total, error: totalErr }] = await Promise.all([
-                    supabase
-                        .from('quiz_results')
-                        .select('*', { count: 'exact', head: true })
-                        .gt('score', state.score),
-                    supabase
-                        .from('quiz_results')
-                        .select('*', { count: 'exact', head: true })
-                ]);
-                if (aheadErr || totalErr) throw (aheadErr || totalErr);
-                const position = (ahead || 0) + 1;
-                el.ownPosition.textContent = 'DEINE PLATZIERUNG: #' + position + ' VON ' + (total || position);
+            const seen = new Set();
+            const deduped = [];
+            for (const row of (rawRows || [])) {
+                if (!seen.has(row.player_id)) {
+                    seen.add(row.player_id);
+                    deduped.push(row);
+                }
+            }
+
+            const top10 = deduped.slice(0, 10);
+            renderLeaderboard(top10);
+
+            // Eigene Platzierung in der deduplizierten Liste.
+            const ownIdx = state.playerId
+                ? deduped.findIndex(r => r.player_id === state.playerId)
+                : -1;
+            if (ownIdx >= 0 && ownIdx < 10) {
+                // In Top 10 → highlight reicht, keine separate Zeile.
+                el.ownPosition.classList.add('is-hidden');
+            } else if (ownIdx >= 0) {
+                el.ownPosition.textContent = 'DEINE PLATZIERUNG: #' + (ownIdx + 1) + ' VON ' + deduped.length;
                 el.ownPosition.classList.remove('is-hidden');
             } else {
                 el.ownPosition.classList.add('is-hidden');
@@ -1035,6 +1152,8 @@
         async function persistAndShowLeaderboard() {
             if (!supabase) {
                 setLbStatus('error', 'Speichern fehlgeschlagen. Quiz lokal abgeschlossen.');
+                // Stand trotzdem lokal sichern, damit Reload das Ergebnis wieder zeigt.
+                saveLastResultFromState();
                 return;
             }
 
@@ -1044,15 +1163,21 @@
             const percent = (state.score / total) * 100;
 
             try {
+                const insertData = {
+                    name: state.playerName,
+                    player_id: state.playerId,
+                    score: state.score,
+                    total: total,
+                    percent: percent,
+                    duration_seconds: state.duration,
+                    answers: state.answeredCorrectly
+                };
+                if (state.sessionCode) {
+                    insertData.session_code = state.sessionCode;
+                }
                 const { data, error } = await supabase
                     .from('quiz_results')
-                    .insert({
-                        name: state.playerName,
-                        score: state.score,
-                        total: total,
-                        percent: percent,
-                        duration_seconds: state.duration
-                    })
+                    .insert(insertData)
                     .select()
                     .single();
                 if (error) throw error;
@@ -1060,6 +1185,21 @@
             } catch (e) {
                 console.error('Insert failed:', e);
                 setLbStatus('error', 'Speichern fehlgeschlagen. Quiz lokal abgeschlossen.');
+                saveLastResultFromState();
+                return;
+            }
+
+            // Insert ok -> lokal merken (mit Insert-ID fuer Self-Highlight im Leaderboard).
+            saveLastResultFromState();
+
+            // Session-Mode: Spieler sieht nur eigene Stats + Hinweis.
+            // Leaderboard zeigt die Lehrkraft auf quiz-live.html.
+            if (state.sessionCode) {
+                setLbStatus('hide');
+                el.sessionHint.innerHTML = 'Dein Ergebnis wurde in der Session <strong>'
+                    + escapeHtml(state.sessionCode)
+                    + '</strong> gespeichert. Frage deine Lehrkraft nach der Auswertung.';
+                el.sessionHint.classList.remove('is-hidden');
                 return;
             }
 
@@ -1074,34 +1214,40 @@
             }
         }
 
-        function showResult() {
+        // Rendert den Result-Screen aus expliziten Werten (frisches Quiz ODER aus localStorage).
+        function renderResultUI(opts) {
             hideAll();
             el.result.classList.remove('is-hidden');
 
-            state.duration = Math.max(0, Math.round((Date.now() - state.startTime) / 1000));
-
-            const total = QUESTIONS.length;
-            const score = state.score;
+            const total = opts.total;
+            const score = opts.score;
             const percent = Math.round((score / total) * 100);
 
             el.resultScore.textContent = score + '/' + total;
             el.resultPercent.textContent = percent + '%';
-            el.resultDuration.textContent = 'DAUER: ' + formatDuration(state.duration);
+            el.resultDuration.textContent = 'DAUER: ' + formatDuration(opts.durationSeconds);
             el.resultRating.textContent = ratingFor(score);
 
-            const prevHigh = readHighscore();
-            const newHigh = Math.max(prevHigh, score);
-            if (score > prevHigh) writeHighscore(score);
-            el.resultHighscore.innerHTML = 'PERSÖNLICHER REKORD: <strong>' + newHigh + '/' + total + '</strong>'
-                + (score > prevHigh ? ' &nbsp;// NEUER REKORD' : '');
+            if (opts.isReplay) {
+                // Wiederhergestellter Stand: Highscore nur ANZEIGEN, nicht aktualisieren.
+                const stored = readHighscore();
+                el.resultHighscore.innerHTML = 'PERSÖNLICHER REKORD: <strong>' + stored + '/' + total + '</strong>';
+            } else {
+                const prevHigh = readHighscore();
+                const newHigh = Math.max(prevHigh, score);
+                if (score > prevHigh) writeHighscore(score);
+                el.resultHighscore.innerHTML = 'PERSÖNLICHER REKORD: <strong>' + newHigh + '/' + total + '</strong>'
+                    + (score > prevHigh ? ' &nbsp;// NEUER REKORD' : '');
+            }
 
-            // Mistakes
+            // Falsche Antworten
             el.mistakesList.innerHTML = '';
-            if (state.mistakes.length === 0) {
+            const mistakes = opts.mistakes || [];
+            if (mistakes.length === 0) {
                 el.resultMistakes.classList.add('is-hidden');
             } else {
                 el.resultMistakes.classList.remove('is-hidden');
-                state.mistakes.forEach(m => {
+                mistakes.forEach(m => {
                     const li = document.createElement('li');
                     const q = document.createElement('span');
                     q.className = 'q';
@@ -1115,12 +1261,72 @@
                 });
             }
 
-            // Reset leaderboard area before async load
+            // Reset Leaderboard / Session-Hint vor async-Aktion.
             el.lbWrap.classList.add('is-hidden');
             el.ownPosition.classList.add('is-hidden');
             el.lbBody.innerHTML = '';
+            el.sessionHint.classList.add('is-hidden');
+            el.sessionHint.innerHTML = '';
+        }
 
+        function showResult() {
+            state.duration = Math.max(0, Math.round((Date.now() - state.startTime) / 1000));
+            renderResultUI({
+                score: state.score,
+                total: QUESTIONS.length,
+                durationSeconds: state.duration,
+                mistakes: state.mistakes,
+                isReplay: false
+            });
             persistAndShowLeaderboard();
+        }
+
+        // Rekonstruktion des Result-Screens aus localStorage (beim Reload).
+        // KEIN erneuter Supabase-Insert — der Score wurde schon beim eigentlichen
+        // Durchlauf gespeichert. Leaderboard wird trotzdem frisch geladen.
+        async function showResultFromSaved(saved) {
+            // State restaurieren, damit Leaderboard-Queries die richtigen Werte sehen.
+            state.playerName = saved.name || '';
+            state.playerId = saved.playerId || readPlayerId() || '';
+            state.sessionCode = saved.sessionCode || '';
+            state.score = saved.score;
+            state.duration = saved.durationSeconds;
+            state.ownInsertedId = saved.ownInsertedId || null;
+            state.answeredCorrectly = Array.isArray(saved.answeredCorrectly) ? saved.answeredCorrectly : [];
+            state.mistakes = Array.isArray(saved.mistakes) ? saved.mistakes : [];
+
+            renderResultUI({
+                score: saved.score,
+                total: saved.total,
+                durationSeconds: saved.durationSeconds,
+                mistakes: saved.mistakes,
+                isReplay: true
+            });
+
+            // Session-Mode: nur Hinweis anzeigen, kein Leaderboard.
+            if (saved.sessionCode) {
+                setLbStatus('hide');
+                el.sessionHint.innerHTML = 'Dein Ergebnis wurde in der Session <strong>'
+                    + escapeHtml(saved.sessionCode)
+                    + '</strong> gespeichert. Frage deine Lehrkraft nach der Auswertung.';
+                el.sessionHint.classList.remove('is-hidden');
+                return;
+            }
+
+            // Freies Quiz: Leaderboard frisch nachladen (aber NICHT inserten).
+            if (!supabase) {
+                setLbStatus('error', 'Bestenliste konnte nicht geladen werden.');
+                return;
+            }
+
+            setLbStatus('loading', 'LADE BESTENLISTE');
+            try {
+                await loadLeaderboardAndPosition();
+                setLbStatus('hide');
+            } catch (e) {
+                console.error('Leaderboard read failed:', e);
+                setLbStatus('error', 'Bestenliste konnte nicht geladen werden.');
+            }
         }
 
         // Wire up events
@@ -1131,12 +1337,65 @@
                 onNameNext();
             }
         });
+        el.codeInput.addEventListener('input', () => {
+            const cleaned = el.codeInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4);
+            if (cleaned !== el.codeInput.value) el.codeInput.value = cleaned;
+            validateCode();
+        });
+        el.codeInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && validateCode()) {
+                e.preventDefault();
+                onStartConfirm();
+            }
+        });
         el.btnNameNext.addEventListener('click', onNameNext);
-        el.btnStart.addEventListener('click', startQuiz);
+        el.btnStart.addEventListener('click', onStartConfirm);
         el.btnNext.addEventListener('click', nextQuestion);
-        el.btnRestart.addEventListener('click', showNameEntry);
 
-        showNameEntry();
+        // "NOCHMAL SPIELEN" — Spieler bleibt, direkt zurueck auf START.
+        el.btnRestart.addEventListener('click', () => {
+            clearLastResult();
+            state.sessionCode = '';
+            state.ownInsertedId = null;
+            if (state.playerName && state.playerId) {
+                showStart();
+            } else {
+                showNameEntry();
+            }
+        });
+
+        // "ANDERER SPIELER" — Identitaet wegwerfen, neuer Namens-Flow.
+        el.btnOtherPlayer.addEventListener('click', () => {
+            clearLastResult();
+            clearPlayerId();
+            clearPlayerName();
+            state.playerId = '';
+            state.playerName = '';
+            state.sessionCode = '';
+            state.ownInsertedId = null;
+            showNameEntry();
+        });
+
+        // Init: drei Faelle.
+        // 1) Persistierter Result-Stand vorhanden → direkt RESULT (Leaderboard neu laden).
+        // 2) Spieler bekannt (Name + ID im Storage) → START skippt NAME_ENTRY.
+        // 3) Sonst: NAME_ENTRY zeigen.
+        (function init() {
+            const stored = readLastResult();
+            if (stored) {
+                showResultFromSaved(stored);
+                return;
+            }
+            const knownName = readPlayerName();
+            const knownId   = readPlayerId();
+            if (knownName && knownId) {
+                state.playerName = knownName;
+                state.playerId = knownId;
+                showStart();
+                return;
+            }
+            showNameEntry();
+        })();
     </script>
 </body>
 

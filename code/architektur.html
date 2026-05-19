@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architektur – So funktioniert die Website</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ---------- Code-Blöcke ---------- */
+        pre.arch-code {
+            background: #000;
+            border: 1px solid #39ff14;
+            color: #39ff14;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.55;
+            padding: 16px 18px;
+            margin: 18px 0;
+            overflow-x: auto;
+            white-space: pre;
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.15);
+        }
+
+        pre.arch-code.wrap {
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        code.inline {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #39ff14;
+            background: #050a05;
+            padding: 1px 6px;
+            border: 1px solid #1a4a0a;
+        }
+
+        /* ---------- Erweiterte Tabellen ---------- */
+        table.arch-table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 900px;
+            margin: 18px 0 22px;
+            font-size: 15px;
+        }
+
+        table.arch-table th {
+            background: #39ff14;
+            color: #000;
+            padding: 12px 14px;
+            text-align: left;
+            font-family: 'Courier New', Courier, monospace;
+            letter-spacing: 1px;
+            font-size: 14px;
+        }
+
+        table.arch-table td {
+            border: 1px solid #1a7a0a;
+            padding: 10px 14px;
+            color: #39ff14;
+            background: #000;
+            vertical-align: top;
+        }
+
+        table.arch-table tr:nth-child(even) td {
+            background: #050a05;
+        }
+
+        table.arch-table tr:hover td {
+            background: #0a1505;
+        }
+
+        table.arch-table td.mono {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        /* ---------- Farbpaletten-Kästchen ---------- */
+        .color-swatch {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 1px solid #39ff14;
+            vertical-align: middle;
+            margin-right: 8px;
+            box-shadow: 0 0 4px rgba(57, 255, 20, 0.25);
+        }
+
+        .swatch-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+        }
+
+        /* ---------- Workflow-Schritte ---------- */
+        .workflow {
+            list-style: none;
+            padding: 0;
+            margin: 22px 0;
+            counter-reset: step;
+        }
+
+        .workflow li {
+            position: relative;
+            padding: 16px 18px 16px 72px;
+            margin: 0 0 12px;
+            border: 1px solid #1a7a0a;
+            background: #050a05;
+            font-size: 16px;
+            line-height: 1.5;
+            box-shadow: 0 0 6px rgba(57, 255, 20, 0.12);
+        }
+
+        .workflow li::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            line-height: 44px;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 22px;
+            font-weight: bold;
+            color: #39ff14;
+            border: 2px solid #39ff14;
+            text-shadow: 0 0 8px #39ff14;
+            box-shadow: 0 0 12px rgba(57, 255, 20, 0.4);
+        }
+
+        /* ---------- Statistik-Boxen ---------- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin: 22px 0 30px;
+        }
+
+        .stat-box {
+            border: 1px solid #1a7a0a;
+            background: #050a05;
+            padding: 18px 16px;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+            box-shadow: 0 0 8px rgba(57, 255, 20, 0.18);
+        }
+
+        .stat-box .stat-num {
+            display: block;
+            font-size: 38px;
+            font-weight: bold;
+            color: #39ff14;
+            text-shadow: 0 0 10px #39ff14, 0 0 24px rgba(57, 255, 20, 0.4);
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .stat-box .stat-label {
+            font-size: 12px;
+            color: #28cc10;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* ---------- GitHub-Button ---------- */
+        .github-cta {
+            text-align: center;
+            margin: 40px 0 20px;
+            padding: 36px 20px;
+            border: 2px solid #39ff14;
+            background: #000;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.25);
+        }
+
+        .github-cta p {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            letter-spacing: 3px;
+            color: #28cc10;
+            margin: 0 auto 18px;
+            text-align: center;
+        }
+
+        a.github-btn {
+            display: inline-block;
+            background: #000;
+            color: #39ff14;
+            border: 2px solid #39ff14;
+            padding: 18px 38px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            text-decoration: none;
+            text-transform: uppercase;
+            text-shadow: 0 0 6px rgba(57, 255, 20, 0.4);
+            transition: background 0.15s linear, color 0.15s linear, box-shadow 0.15s linear;
+        }
+
+        a.github-btn:hover,
+        a.github-btn:focus {
+            background: #39ff14;
+            color: #000;
+            outline: none;
+            text-shadow: none;
+            box-shadow: 0 0 24px rgba(57, 255, 20, 0.65);
+        }
+
+        /* ---------- Highlight-Boxen für Hinweise ---------- */
+        .arch-note {
+            border-left: 4px solid #39ff14;
+            background: #050a05;
+            padding: 12px 16px;
+            margin: 18px 0;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #b8ffb0;
+            font-family: Arial, sans-serif;
+        }
+
+        .arch-note strong {
+            color: #39ff14;
+            letter-spacing: 1px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+        }
+
+        /* ---------- Section-Label oberhalb von h2 ---------- */
+        .section-tag {
+            display: block;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            letter-spacing: 4px;
+            color: #28cc10;
+            text-transform: uppercase;
+            margin: 30px 0 -8px;
+            text-shadow: 0 0 4px rgba(57, 255, 20, 0.3);
+        }
+
+        @media (max-width: 600px) {
+            pre.arch-code {
+                font-size: 12px;
+                padding: 12px 14px;
+            }
+            .workflow li {
+                padding-left: 60px;
+                font-size: 14px;
+            }
+            .workflow li::before {
+                width: 36px;
+                height: 36px;
+                line-height: 36px;
+                font-size: 18px;
+            }
+            .stat-box .stat-num { font-size: 28px; }
+            a.github-btn { padding: 14px 22px; font-size: 14px; letter-spacing: 2px; }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Künstliche Intelligenz</h1>
+    <nav>
+        <a href="index.html">Startseite</a>
+        <a href="grundlagen.html">Grundlagen</a>
+        <a href="geschichte.html">Geschichte</a>
+        <a href="anwendungen.html">Anwendungen</a>
+        <a href="schule.html">KI in der Schule</a>
+        <a href="risiken.html">Chancen &amp; Risiken</a>
+        <a href="programmierung.html">Programmierung</a>
+        <a href="zukunft.html">Zukunft</a>
+        <a href="spiel.html">Spiel</a>
+        <a href="quiz.html">Quiz</a>
+        <a href="quiz-live.html">Live</a>
+        <a href="architektur.html">Architektur</a>
+        <a href="quellen.html">Quellen</a>
+    </nav>
+    <hr>
+    <main>
+        <h2>Architektur – So funktioniert diese Website</h2>
+        <p class="intro">Diese Seite zeigt, wie unsere Website technisch aufgebaut ist. Wir
+            erklären die Codebase, die verwendeten Technologien, wie wir zu zweit zusammengearbeitet
+            haben und welche Werkzeuge – inklusive KI-Assistenten – wir benutzt haben. Alles, was
+            hier steht, lässt sich im Quellcode auf GitHub nachvollziehen.</p>
+
+        <p>Unser komplettes Repository ist öffentlich:
+            <a href="https://github.com/kaizerius0/HTML-Website-ueber-KI-Schulprojekt"
+                target="_blank">github.com/kaizerius0/HTML-Website-ueber-KI-Schulprojekt</a>.
+            Jede HTML-, CSS- und JavaScript-Datei ist dort einsehbar.</p>
+
+        <hr class="dashed">
+
+        <span class="section-tag">// 01 OVERVIEW</span>
+        <h2>Überblick</h2>
+        <p>Die Website besteht aus statischen Dateien – kein Build-System, kein Server-Framework,
+            kein Bundler. Jeder Browser kann die Dateien direkt öffnen, sogar lokal über das
+            <code class="inline">file://</code>-Protokoll ohne Webserver. Wir haben uns bewusst
+            gegen Frameworks wie React, Vue oder Svelte entschieden, weil wir HTML, CSS und
+            JavaScript wirklich von Grund auf verstehen wollten.
+        </p>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="stat-num">13</span>
+                <span class="stat-label">HTML-Seiten</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-num">268</span>
+                <span class="stat-label">Zeilen CSS</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-num">~2100</span>
+                <span class="stat-label">Zeilen JavaScript</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-num">3</span>
+                <span class="stat-label">CDN-Bibliotheken</span>
+            </div>
+        </div>
+
+        <p>Was unsere Codebase besonders macht:</p>
+        <ul>
+            <li><b>Komplett statisch</b> – kein Build-Schritt, kein <code class="inline">npm install</code>.</li>
+            <li><b>Kein Framework</b> für die Inhaltsseiten – pures HTML, CSS und JavaScript.</li>
+            <li>Die einzige „große" Abhängigkeit ist <b>Three.js</b> für unser 3D-Spiel.</li>
+            <li><b>Funktioniert auch ohne Webserver</b> – jede Datei lässt sich direkt im Browser
+                öffnen, was die Entwicklung deutlich vereinfacht.</li>
+            <li>Datenbank-Anbindung (Supabase) läuft per JavaScript-Import aus einem CDN, ebenfalls
+                ohne Build-Pipeline.</li>
+        </ul>
+
+        <hr class="dashed">
+
+        <span class="section-tag">// 02 FILESYSTEM</span>
+        <h2>Dateistruktur</h2>
+        <p>So sieht unser Repository aufgebaut aus:</p>
+
+        <pre class="arch-code">c:/it-html-ki-website/
+├── .gitignore
+├── README.md
+├── code/
+│   ├── index.html              ← Startseite
+│   ├── grundlagen.html         ← Grundlagen &amp; Funktionsweise
+│   ├── geschichte.html         ← Geschichte der KI
+│   ├── anwendungen.html        ← Anwendungen
+│   ├── schule.html             ← KI in der Schule
+│   ├── risiken.html            ← Chancen &amp; Risiken
+│   ├── programmierung.html     ← KI &amp; Programmierung
+│   ├── zukunft.html            ← Zukunft der KI
+│   ├── spiel.html              ← Mars Open World Survival (Three.js)
+│   ├── quiz.html               ← KI-Quiz (mit Supabase)
+│   ├── quiz-live.html          ← Live-Auswertung für Lehrkraft
+│   ├── architektur.html        ← Diese Seite
+│   ├── quellen.html            ← Quellenverzeichnis
+│   ├── geheim.html             ← Easter Egg
+│   ├── style.css               ← Globales Styling
+│   ├── quiz-config.js          ← Supabase-Zugangsdaten (gitignored)
+│   ├── quiz-config.example.js  ← Template für Mitentwickler
+│   ├── quiz-questions.js       ← Die 15 Quiz-Fragen
+│   └── images/                 ← Inhaltsbilder
+└── md files/                   ← Recherche-Notizen</pre>
+
+        <p>Alle HTML-Seiten der Website mit ihrem inhaltlichen Schwerpunkt:</p>
+
+        <table class="arch-table">
+            <thead>
+                <tr>
+                    <th>Datei</th>
+                    <th>Zeilen</th>
+                    <th>Inhalt</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td class="mono">index.html</td><td>69</td><td>Startseite mit Einleitung „Was ist KI?" und Navigation zu allen Unterseiten.</td></tr>
+                <tr><td class="mono">grundlagen.html</td><td>187</td><td>Machine Learning, neuronale Netze, Transformer-Architektur, die drei KI-Stufen.</td></tr>
+                <tr><td class="mono">geschichte.html</td><td>135</td><td>Geschichte der KI von Turing (1936) bis zur Ära der KI-Agenten (2025–2026).</td></tr>
+                <tr><td class="mono">anwendungen.html</td><td>135</td><td>KI in Medizin, Industrie, Alltag, Software, Raumfahrt und Quantencomputern.</td></tr>
+                <tr><td class="mono">schule.html</td><td>107</td><td>KI im Unterricht: intelligente Tutorsysteme, Tools, Chancen, Datenschutz.</td></tr>
+                <tr><td class="mono">risiken.html</td><td>131</td><td>Chancen und Risiken (Bias, Halluzinationen, Deepfakes, EU AI Act).</td></tr>
+                <tr><td class="mono">programmierung.html</td><td>242</td><td>KI-gestützte Programmierung, das Spotify-„Honk"-System, Tools.</td></tr>
+                <tr><td class="mono">zukunft.html</td><td>146</td><td>AGI-Prognosen, agentische KI, Multimodalität, Szenarien für 2030.</td></tr>
+                <tr><td class="mono">spiel.html</td><td>1625</td><td>3D-Browser-Spiel „Mars Open World Survival" mit Three.js.</td></tr>
+                <tr><td class="mono">quiz.html</td><td>1401</td><td>15-Fragen-Quiz mit Supabase-Persistenz und Leaderboard.</td></tr>
+                <tr><td class="mono">quiz-live.html</td><td>825</td><td>Live-Auswertung für Lehrkräfte mit Session-Code und Schwierigkeitsanalyse.</td></tr>
+                <tr><td class="mono">architektur.html</td><td>diese Seite</td><td>Technische Dokumentation der Codebase.</td></tr>
+                <tr><td class="mono">quellen.html</td><td>219</td><td>Komplettes Quellenverzeichnis mit über 50 Links.</td></tr>
+                <tr><td class="mono">geheim.html</td><td>2537</td><td>Easter-Egg-Seite (versteckt über den Footer-Link), enthält ASCII-Art.</td></tr>
+            </tbody>
+        </table>
+
+        <hr class="dashed">
+
+        <span class="section-tag">// 03 PAGE TEMPLATE</span>
+        <h2>Wie alle Seiten aufgebaut sind</h2>
+        <p>Jede unserer Seiten folgt exakt demselben Skelett – Header, Navigation, Inhalt,
+            Footer. So sieht eine typische Seite aus:</p>
+
+        <pre class="arch-code">&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;Seitentitel&lt;/title&gt;
+  &lt;link rel="stylesheet" href="style.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Künstliche Intelligenz&lt;/h1&gt;
+  &lt;nav&gt;
+    &lt;a href="index.html"&gt;Startseite&lt;/a&gt;
+    &lt;a href="grundlagen.html"&gt;Grundlagen&lt;/a&gt;
+    ... (alle weiteren Links)
+  &lt;/nav&gt;
+  &lt;hr&gt;
+  &lt;main&gt;
+    ... der eigentliche Inhalt ...
+  &lt;/main&gt;
+  &lt;footer&gt;
+    &lt;a href="geheim.html" class="secret-link"&gt;Erstellt von Chris Kaiser &amp;amp; Louis Förster&lt;/a&gt;
+    Informatikunterricht – Klasse 11, GK Informatik, 2026
+  &lt;/footer&gt;
+&lt;/body&gt;</pre>
+
+        <div class="arch-note">
+            <strong>// WICHTIG:</strong> Es gibt <b>kein</b> Template-System und <b>keinen</b>
+            Build-Schritt. Header, Nav und Footer sind in jeder einzelnen Datei manuell
+            dupliziert. Wenn wir einen neuen Navigationspunkt einfügen, müssen wir das in
+            allen 13 Dateien machen. Das ist nicht der professionellste Weg – aber genau
+            das wollten wir lernen: wie HTML funktioniert, ohne dass uns ein Framework die
+            Arbeit abnimmt. So sehen wir direkt, was im Browser ankommt.
+        </div>
+
+        <p>Alle internen Verweise sind <b>relative Pfade</b> (zum Beispiel
+            <code class="inline">&lt;a href="grundlagen.html"&gt;</code>). Dadurch funktioniert die
+            Website sowohl auf unserem Vercel-Server als auch lokal beim Doppelklick auf eine
+            HTML-Datei.</p>
+
+        <hr class="dashed">
+
+        <span class="section-tag">// 04 DESIGN</span>
+        <h2>Designsprache: Das Matrix-Hacker-Theme</h2>
+        <p>Wir wollten von Anfang an einen visuellen Stil, der zum Thema KI passt. Inspiriert
+            haben uns alte Computer-Terminals und der „Matrix"-Look:</p>
+        <ul>
+            <li><b>Schwarzer Hintergrund</b> (<code class="inline">#000</code>) für maximalen Kontrast.</li>
+            <li><b>Neon-Grün als Primärfarbe</b> (<code class="inline">#39ff14</code>) – wirkt
+                wie ein Terminal-Cursor.</li>
+            <li><b>Sharp Edges</b> – fast keine abgerundeten Ecken, alles eckig.</li>
+            <li><b>Courier New</b> für technische Elemente: HUDs im Spiel, Code, Daten, Codes.</li>
+            <li><b>Arial</b> für normalen Fließtext, damit längere Texte gut lesbar bleiben.</li>
+        </ul>
+
+        <h3>Vollständige Farbpalette</h3>
+        <p>Die ganze Website nutzt nur eine Handvoll Grüntöne und Akzentfarben:</p>
+
+        <table class="arch-table">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Farbe</th>
+                    <th style="width: 18%;">Hex-Wert</th>
+                    <th>Verwendung</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><div class="swatch-cell"><span class="color-swatch" style="background:#000"></span>Schwarz</div></td>
+                    <td class="mono">#000</td>
+                    <td>Hintergrund, Karten, Buttons</td>
+                </tr>
+                <tr>
+                    <td><div class="swatch-cell"><span class="color-swatch" style="background:#39ff14"></span>Neon-Grün</div></td>
+                    <td class="mono">#39ff14</td>
+                    <td>Primärfarbe – Text, Borders, Links, Headings</td>
+                </tr>
+                <tr>
+                    <td><div class="swatch-cell"><span class="color-swatch" style="background:#30dd12"></span>Dunkleres Grün</div></td>
+                    <td class="mono">#30dd12</td>
+                    <td>Einleitungs-Absätze (<code class="inline">.intro</code>)</td>
+                </tr>
+                <tr>
+                    <td><div class="swatch-cell"><span class="color-swatch" style="background:#28cc10"></span>Sekundär-Grün</div></td>
+                    <td class="mono">#28cc10</td>
+                    <td>Kleine Labels, Section-Tags</td>
+                </tr>
+                <tr>
+                    <td><div class="swatch-cell"><span class="color-swatch" style="background:#1a7a0a"></span>Dunkles Grün</div></td>
+                    <td class="mono">#1a7a0a</td>
+                    <td>Sekundäre Borders (z.B. <code class="inline">h2</code>-Unterstrich)</td>
+                </tr>
+                <tr>
+                    <td><div class="swatch-cell"><span class="color-swatch" style="background:#1a4a0a"></span>Sehr dunkles Grün</div></td>
+                    <td class="mono">#1a4a0a</td>
+                    <td>Karten-Borders (z.B. Mars-Briefing)</td>
+                </tr>
+                <tr>
+                    <td><div class="swatch-cell"><span class="color-swatch" style="background:#226600"></span>Footer-Grün</div></td>
+                    <td class="mono">#226600</td>
+                    <td>Footer-Text, versteckter Easter-Egg-Link</td>
+                </tr>
+                <tr>
+                    <td><div class="swatch-cell"><span class="color-swatch" style="background:#111"></span>Fast Schwarz</div></td>
+                    <td class="mono">#111</td>
+                    <td>Hover-Hintergrund bei Tabellenzeilen</td>
+                </tr>
+                <tr>
+                    <td><div class="swatch-cell"><span class="color-swatch" style="background:#ff5571"></span>Fehler-Rot</div></td>
+                    <td class="mono">#ff5571</td>
+                    <td>„Falsche Antwort" im Quiz</td>
+                </tr>
+                <tr>
+                    <td><div class="swatch-cell"><span class="color-swatch" style="background:#00ffff"></span>Cyan</div></td>
+                    <td class="mono">#00ffff</td>
+                    <td>Tracer-Schüsse im Spiel, neue Teilnehmer im Live-Quiz</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Typografie und Layout</h3>
+        <ul>
+            <li><b>Body:</b> <code class="inline">max-width: 900px</code>, zentriert per
+                <code class="inline">margin: 0 auto</code>, Padding
+                <code class="inline">40px 20px 0</code>.</li>
+            <li><b>Headings:</b> <code class="inline">h1</code> 40 px (Neon-Border unten),
+                <code class="inline">h2</code> 26 px (dünne Border),
+                <code class="inline">h3</code> 18 px.</li>
+            <li><b>Fließtext:</b> 16 px, Zeilenhöhe 1.8.</li>
+            <li><b>Mono-Schrift</b> Courier New für HUDs, Buttons im Quiz/Spiel und Code.</li>
+            <li><b>Flexbox-Layout</b> für Body: <code class="inline">flex-direction: column</code>
+                und <code class="inline">main { flex: 1 }</code>, damit der Footer am
+                Boden klebt.</li>
+        </ul>
+
+        <h3>Glow-Animation</h3>
+        <p>Auf dem versteckten Easter-Egg (<code class="inline">geheim.html</code>) und am
+            Quiz-Ergebnis-Rating pulsiert der Text mit dieser Animation:</p>
+
+        <pre class="arch-code">@keyframes glow {
+  from {
+    text-shadow: 0 0 5px #39ff14, 0 0 10px #39ff1466;
+  }
+  to {
+    text-shadow: 0 0 10px #39ff14, 0 0 20px #39ff1488, 0 0 30px #39ff1444;
+  }
+}</pre>
+
+        <p>Aktiviert per <code class="inline">animation: glow 3s ease-in-out infinite alternate</code>
+            – das gibt den Neon-Tönen ihren typischen pulsierenden Look.</p>
+
+        <hr class="dashed">
+
+        <span class="section-tag">// 05 MODULES</span>
+        <h2>Die drei größten Module</h2>
+        <p>Zwölf unserer Seiten sind reiner Content – HTML mit Text und Bildern. Drei Seiten
+            sind echte JavaScript-Anwendungen, die wir hier im Detail erklären.</p>
+
+        <h3>Modul 1: Das 3D-Spiel (spiel.html)</h3>
+        <p>Unter <code class="inline">spiel.html</code> liegt ein vollständiges
+            First-Person-Survival-Spiel auf einer prozedural erzeugten Marsoberfläche – komplett
+            im Browser, mit Pointer-Lock, Schießen, Aliens, Quests und einem Flugzeug.</p>
+        <ul>
+            <li><b>Erste-Person-Steuerung</b> mit der Pointer-Lock-API (Maus wird im Spiel
+                eingefangen).</li>
+            <li><b>Prozedurale Marslandschaft</b> via <b>Simplex-Noise</b> – das Terrain ist eine
+                Plane mit 150×150 Segmenten, deren Höhen aus dem Noise-Algorithmus berechnet werden.</li>
+            <li><b>500 Felsen</b> werden über <code class="inline">InstancedMesh</code> gerendert
+                (eine Geometrie, 500 Instanzen) – dadurch bleibt das Spiel performant.</li>
+            <li><b>Aliens mit State Machine:</b> <code class="inline">patrol</code> →
+                <code class="inline">chase</code> → <code class="inline">attack</code> →
+                <code class="inline">dead</code>. Wechsel auf Basis von Distanzen und einem
+                „Alert"-Wert.</li>
+            <li><b>Wellen-System:</b> sinkt die Zahl lebender Aliens unter 5, wird die nächste
+                Welle automatisch gespawnt.</li>
+            <li><b>Quest-System</b> mit zwei verketteten Aufgaben: Rover reparieren (3× Schrott,
+                1× Teile) und Alien-Pflanze anbauen (15 s Wachstumszeit, +50 HP bei Ernte).</li>
+            <li><b>Selbstgebautes Flugzeug</b> aus Three.js-Primitives (Rumpf, Cockpit, Flügel,
+                Propeller) mit eigener Flugphysik.</li>
+            <li><b>Etwa 1.000 Zeilen JavaScript</b>, eingebettet in der HTML-Datei.</li>
+        </ul>
+        <p>Wir haben Three.js gewählt, weil es <b>die De-facto-Standard-Bibliothek</b> für
+            3D-Grafik im Browser ist. Geladen wird sie per CDN, ohne lokale Installation:</p>
+
+        <pre class="arch-code">&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"&gt;&lt;/script&gt;</pre>
+
+        <h3>Modul 2: Das Quiz (quiz.html)</h3>
+        <p>Das Quiz prüft das Wissen zu allen Themen unserer Website mit 15 Multiple-Choice-Fragen.
+            Diese Fragen liegen zentral in <code class="inline">quiz-questions.js</code> und werden
+            von <i>beiden</i> Quiz-Seiten geladen (normales Quiz und Live-Auswertung).</p>
+        <ul>
+            <li><b>Vier Zustände</b> als sichtbare/versteckte HTML-Sections: Name eingeben →
+                Start-Screen → Frage-Screen → Result-Screen.</li>
+            <li><b>Player-Identitäts-System:</b> Jeder Browser bekommt beim ersten Quiz eine
+                eindeutige UUID via <code class="inline">crypto.randomUUID()</code>. Diese ID liegt
+                im <code class="inline">localStorage</code> und identifiziert den Spieler über
+                mehrere Quiz-Versuche hinweg.</li>
+            <li><b>Letztes Ergebnis bleibt nach Reload erhalten:</b> Wer die Seite nach dem Quiz
+                aktualisiert, sieht direkt wieder seinen Ergebnis-Screen – kein erneutes Spielen
+                nötig.</li>
+            <li><b>Antwort-Reihenfolge ist randomisiert</b> via Fisher-Yates-Shuffle, sowohl die
+                Reihenfolge der Fragen als auch die der Antwortoptionen.</li>
+            <li><b>Insert in Supabase</b> mit allen Daten – inklusive der genauen Antwort-Historie
+                pro Frage, damit die Live-Auswertung die Schwierigkeit jeder Frage berechnen kann.</li>
+            <li><b>Leaderboard</b> wird client-seitig dedupliziert: pro Spieler-ID nur die
+                Bestleistung.</li>
+        </ul>
+
+        <p>So sieht der Supabase-Insert im Code aus:</p>
+
+        <pre class="arch-code">const insertData = {
+  name:             state.playerName,
+  player_id:        state.playerId,
+  score:            state.score,
+  total:            QUESTIONS.length,
+  percent:          (score / total) * 100,
+  duration_seconds: state.duration,
+  answers:          state.answeredCorrectly   // [{q: index, correct: bool}, ...]
+};
+if (state.sessionCode) insertData.session_code = state.sessionCode;
+
+const { data, error } = await supabase
+  .from('quiz_results')
+  .insert(insertData)
+  .select()
+  .single();</pre>
+
+        <h3>Modul 3: Die Live-Auswertung (quiz-live.html)</h3>
+        <p>Für den Einsatz im Klassenraum: Die Lehrkraft öffnet diese Seite, generiert einen
+            4-stelligen Session-Code und projiziert ihn an die Tafel. Während die Schüler das Quiz
+            spielen, sieht die Lehrkraft die Ergebnisse live.</p>
+        <ul>
+            <li><b>Session-Code aus reduziertem Alphabet:</b>
+                <code class="inline">ABCDEFGHJKLMNPQRSTUVWXYZ23456789</code> – ohne
+                <code class="inline">I/O/0/1</code>, damit Schüler den Code nicht verwechseln.</li>
+            <li><b>Polling alle 3 Sekunden:</b> Die Seite fragt Supabase regelmäßig nach neuen
+                Ergebnissen mit diesem Session-Code.</li>
+            <li><b>Drei States:</b> Setup → Active Session → End-Auswertung.</li>
+            <li><b>Neue Teilnehmer pulsieren cyan</b> für ein paar Sekunden, damit die Lehrkraft
+                sieht, wer gerade fertig geworden ist.</li>
+            <li><b>End-Auswertung</b> zeigt Klassen-Statistik (Durchschnitt, Bester, Schlechtester,
+                Schnitt-Dauer) und eine <b>Schwierigkeitsanalyse pro Frage</b>.</li>
+        </ul>
+        <div class="arch-note">
+            <strong>// DETAIL:</strong> Die Schwierigkeitsanalyse aggregiert bewusst <i>alle</i>
+            Antworten, nicht nur die ersten Versuche. Wenn ein Schüler eine Frage zuerst falsch
+            und beim zweiten Anlauf richtig hat, zählen beide Versuche. So zeigt der Balken sowohl
+            die echte Schwierigkeit der Frage als auch die Lernkurve der Klasse.
+        </div>
+
+        <hr class="dashed">
+
+        <span class="section-tag">// 06 DATABASE</span>
+        <h2>Datenbank: Supabase</h2>
+        <p><b>Supabase</b> ist eine gehostete PostgreSQL-Datenbank mit automatischer REST-API und
+            einem JavaScript-Client. Wir nutzen es als komplettes Backend, ohne einen eigenen
+            Server zu betreiben – das ist für ein Schulprojekt ideal.</p>
+
+        <p>Warum wir Supabase gewählt haben:</p>
+        <ul>
+            <li>Wir brauchen eine Datenbank für Quiz-Ergebnisse, die alle Schüler im Klassenraum
+                <b>gleichzeitig schreiben</b> können.</li>
+            <li>Wir wollten <b>keinen eigenen Backend-Server</b> betreiben (Hosting, Wartung,
+                Authentifizierung – alles Aufwand).</li>
+            <li>Supabase macht den <b>direkten Zugriff aus dem Browser</b> möglich, ohne dass wir
+                eine Zwischenschicht programmieren müssen.</li>
+            <li>Das <b>Free Tier</b> reicht für ein Schulprojekt locker aus.</li>
+            <li><b>Row Level Security (RLS)</b> schützt die Daten auf Datenbank-Ebene – nicht
+                durch das Verstecken von Zugangsdaten.</li>
+        </ul>
+
+        <h3>Tabellenstruktur <code class="inline">quiz_results</code></h3>
+        <p>Aus dem Code abgeleitet (gelesen aus <code class="inline">SELECT</code>/<code class="inline">INSERT</code>):</p>
+
+        <table class="arch-table">
+            <thead>
+                <tr>
+                    <th style="width: 24%;">Spalte</th>
+                    <th style="width: 20%;">Typ</th>
+                    <th>Inhalt</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td class="mono">id</td><td class="mono">integer / uuid</td><td>Primary Key, vergibt Supabase automatisch</td></tr>
+                <tr><td class="mono">name</td><td class="mono">text</td><td>Anzeigename des Spielers</td></tr>
+                <tr><td class="mono">player_id</td><td class="mono">text / uuid</td><td>Browser-UUID, dient als Dedup-Schlüssel</td></tr>
+                <tr><td class="mono">score</td><td class="mono">integer</td><td>Anzahl richtiger Antworten</td></tr>
+                <tr><td class="mono">total</td><td class="mono">integer</td><td>Anzahl Fragen (immer 15)</td></tr>
+                <tr><td class="mono">percent</td><td class="mono">numeric</td><td><code class="inline">score / total * 100</code></td></tr>
+                <tr><td class="mono">duration_seconds</td><td class="mono">integer</td><td>Bearbeitungszeit in Sekunden</td></tr>
+                <tr><td class="mono">answers</td><td class="mono">jsonb</td><td>Array <code class="inline">[{q: index, correct: bool}, ...]</code></td></tr>
+                <tr><td class="mono">session_code</td><td class="mono">text (nullable)</td><td>Live-Session-Code oder NULL bei freiem Quiz</td></tr>
+                <tr><td class="mono">created_at</td><td class="mono">timestamp</td><td>Standard-Supabase-Feld, automatisch gesetzt</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Warum der Zugangsschlüssel öffentlich sein darf</h3>
+        <p>In unserer Config-Datei steht ein „Anon-Key" – das ist der öffentliche Zugriffsschlüssel
+            der anonymen Rolle. Dieser Schlüssel landet im Browser und kann von jedem im
+            Quellcode gelesen werden. Das ist <b>kein Sicherheitsproblem</b>, weil:</p>
+        <ul>
+            <li>Die <b>Row Level Security</b> auf Datenbank-Ebene erlaubt der anonymen Rolle nur
+                das, was sie tun darf: Lesen und Einfügen mit Validierung.</li>
+            <li><b>Updates und Deletes sind blockiert</b> – niemand kann Einträge ändern oder
+                löschen, selbst mit dem Schlüssel.</li>
+            <li>Selbst wenn jemand den Key kopiert, kann er <b>nichts kaputt machen</b>, was die
+                RLS-Policies nicht ohnehin erlauben.</li>
+        </ul>
+        <p>So sieht unsere lokale Config aus (in <code class="inline">.gitignore</code>, wird
+            also nicht committet):</p>
+
+        <pre class="arch-code">window.QUIZ_CONFIG = {
+  SUPABASE_URL:      'https://&lt;projekt&gt;.supabase.co',
+  SUPABASE_ANON_KEY: 'eyJ...'
+};</pre>
+
+        <p>Eine Template-Variante (<code class="inline">quiz-config.example.js</code>) liegt im
+            Repository als Vorlage zum Kopieren. So kann ein Mit-Entwickler die Datei lokal
+            anlegen, ohne dass wir echte Credentials ins Repo schreiben.</p>
+
+        <hr class="dashed">
+
+        <span class="section-tag">// 07 HOSTING</span>
+        <h2>Hosting: GitHub und Vercel</h2>
+        <p>Wir haben unseren Workflow bewusst so aufgesetzt, wie professionelle Entwickler
+            arbeiten: <b>GitHub</b> für den Quellcode, <b>Vercel</b> für das Hosting.</p>
+
+        <h3>GitHub – unsere zentrale Plattform für Zusammenarbeit</h3>
+        <ul>
+            <li>Wir entwickeln zu zweit (Chris und Louis). GitHub ermöglicht uns parallele Arbeit
+                am selben Projekt.</li>
+            <li>Jede Änderung wird als <b>„Commit"</b> mit Beschreibung gespeichert – so können
+                wir jederzeit nachsehen, wer wann was geändert hat.</li>
+            <li>Wenn jemand etwas ändert, lädt er es zu GitHub hoch
+                (<code class="inline">git push</code>).</li>
+            <li>Der andere lädt die Änderungen herunter (<code class="inline">git pull</code>) und
+                hat sofort den aktuellen Stand.</li>
+            <li>Bei <b>Konflikten</b> – wenn wir beide dieselbe Datei geändert haben – müssen wir
+                die Versionen manuell zusammenführen. Das passierte am Anfang öfter, mit der Zeit
+                immer seltener.</li>
+            <li>Das Repository ist <b>öffentlich</b> – jeder kann den kompletten Code einsehen.</li>
+        </ul>
+
+        <h3>Vercel – automatisches Hosting</h3>
+        <ul>
+            <li>Vercel ist mit unserem GitHub-Repository verbunden.</li>
+            <li>Sobald wir Code auf den <code class="inline">main</code>-Branch pushen, wird die
+                Website <b>automatisch deployed</b>.</li>
+            <li>Vercel macht die Seite weltweit über ein <b>CDN</b> (Content Delivery Network)
+                verfügbar – also schnell aus jedem Land erreichbar.</li>
+            <li>Live-URL: <a href="https://projektkischule.vercel.app"
+                    target="_blank">projektkischule.vercel.app</a></li>
+            <li><b>SSL/HTTPS</b> wird automatisch verwaltet – wir mussten kein Zertifikat
+                konfigurieren.</li>
+            <li>Keine Server-Konfiguration, keine Datenbank-Migration, keine Wartung.</li>
+        </ul>
+
+        <h3>Unser Deployment-Workflow Schritt für Schritt</h3>
+        <ol class="workflow">
+            <li>Wir ändern Code lokal in unserem Editor.</li>
+            <li>Commit + Push auf GitHub (<code class="inline">git commit -m "..."</code> &amp;
+                <code class="inline">git push</code>).</li>
+            <li>GitHub sendet einen Webhook an Vercel und meldet die neue Version.</li>
+            <li>Vercel baut die Seite und deployed sie über sein globales CDN.</li>
+            <li>Live in etwa 30 Sekunden auf
+                <a href="https://projektkischule.vercel.app" target="_blank">projektkischule.vercel.app</a>.</li>
+        </ol>
+
+        <p>Warum diese Kombination:</p>
+        <ul>
+            <li>Die Trennung von <b>Quellcode (GitHub)</b> und <b>Auslieferung (Vercel)</b> ist
+                Industrie-Standard.</li>
+            <li>Beide Dienste haben kostenlose Pläne, die für Schulprojekte mehr als ausreichen.</li>
+            <li>Wir lernen <b>genau den Workflow</b>, den professionelle Webentwickler täglich
+                nutzen.</li>
+        </ul>
+
+        <hr class="dashed">
+
+        <span class="section-tag">// 08 AI-ASSISTED DEV</span>
+        <h2>Wie wir mit KI entwickelt haben</h2>
+        <p>Ein zentraler Punkt unseres Projekts: Wir haben den Code nicht alleine geschrieben –
+            wir haben <b>intensiv mit KI-Assistenten zusammengearbeitet</b>. Das ist heute schon
+            gelebte Praxis bei Spotify, GitHub und vielen anderen, wie wir auf der
+            Programmierungs-Seite ausführlich beschreiben.</p>
+
+        <h3>Was ist Claude Code?</h3>
+        <p>Wir haben vor allem <b>Claude Code</b> verwendet – einen KI-Assistenten von Anthropic,
+            der direkt in unserem Terminal läuft und Dateien <b>lesen, schreiben und ausführen</b>
+            kann. Im Unterschied zu einem normalen Chat-Bot arbeitet Claude Code direkt im
+            Projekt-Verzeichnis und kann mehrere Dateien gleichzeitig anfassen.</p>
+
+        <h3>Unser Workflow mit der KI</h3>
+        <ol class="workflow">
+            <li>Wir formulieren unsere Anforderungen in natürlicher Sprache (zum Beispiel:
+                „Baue ein 3D-Spiel im Mars-Survival-Stil mit WASD-Steuerung, Schwerkraft und
+                Aliens").</li>
+            <li>Claude Code generiert den Code, schreibt die nötigen Dateien und erklärt, was
+                es getan hat.</li>
+            <li>Wir testen das Ergebnis im Browser und melden Fehler oder Wünsche zurück
+                („das Springen fühlt sich zu schwer an", „füge ein Flugzeug hinzu").</li>
+            <li>In mehreren <b>Iterationen</b> verfeinern wir Features, fügen neue dazu oder
+                räumen Code auf.</li>
+            <li>Wir lesen, verstehen und passen Teile selbst an – die KI ist Werkzeug, nicht
+                Magie.</li>
+        </ol>
+
+        <h3>Was wir dabei gelernt haben</h3>
+        <ul>
+            <li><b>Klare Spezifikationen sind wichtiger als schnelle Anweisungen.</b> Eine
+                vage Anfrage liefert vage Ergebnisse. Je präziser wir formulieren, was wir
+                wollen, desto besser passt der Output.</li>
+            <li><b>Konzept zuerst, Code danach.</b> Wenn wir erst implementieren lassen und
+                dann nachdenken, entsteht oft Code-Müll, der wieder weggeworfen werden muss.
+                Erst die Architektur durchdenken, dann die KI bitten, sie umzusetzen.</li>
+            <li><b>Persona-basierte Prompts</b> liefern oft stärkere Ergebnisse. Eine Anfrage wie
+                „Denk wie ein Senior Game Developer und baue mir ein robustes Inventory-System"
+                liefert bessere Architektur als „mach mir ein Inventory".</li>
+            <li><b>Ohne Verständnis des Codes kann man nicht debuggen.</b> Wenn die KI etwas
+                kaputt macht und wir nicht wissen, was passiert ist, sind wir hilflos. Deshalb
+                lesen wir jeden Teil, den wir generieren lassen.</li>
+            <li><b>Die KI macht Fehler.</b> Sie erfindet manchmal Funktionen, die nicht
+                existieren („Halluzinationen", wie wir es auf der Grundlagen-Seite beschreiben).
+                Testen ist Pflicht.</li>
+        </ul>
+
+        <h3>Warum bewusst kein Framework</h3>
+        <p>Wir hätten React, Vue oder Next.js nutzen können – die KI hätte das problemlos
+            generiert. Wir haben uns aber bewusst dagegen entschieden:</p>
+        <ul>
+            <li><b>Lernziel:</b> Wir wollen HTML, CSS und JavaScript wirklich von Grund auf
+                verstehen, nicht nur einen Framework-Layer darüber bedienen.</li>
+            <li><b>Transparenz:</b> Frameworks wie React abstrahieren wichtige Konzepte weg
+                (virtuelles DOM, JSX-Compilation, Bundler). Mit reinem HTML/CSS/JS sehen wir
+                genau, was im Browser ankommt.</li>
+            <li><b>Einfachheit:</b> Die Seite funktioniert auch ohne Webserver
+                (<code class="inline">file://</code>-Protokoll), was Entwicklung und Tests
+                vereinfacht.</li>
+            <li><b>Wartbarkeit für Schüler:</b> Wer den Code in einem Jahr ansieht, versteht ihn
+                ohne Framework-Vorkenntnisse.</li>
+        </ul>
+
+        <div class="arch-note">
+            <strong>// FAZIT:</strong> Die KI hat uns enorm beschleunigt – aber das Projekt
+            wäre ohne unser eigenes Verständnis nicht möglich gewesen. Die Spezifikationen,
+            das Design, die Architektur-Entscheidungen, die Tests – das ist unsere Arbeit.
+            Die KI hat den Code geschrieben, wir haben das Projekt geleitet.
+        </div>
+
+        <hr class="dashed">
+
+        <span class="section-tag">// 09 DECISIONS</span>
+        <h2>Architektur-Entscheidungen im Überblick</h2>
+        <p>Die wichtigsten Technologie-Entscheidungen und unsere Gründe dafür:</p>
+
+        <table class="arch-table">
+            <thead>
+                <tr>
+                    <th style="width: 38%;">Entscheidung</th>
+                    <th>Begründung</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Kein Framework (kein React/Vue)</td><td>Lernziel: HTML/CSS/JS von Grund auf verstehen.</td></tr>
+                <tr><td>Kein Build-Schritt</td><td>Direkt im Browser lauffähig, <code class="inline">file://</code>-kompatibel, keine Tooling-Komplexität.</td></tr>
+                <tr><td>Three.js für 3D</td><td>De-facto-Standard für WebGL im Browser, sehr gut dokumentiert.</td></tr>
+                <tr><td>Simplex-Noise für Terrain</td><td>Realistische, organische Höhenkarten ohne aufwendige Mathematik.</td></tr>
+                <tr><td>Supabase für die Datenbank</td><td>Backend ohne eigenen Server, kostenloser Plan reicht aus.</td></tr>
+                <tr><td>GitHub für den Quellcode</td><td>Ermöglicht parallele Zusammenarbeit zu zweit, öffentlich einsehbar.</td></tr>
+                <tr><td>Vercel für Hosting</td><td>Auto-Deploy bei jedem Push, kostenlos, schnelles globales CDN.</td></tr>
+                <tr><td><code class="inline">localStorage</code> für Identität</td><td>Privacy: keine Cookies, keine Logins, keine Tracker.</td></tr>
+                <tr><td>Anon-Key öffentlich im Browser</td><td>Wird durch Row Level Security auf DB-Ebene abgesichert – Industrie-Standard bei Supabase.</td></tr>
+                <tr><td>Claude Code als KI-Assistent</td><td>Schnellere Entwicklung, gleichzeitig Lerneffekt durch Lesen und Verstehen.</td></tr>
+            </tbody>
+        </table>
+
+        <hr class="dashed">
+
+        <span class="section-tag">// 10 NUMBERS</span>
+        <h2>Statistiken</h2>
+        <p>Ein paar Kennzahlen, die das Projekt in Zahlen zusammenfassen:</p>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="stat-num">13</span>
+                <span class="stat-label">HTML-Seiten</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-num">7759</span>
+                <span class="stat-label">HTML-Zeilen gesamt</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-num">268</span>
+                <span class="stat-label">Zeilen CSS</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-num">~2100</span>
+                <span class="stat-label">Zeilen JavaScript</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-num">15</span>
+                <span class="stat-label">Quiz-Fragen</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-num">3</span>
+                <span class="stat-label">externe Bibliotheken</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-num">50+</span>
+                <span class="stat-label">Quellen-Links</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-num">2</span>
+                <span class="stat-label">Entwickler</span>
+            </div>
+        </div>
+
+        <p>Die größte einzelne Datei ist <code class="inline">geheim.html</code> (2537 Zeilen,
+            fast komplett ASCII-Art für das Easter Egg), gefolgt von <code class="inline">spiel.html</code>
+            (1625 Zeilen mit dem kompletten 3D-Spielcode) und <code class="inline">quiz.html</code>
+            (1401 Zeilen mit Quiz-Logik und Supabase-Anbindung).</p>
+
+        <hr class="dashed">
+
+        <span class="section-tag">// 11 SOURCE</span>
+        <h2>Quellcode einsehen</h2>
+        <p>Der gesamte Quellcode dieser Website ist offen einsehbar. Wenn du sehen willst, wie
+            eine bestimmte Funktion implementiert ist, wie wir das Quiz mit Supabase verdrahtet
+            haben oder wie das 3D-Spiel aufgebaut ist – schau einfach rein.</p>
+
+        <div class="github-cta">
+            <p>// REPOSITORY ÖFFENTLICH AUF GITHUB</p>
+            <a class="github-btn" href="https://github.com/kaizerius0/HTML-Website-ueber-KI-Schulprojekt"
+                target="_blank">Quellcode auf GitHub ansehen</a>
+        </div>
+
+    </main>
+    <footer>
+        <a href="geheim.html" class="secret-link">Erstellt von Chris Kaiser &amp; Louis Förster</a><br>
+        Informatikunterricht – Klasse 11, GK Informatik, 2026<br>
+        <i>Alle Quellen finden sich auf der Quellenseite.</i>
+    </footer>
+</body>
+
+</html>
