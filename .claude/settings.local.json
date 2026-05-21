@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git check-ignore *)"
+      "Bash(git check-ignore *)",
+      "Bash(git -C c:/it-html-ki-website check-ignore -v code/quiz-config.js)",
+      "Bash(git -C c:/it-html-ki-website ls-files)"
     ]
   }
 }
